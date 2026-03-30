@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaMaMo Scenario: $200 Oil — Iran War Escalation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #0a0a0f; color: #e2e8f0; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.06); }
+        .glass-warm { background: rgba(251,146,60,0.04); border: 1px solid rgba(251,146,60,0.12); }
+        .glass-red { background: rgba(239,68,68,0.04); border: 1px solid rgba(239,68,68,0.12); }
+        .glass-green { background: rgba(34,197,94,0.04); border: 1px solid rgba(34,197,94,0.12); }
+        .glass-blue { background: rgba(59,130,246,0.04); border: 1px solid rgba(59,130,246,0.12); }
+        .glow-line { height: 1px; background: linear-gradient(90deg, transparent, rgba(251,146,60,0.4), transparent); }
+        .stat-up { color: #22c55e; }
+        .stat-down { color: #ef4444; }
+        .stat-warn { color: #f59e0b; }
+        .pulse-dot { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+        .chart-container { position: relative; height: 280px; }
+        .tab-active { border-bottom: 2px solid #fb923c; color: #fb923c; }
+        .tab-inactive { border-bottom: 2px solid transparent; color: #64748b; }
+        .tab-inactive:hover { color: #94a3b8; }
+        .scenario-tag { background: linear-gradient(135deg, #dc2626, #ea580c); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0f; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+<!-- Header -->
+<header class="sticky top-0 z-50 glass border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <div class="text-xl font-bold tracking-tight">MaMa<span class="text-orange-400">Mo</span></div>
+            <div class="h-5 w-px bg-white/10"></div>
+            <span class="text-xs text-slate-500 uppercase tracking-widest">Scenario Study</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="scenario-tag text-xs font-semibold px-3 py-1 rounded-full text-white">GEOPOLITICAL SHOCK</span>
+            <span class="text-xs text-slate-500 mono">v0.2.0</span>
+        </div>
+    </div>
+</header>
+
+<!-- Hero -->
+<section class="max-w-7xl mx-auto px-6 pt-16 pb-12">
+    <div class="flex items-start gap-3 mb-4">
+        <span class="pulse-dot inline-block w-2 h-2 rounded-full bg-red-500 mt-3"></span>
+        <div>
+            <p class="text-xs uppercase tracking-widest text-red-400 mb-2 font-medium">Active Scenario Simulation</p>
+            <h1 class="text-4xl md:text-5xl font-black tracking-tight leading-tight">
+                What happens to Malaysia<br>at <span class="text-orange-400">$200 oil</span>?
+            </h1>
+        </div>
+    </div>
+    <p class="text-lg text-slate-400 max-w-3xl mt-6 leading-relaxed">
+        A full-model simulation of a severe oil price shock triggered by a US/Israel–Iran war escalation and potential ground invasion. Brent crude spikes to $200/bbl in Q2 2026, then gradually declines.
+        Traced through all 17 blocks of the MaMaMo structural model — from Petronas profits to fuel subsidies, from the ringgit to your EPF.
+    </p>
+    <div class="flex flex-wrap gap-3 mt-8">
+        <div class="glass rounded-lg px-4 py-2 text-xs">
+            <span class="text-slate-500">Horizon</span>
+            <span class="text-white ml-2 font-semibold">8 quarters · Q2 2026 → Q1 2028</span>
+        </div>
+        <div class="glass rounded-lg px-4 py-2 text-xs">
+            <span class="text-slate-500">Peak shock</span>
+            <span class="text-orange-400 ml-2 font-semibold">Brent $200/bbl (+144% from baseline)</span>
+        </div>
+        <div class="glass rounded-lg px-4 py-2 text-xs">
+            <span class="text-slate-500">Model</span>
+            <span class="text-white ml-2 font-semibold">MaMaMo v0.2.0 · ~200 equations</span>
+        </div>
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<!-- Scenario Assumptions -->
+<section class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="text-sm uppercase tracking-widest text-slate-500 mb-6 font-semibold">Scenario Assumptions</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="glass rounded-xl p-5">
+            <div class="text-xs text-slate-500 mb-1">Brent Crude Path</div>
+            <div class="text-2xl font-bold text-orange-400">$200</div>
+            <div class="text-xs text-slate-400 mt-1">Peak Q2 2026 → $140 by Q1 2028</div>
+        </div>
+        <div class="glass rounded-xl p-5">
+            <div class="text-xs text-slate-500 mb-1">CPO Price</div>
+            <div class="text-2xl font-bold text-green-400">RM5,800</div>
+            <div class="text-xs text-slate-400 mt-1">+45% from RM4,000 baseline</div>
+        </div>
+        <div class="glass rounded-xl p-5">
+            <div class="text-xs text-slate-500 mb-1">REER Depreciation</div>
+            <div class="text-2xl font-bold text-red-400">−7.8%</div>
+            <div class="text-xs text-slate-400 mt-1">Risk-off, offset by commodity FX</div>
+        </div>
+        <div class="glass rounded-xl p-5">
+            <div class="text-xs text-slate-500 mb-1">BNM OPR Response</div>
+            <div class="text-2xl font-bold text-blue-400">+50bps</div>
+            <div class="text-xs text-slate-400 mt-1">3.00% → 3.50%, then eased to 3.25%</div>
+        </div>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+        <div class="glass rounded-xl p-5">
+            <div class="text-xs text-slate-500 mb-1">Global Semicon Demand</div>
+            <div class="text-2xl font-bold text-red-400">−5%</div>
+            <div class="text-xs text-slate-400 mt-1">Risk-off, slower global growth</div>
+        </div>
+        <div class="glass rounded-xl p-5">
+            <div class="text-xs text-slate-500 mb-1">World Tourism Demand</div>
+            <div class="text-2xl font-bold text-red-400">−10%</div>
+            <div class="text-xs text-slate-400 mt-1">War premium, travel disruption</div>
+        </div>
+        <div class="glass rounded-xl p-5">
+            <div class="text-xs text-slate-500 mb-1">RON95 Administered Price</div>
+            <div class="text-2xl font-bold text-slate-300">RM2.05</div>
+            <div class="text-xs text-slate-400 mt-1">Government holds the line</div>
+        </div>
+        <div class="glass rounded-xl p-5">
+            <div class="text-xs text-slate-500 mb-1">Trigger Event</div>
+            <div class="text-lg font-bold text-red-400 leading-tight mt-1">US/Israel–Iran<br>Escalation</div>
+        </div>
+    </div>
+</section>
+
+<!-- KPI Strip -->
+<section class="max-w-7xl mx-auto px-6 pb-12">
+    <h2 class="text-sm uppercase tracking-widest text-slate-500 mb-6 font-semibold">Headline Impact (Peak Quarter vs Baseline)</h2>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div class="glass-red rounded-xl p-5 text-center">
+            <div class="text-3xl font-black text-red-400">25.5%</div>
+            <div class="text-xs text-slate-400 mt-1">Peak CPI inflation</div>
+            <div class="text-xs text-red-400/60 mono">vs 2.3% baseline</div>
+        </div>
+        <div class="glass-green rounded-xl p-5 text-center">
+            <div class="text-3xl font-black text-green-400">+4.3%</div>
+            <div class="text-xs text-slate-400 mt-1">Fiscal balance / GDP</div>
+            <div class="text-xs text-green-400/60 mono">vs −3.2% baseline</div>
+        </div>
+        <div class="glass-warm rounded-xl p-5 text-center">
+            <div class="text-3xl font-black text-orange-400">2.5%</div>
+            <div class="text-xs text-slate-400 mt-1">GDP growth trough</div>
+            <div class="text-xs text-orange-400/60 mono">vs 4.2% baseline</div>
+        </div>
+        <div class="glass-blue rounded-xl p-5 text-center">
+            <div class="text-3xl font-black text-blue-400">10.6%</div>
+            <div class="text-xs text-slate-400 mt-1">Current account / GDP</div>
+            <div class="text-xs text-blue-400/60 mono">vs 2.1% baseline</div>
+        </div>
+        <div class="glass-red rounded-xl p-5 text-center">
+            <div class="text-3xl font-black text-red-400">RM20.6B</div>
+            <div class="text-xs text-slate-400 mt-1">Cumulative fuel subsidy</div>
+            <div class="text-xs text-red-400/60 mono">over 8 quarters</div>
+        </div>
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<!-- Charts Section -->
+<section class="max-w-7xl mx-auto px-6 py-12">
+
+    <!-- Tab navigation -->
+    <div class="flex gap-6 border-b border-white/5 mb-8 overflow-x-auto" id="chartTabs">
+        <button onclick="showTab('overview')" class="pb-3 text-sm font-medium tab-active whitespace-nowrap" data-tab="overview">Overview</button>
+        <button onclick="showTab('fiscal')" class="pb-3 text-sm font-medium tab-inactive whitespace-nowrap" data-tab="fiscal">Fiscal & Subsidies</button>
+        <button onclick="showTab('trade')" class="pb-3 text-sm font-medium tab-inactive whitespace-nowrap" data-tab="trade">Trade & FX</button>
+        <button onclick="showTab('household')" class="pb-3 text-sm font-medium tab-inactive whitespace-nowrap" data-tab="household">Households</button>
+        <button onclick="showTab('petronas')" class="pb-3 text-sm font-medium tab-inactive whitespace-nowrap" data-tab="petronas">Petronas & Commodities</button>
+    </div>
+
+    <!-- TAB: Overview -->
+    <div id="tab-overview">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">Oil Price Path (USD/bbl)</h3>
+                <div class="chart-container"><canvas id="chartOil"></canvas></div>
+            </div>
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">Real GDP Growth (% y-o-y)</h3>
+                <div class="chart-container"><canvas id="chartGDP"></canvas></div>
+            </div>
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">CPI Inflation (% y-o-y)</h3>
+                <div class="chart-container"><canvas id="chartCPI"></canvas></div>
+            </div>
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">Unemployment Rate (%)</h3>
+                <div class="chart-container"><canvas id="chartUnemp"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: Fiscal -->
+    <div id="tab-fiscal" class="hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">Fiscal Balance (% of GDP)</h3>
+                <div class="chart-container"><canvas id="chartFiscal"></canvas></div>
+            </div>
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">Fuel Subsidy Bill (RM billion / quarter)</h3>
+                <div class="chart-container"><canvas id="chartSubsidy"></canvas></div>
+            </div>
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">Revenue Windfall vs Subsidy Cost (RM bn / qtr)</h3>
+                <div class="chart-container"><canvas id="chartWindfall"></canvas></div>
+            </div>
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">Government Debt (% of GDP)</h3>
+                <div class="chart-container"><canvas id="chartDebt"></canvas></div>
+            </div>
+        </div>
+        <!-- Subsidy calculation explainer -->
+        <div class="glass-red rounded-xl p-6 mt-6">
+            <h3 class="text-sm font-semibold text-red-400 mb-3">Fuel Subsidy Calculation at Peak ($200 Brent)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-sm">
+                <div>
+                    <div class="text-slate-500 text-xs">Market price RON95</div>
+                    <div class="text-xl font-bold text-white mono mt-1">RM3.46/L</div>
+                    <div class="text-xs text-slate-500 mt-1">$200 × 0.85 crack × 3.785L/gal ÷ 42gal/bbl + refining margin, at 4.70 MYR/USD</div>
+                </div>
+                <div>
+                    <div class="text-slate-500 text-xs">Administered price</div>
+                    <div class="text-xl font-bold text-green-400 mono mt-1">RM2.05/L</div>
+                    <div class="text-xs text-slate-500 mt-1">Government holds the ceiling</div>
+                </div>
+                <div>
+                    <div class="text-slate-500 text-xs">Subsidy per litre</div>
+                    <div class="text-xl font-bold text-red-400 mono mt-1">RM1.41/L</div>
+                    <div class="text-xs text-slate-500 mt-1">Gap borne by federal budget</div>
+                </div>
+                <div>
+                    <div class="text-slate-500 text-xs">Quarterly cost</div>
+                    <div class="text-xl font-bold text-red-400 mono mt-1">RM4.9 bn</div>
+                    <div class="text-xs text-slate-500 mt-1">× 3.5 bn litres/quarter (RON95 + diesel)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: Trade & FX -->
+    <div id="tab-trade" class="hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">Current Account Balance (% of GDP)</h3>
+                <div class="chart-container"><canvas id="chartCA"></canvas></div>
+            </div>
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">USD/MYR Exchange Rate</h3>
+                <div class="chart-container"><canvas id="chartFX"></canvas></div>
+            </div>
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">Interest Rates (%)</h3>
+                <div class="chart-container"><canvas id="chartRates"></canvas></div>
+            </div>
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">REER Index (Baseline = 103.2)</h3>
+                <div class="chart-container"><canvas id="chartREER"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: Households -->
+    <div id="tab-household" class="hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">Private Consumption Growth (% y-o-y)</h3>
+                <div class="chart-container"><canvas id="chartCons"></canvas></div>
+            </div>
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">Household Debt (% of GDP)</h3>
+                <div class="chart-container"><canvas id="chartHHDebt"></canvas></div>
+            </div>
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">Real Wage Growth vs Inflation (%)</h3>
+                <div class="chart-container"><canvas id="chartWage"></canvas></div>
+            </div>
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">Mortgage Rate (%)</h3>
+                <div class="chart-container"><canvas id="chartMort"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: Petronas & Commodities -->
+    <div id="tab-petronas" class="hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">Petronas Quarterly Profits (RM billion)</h3>
+                <div class="chart-container"><canvas id="chartPetronas"></canvas></div>
+            </div>
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">PITA Revenue + Petronas Dividend (RM bn / qtr)</h3>
+                <div class="chart-container"><canvas id="chartPITA"></canvas></div>
+            </div>
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">Brent Oil vs CPO Price</h3>
+                <div class="chart-container"><canvas id="chartCommodities"></canvas></div>
+            </div>
+            <div class="glass rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-slate-300 mb-4">E&E Export Growth (% y-o-y)</h3>
+                <div class="chart-container"><canvas id="chartEE"></canvas></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<!-- Full Data Table -->
+<section class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="text-sm uppercase tracking-widest text-slate-500 mb-6 font-semibold">Complete Quarterly Projections</h2>
+    <div class="glass rounded-xl overflow-x-auto">
+        <table class="w-full text-xs mono">
+            <thead>
+                <tr class="border-b border-white/5">
+                    <th class="text-left px-4 py-3 text-slate-500 font-medium sticky left-0 bg-[#0d0d14]">Variable</th>
+                    <th class="text-right px-3 py-3 text-slate-600 font-medium">Baseline</th>
+                    <th class="text-right px-3 py-3 text-orange-400/70 font-medium">Q2 26</th>
+                    <th class="text-right px-3 py-3 text-slate-400 font-medium">Q3 26</th>
+                    <th class="text-right px-3 py-3 text-slate-400 font-medium">Q4 26</th>
+                    <th class="text-right px-3 py-3 text-slate-400 font-medium">Q1 27</th>
+                    <th class="text-right px-3 py-3 text-slate-400 font-medium">Q2 27</th>
+                    <th class="text-right px-3 py-3 text-slate-400 font-medium">Q3 27</th>
+                    <th class="text-right px-3 py-3 text-slate-400 font-medium">Q4 27</th>
+                    <th class="text-right px-3 py-3 text-slate-400 font-medium">Q1 28</th>
+                </tr>
+            </thead>
+            <tbody id="dataTable"></tbody>
+        </table>
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<!-- Narrative -->
+<section class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="text-sm uppercase tracking-widest text-slate-500 mb-6 font-semibold">Key Takeaways</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="glass-green rounded-xl p-6">
+            <h3 class="text-green-400 font-bold mb-3">The good news</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">Malaysia is one of the few Asian economies that <em>benefits</em> fiscally from an oil shock. Petronas profits surge to RM67 billion in the peak quarter. PITA revenue alone covers the fuel subsidy bill roughly 5× over. The current account swings to a massive 10.6% of GDP surplus — Malaysia becomes a cash machine. Government debt ratio actually <em>falls</em> from 64% to ~59% of GDP as the fiscal balance flips to surplus. GDP growth slows but doesn't collapse — a 2.5% trough is uncomfortable, not catastrophic.</p>
+        </div>
+        <div class="glass-red rounded-xl p-6">
+            <h3 class="text-red-400 font-bold mb-3">The bad news</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">Ordinary Malaysians get crushed. Even with fuel price ceilings held at RM2.05, CPI spikes to 25% through food prices (cooking oil, transport-linked goods), imported inflation via the weaker ringgit, and second-round wage effects. Real wages collapse by ~24% in the peak quarter. Consumption craters. Household debt-to-GDP rises to 89% as incomes shrink while loan stocks remain fixed. The E&E sector (38% of exports) takes a hit from weaker global demand. And if the government eventually has to pass through even <em>partial</em> fuel price increases, inflation gets worse.</p>
+        </div>
+        <div class="glass-warm rounded-xl p-6">
+            <h3 class="text-orange-400 font-bold mb-3">The fiscal trap</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">This scenario exposes Malaysia's fundamental fiscal dilemma. Petronas windfall revenue is <em>temporary</em> and tied to a depleting resource (oil production ~575k bpd, declining). Fuel subsidies are politically <em>permanent</em> — no government has survived removing them. The RM20.6 billion cumulative subsidy bill is manageable <em>only</em> because Petronas covers it many times over. But if the windfall funds new recurring spending (civil service bonuses, expanded cash transfers), the structural deficit reasserts viciously once oil prices normalise. The golden rule: windfall goes to debt reduction and the Kumpulan Wang Amanah, not the operating budget.</p>
+        </div>
+        <div class="glass-blue rounded-xl p-6">
+            <h3 class="text-blue-400 font-bold mb-3">What BNM does</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">BNM faces a classic impossible trinity moment. Inflation screams for rate hikes, but the economy is slowing and households are leveraged at 84%+ of GDP. The model assumes a restrained 50bps hike (OPR 3.0% → 3.5%) — enough to signal credibility without breaking the mortgage market. MGS10 rises to ~4.5% as foreign investors demand a war premium. The ringgit weakens 7-8% on REER but BNM deploys reserves to prevent a rout. If the war extends beyond 4 quarters, reserves (~USD115bn) start looking thinner and a larger depreciation becomes unavoidable.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="max-w-7xl mx-auto px-6 py-8 border-t border-white/5 flex items-center justify-between text-xs text-slate-600">
+    <div>MaMaMo · Scenario Study · <span class="mono">oil-200-iran-war</span></div>
+    <div>By Shahid Rogers · March 2026 · Not financial advice</div>
+</footer>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const labels = ['Baseline','Q2 26','Q3 26','Q4 26','Q1 27','Q2 27','Q3 27','Q4 27','Q1 28'];
+const D = {
+    brent:       [82, 200, 180, 160, 150, 145, 142, 140, 140],
+    cpo:         [4000, 5800, 5600, 5200, 5000, 4800, 4600, 4500, 4400],
+    gdp:         [4.2, 3.4, 2.8, 2.5, 3.2, 3.6, 3.6, 3.9, 3.9],
+    cpi:         [2.3, 25.5, 22.5, 20.3, 18.5, 17.7, 17.3, 17.0, 17.2],
+    unemp:       [3.40, 3.31, 3.24, 3.21, 3.29, 3.33, 3.33, 3.37, 3.37],
+    fiscal:      [-3.2, 4.3, 3.5, 2.8, 2.3, 1.8, 1.3, 0.9, 0.4],
+    ca:          [2.1, 10.6, 9.5, 8.6, 8.0, 7.5, 7.2, 6.9, 6.6],
+    usdmyr:      [4.35, 4.70, 4.75, 4.79, 4.72, 4.65, 4.58, 4.51, 4.44],
+    opr:         [3.00, 3.25, 3.50, 3.50, 3.50, 3.50, 3.25, 3.25, 3.25],
+    blr:         [5.25, 5.50, 5.75, 5.75, 5.75, 5.75, 5.50, 5.50, 5.50],
+    mgs10:       [3.80, 4.20, 4.40, 4.50, 4.50, 4.45, 4.35, 4.25, 4.15],
+    reer:        [103.2, 99.6, 97.2, 95.8, 95.1, 95.5, 96.2, 97.0, 97.8],
+    subsidy:     [3.5, 4.9, 3.7, 2.5, 2.0, 1.9, 1.8, 1.8, 2.0],
+    petProfit:   [27.5, 67.1, 60.4, 53.7, 50.4, 48.7, 47.7, 47.0, 47.0],
+    pita:        [10.5, 25.5, 23.0, 20.4, 19.2, 18.5, 18.1, 17.9, 17.9],
+    petDiv:      [8.0, 12.0, 11.0, 10.0, 9.5, 9.2, 9.0, 9.0, 8.8],
+    cons:        [5.0, -14.8, -12.2, -10.5, -8.0, -5.2, -2.8, -0.5, 1.2],
+    hhdebt:      [84.2, 85.8, 86.9, 87.8, 88.2, 88.6, 88.4, 88.1, 87.6],
+    realWage:    [1.8, -24.0, -21.0, -18.8, -17.0, -16.2, -15.8, -15.5, -15.4],
+    nomWage:     [4.1, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.8],
+    mort:        [4.75, 5.00, 5.25, 5.25, 5.25, 5.25, 5.00, 5.00, 5.00],
+    debt:        [64.0, 61.5, 60.8, 60.2, 59.8, 59.5, 59.3, 59.2, 59.1],
+    ee:          [6.5, -2.5, -4.0, -5.0, -3.5, -1.5, 0.5, 2.0, 3.0],
+    revWindfall: [0, 19.0, 15.5, 12.9, 11.2, 10.2, 9.6, 9.4, 9.2],
+};
+
+// ============================================================
+// CHART DEFAULTS
+// ============================================================
+Chart.defaults.color = '#64748b';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.04)';
+Chart.defaults.font.family = 'Inter';
+Chart.defaults.font.size = 11;
+Chart.defaults.plugins.legend.labels.boxWidth = 10;
+Chart.defaults.plugins.legend.labels.padding = 16;
+Chart.defaults.elements.point.radius = 3;
+Chart.defaults.elements.point.hoverRadius = 5;
+Chart.defaults.elements.line.tension = 0.35;
+Chart.defaults.elements.line.borderWidth = 2;
+
+const shockAnnotation = {
+    type: 'box', xMin: 0.5, xMax: 1.5, backgroundColor: 'rgba(239,68,68,0.06)',
+    borderColor: 'rgba(239,68,68,0.15)', borderWidth: 1, label: { display: true, content: 'SHOCK', color: '#ef4444', font: { size: 9 }, position: 'start' }
+};
+
+function mkLine(ctx, datasets, yTitle, annotations = [shockAnnotation]) {
+    return new Chart(ctx, {
+        type: 'line',
+        data: { labels, datasets },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { annotation: { annotations }, legend: { position: 'bottom' } },
+            scales: { y: { title: { display: true, text: yTitle, color: '#475569', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.03)' } }, x: { grid: { display: false } } }
+        }
+    });
+}
+function mkBar(ctx, datasets, yTitle) {
+    return new Chart(ctx, {
+        type: 'bar',
+        data: { labels, datasets },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { annotation: { annotations: [shockAnnotation] }, legend: { position: 'bottom' } },
+            scales: { y: { title: { display: true, text: yTitle, color: '#475569', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.03)' } }, x: { grid: { display: false } } }
+        }
+    });
+}
+
+// ============================================================
+// OVERVIEW CHARTS
+// ============================================================
+mkLine(document.getElementById('chartOil'), [
+    { label: 'Brent (USD/bbl)', data: D.brent, borderColor: '#fb923c', backgroundColor: 'rgba(251,146,60,0.1)', fill: true },
+], 'USD/bbl');
+
+mkLine(document.getElementById('chartGDP'), [
+    { label: 'Scenario', data: D.gdp, borderColor: '#38bdf8', backgroundColor: 'rgba(56,189,248,0.1)', fill: true },
+    { label: 'Baseline', data: Array(9).fill(4.2), borderColor: '#334155', borderDash: [5,5] },
+], '% y-o-y');
+
+mkLine(document.getElementById('chartCPI'), [
+    { label: 'CPI Inflation', data: D.cpi, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.1)', fill: true },
+    { label: 'Baseline', data: Array(9).fill(2.3), borderColor: '#334155', borderDash: [5,5] },
+], '% y-o-y');
+
+mkLine(document.getElementById('chartUnemp'), [
+    { label: 'Unemployment', data: D.unemp, borderColor: '#a78bfa', backgroundColor: 'rgba(167,139,250,0.1)', fill: true },
+    { label: 'Baseline', data: Array(9).fill(3.4), borderColor: '#334155', borderDash: [5,5] },
+], '%');
+
+// ============================================================
+// FISCAL CHARTS
+// ============================================================
+mkLine(document.getElementById('chartFiscal'), [
+    { label: 'Scenario', data: D.fiscal, borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.1)', fill: true },
+    { label: 'Baseline', data: Array(9).fill(-3.2), borderColor: '#334155', borderDash: [5,5] },
+], '% of GDP');
+
+mkBar(document.getElementById('chartSubsidy'), [
+    { label: 'Fuel Subsidy', data: D.subsidy, backgroundColor: D.subsidy.map((v,i) => i===0 ? 'rgba(100,116,139,0.4)' : 'rgba(239,68,68,0.5)'), borderColor: D.subsidy.map((v,i) => i===0 ? '#64748b' : '#ef4444'), borderWidth: 1 },
+], 'RM billion');
+
+mkBar(document.getElementById('chartWindfall'), [
+    { label: 'Revenue Windfall (PITA + Div)', data: D.revWindfall, backgroundColor: 'rgba(34,197,94,0.5)', borderColor: '#22c55e', borderWidth: 1 },
+    { label: 'Fuel Subsidy Cost', data: D.subsidy.map((v,i) => i===0 ? 0 : v - D.subsidy[0]), backgroundColor: 'rgba(239,68,68,0.5)', borderColor: '#ef4444', borderWidth: 1 },
+], 'RM billion');
+
+mkLine(document.getElementById('chartDebt'), [
+    { label: 'Scenario', data: D.debt, borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.1)', fill: true },
+    { label: 'Baseline', data: Array(9).fill(64.0), borderColor: '#334155', borderDash: [5,5] },
+    { label: '65% Ceiling', data: Array(9).fill(65.0), borderColor: '#ef4444', borderDash: [3,3], borderWidth: 1 },
+], '% of GDP');
+
+// ============================================================
+// TRADE & FX CHARTS
+// ============================================================
+mkLine(document.getElementById('chartCA'), [
+    { label: 'Current Account', data: D.ca, borderColor: '#38bdf8', backgroundColor: 'rgba(56,189,248,0.1)', fill: true },
+    { label: 'Baseline', data: Array(9).fill(2.1), borderColor: '#334155', borderDash: [5,5] },
+], '% of GDP');
+
+mkLine(document.getElementById('chartFX'), [
+    { label: 'USD/MYR', data: D.usdmyr, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true },
+], 'MYR per USD');
+
+mkLine(document.getElementById('chartRates'), [
+    { label: 'OPR', data: D.opr, borderColor: '#3b82f6' },
+    { label: 'BLR', data: D.blr, borderColor: '#8b5cf6' },
+    { label: 'MGS 10Y', data: D.mgs10, borderColor: '#06b6d4' },
+], '%');
+
+mkLine(document.getElementById('chartREER'), [
+    { label: 'REER Index', data: D.reer, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true },
+], 'Index');
+
+// ============================================================
+// HOUSEHOLD CHARTS
+// ============================================================
+mkLine(document.getElementById('chartCons'), [
+    { label: 'Private Consumption', data: D.cons, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.1)', fill: true },
+    { label: 'Baseline', data: Array(9).fill(5.0), borderColor: '#334155', borderDash: [5,5] },
+], '% y-o-y');
+
+mkLine(document.getElementById('chartHHDebt'), [
+    { label: 'HH Debt / GDP', data: D.hhdebt, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true },
+], '% of GDP');
+
+mkLine(document.getElementById('chartWage'), [
+    { label: 'Real Wage Growth', data: D.realWage, borderColor: '#ef4444' },
+    { label: 'Nominal Wage Growth', data: D.nomWage, borderColor: '#22c55e' },
+    { label: 'CPI Inflation', data: D.cpi, borderColor: '#fb923c', borderDash: [4,4] },
+], '%');
+
+mkLine(document.getElementById('chartMort'), [
+    { label: 'Mortgage Rate', data: D.mort, borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.1)', fill: true },
+    { label: 'Baseline', data: Array(9).fill(4.75), borderColor: '#334155', borderDash: [5,5] },
+], '%');
+
+// ============================================================
+// PETRONAS CHARTS
+// ============================================================
+mkBar(document.getElementById('chartPetronas'), [
+    { label: 'Petronas Profits', data: D.petProfit, backgroundColor: D.petProfit.map((v,i) => i===0 ? 'rgba(100,116,139,0.4)' : 'rgba(251,146,60,0.5)'), borderColor: D.petProfit.map((v,i) => i===0 ? '#64748b' : '#fb923c'), borderWidth: 1 },
+], 'RM billion');
+
+mkBar(document.getElementById('chartPITA'), [
+    { label: 'PITA (38%)', data: D.pita, backgroundColor: 'rgba(251,146,60,0.5)', borderColor: '#fb923c', borderWidth: 1 },
+    { label: 'Petronas Dividend', data: D.petDiv, backgroundColor: 'rgba(34,197,94,0.5)', borderColor: '#22c55e', borderWidth: 1 },
+], 'RM billion');
+
+new Chart(document.getElementById('chartCommodities'), {
+    type: 'line',
+    data: {
+        labels,
+        datasets: [
+            { label: 'Brent (USD/bbl)', data: D.brent, borderColor: '#fb923c', yAxisID: 'y' },
+            { label: 'CPO (RM/tonne)', data: D.cpo, borderColor: '#22c55e', yAxisID: 'y1' },
+        ]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { annotation: { annotations: [shockAnnotation] }, legend: { position: 'bottom' } },
+        scales: {
+            y: { position: 'left', title: { display: true, text: 'Brent USD/bbl', color: '#fb923c', font: {size:10} }, grid: { color: 'rgba(255,255,255,0.03)' } },
+            y1: { position: 'right', title: { display: true, text: 'CPO RM/tonne', color: '#22c55e', font: {size:10} }, grid: { display: false } },
+            x: { grid: { display: false } }
+        }
+    }
+});
+
+mkLine(document.getElementById('chartEE'), [
+    { label: 'E&E Exports', data: D.ee, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: true },
+    { label: 'Baseline', data: Array(9).fill(6.5), borderColor: '#334155', borderDash: [5,5] },
+], '% y-o-y');
+
+// ============================================================
+// DATA TABLE
+// ============================================================
+const rows = [
+    { name: 'Brent Oil', unit: 'USD/bbl', data: D.brent, fmt: v => v.toFixed(0) },
+    { name: 'CPO Price', unit: 'RM/tonne', data: D.cpo, fmt: v => v.toLocaleString() },
+    { name: 'USD/MYR', unit: '', data: D.usdmyr, fmt: v => v.toFixed(2) },
+    { name: 'REER Index', unit: '', data: D.reer, fmt: v => v.toFixed(1) },
+    { sep: true, name: 'REAL SECTOR' },
+    { name: 'Real GDP Growth', unit: '% y-o-y', data: D.gdp, fmt: v => v.toFixed(1) },
+    { name: 'CPI Inflation', unit: '% y-o-y', data: D.cpi, fmt: v => v.toFixed(1), warn: v => v > 5 },
+    { name: 'Unemployment', unit: '%', data: D.unemp, fmt: v => v.toFixed(2) },
+    { name: 'Consumption Growth', unit: '% y-o-y', data: D.cons, fmt: v => v.toFixed(1), warn: v => v < 0 },
+    { name: 'E&E Export Growth', unit: '% y-o-y', data: D.ee, fmt: v => v.toFixed(1) },
+    { sep: true, name: 'MONETARY' },
+    { name: 'OPR', unit: '%', data: D.opr, fmt: v => v.toFixed(2) },
+    { name: 'BLR', unit: '%', data: D.blr, fmt: v => v.toFixed(2) },
+    { name: 'MGS 10Y', unit: '%', data: D.mgs10, fmt: v => v.toFixed(2) },
+    { name: 'Mortgage Rate', unit: '%', data: D.mort, fmt: v => v.toFixed(2) },
+    { sep: true, name: 'FISCAL' },
+    { name: 'Fiscal Balance', unit: '% GDP', data: D.fiscal, fmt: v => v.toFixed(1), good: v => v > 0 },
+    { name: 'Gov Debt', unit: '% GDP', data: D.debt, fmt: v => v.toFixed(1) },
+    { name: 'Fuel Subsidy', unit: 'RM bn', data: D.subsidy, fmt: v => v.toFixed(1), warn: v => v > 4 },
+    { name: 'Revenue Windfall', unit: 'RM bn', data: D.revWindfall, fmt: v => v.toFixed(1) },
+    { sep: true, name: 'PETRONAS' },
+    { name: 'Quarterly Profit', unit: 'RM bn', data: D.petProfit, fmt: v => v.toFixed(1) },
+    { name: 'PITA Revenue', unit: 'RM bn', data: D.pita, fmt: v => v.toFixed(1) },
+    { name: 'Dividend to Govt', unit: 'RM bn', data: D.petDiv, fmt: v => v.toFixed(1) },
+    { sep: true, name: 'HOUSEHOLDS' },
+    { name: 'Real Wage Growth', unit: '%', data: D.realWage, fmt: v => v.toFixed(1), warn: v => v < 0 },
+    { name: 'HH Debt / GDP', unit: '%', data: D.hhdebt, fmt: v => v.toFixed(1), warn: v => v > 87 },
+    { sep: true, name: 'BALANCE OF PAYMENTS' },
+    { name: 'Current Account', unit: '% GDP', data: D.ca, fmt: v => v.toFixed(1) },
+];
+
+const tbody = document.getElementById('dataTable');
+rows.forEach(r => {
+    if (r.sep) {
+        tbody.innerHTML += `<tr class="border-t border-white/5"><td colspan="10" class="px-4 py-2 text-[10px] tracking-widest text-slate-600 font-semibold sticky left-0 bg-[#0d0d14]">${r.name}</td></tr>`;
+        return;
+    }
+    let html = `<tr class="border-t border-white/5 hover:bg-white/[0.02]">`;
+    html += `<td class="px-4 py-2 text-slate-400 sticky left-0 bg-[#0d0d14]">${r.name} <span class="text-slate-600">${r.unit}</span></td>`;
+    r.data.forEach((v, i) => {
+        let cls = 'text-slate-300';
+        if (i === 0) cls = 'text-slate-500';
+        else if (r.warn && r.warn(v)) cls = 'text-red-400';
+        else if (r.good && r.good(v)) cls = 'text-green-400';
+        html += `<td class="text-right px-3 py-2 ${cls}">${r.fmt(v)}</td>`;
+    });
+    html += `</tr>`;
+    tbody.innerHTML += html;
+});
+
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+function showTab(name) {
+    document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.add('hidden'));
+    document.getElementById('tab-' + name).classList.remove('hidden');
+    document.querySelectorAll('#chartTabs button').forEach(btn => {
+        btn.classList.remove('tab-active');
+        btn.classList.add('tab-inactive');
+    });
+    document.querySelector(`#chartTabs button[data-tab="${name}"]`).classList.remove('tab-inactive');
+    document.querySelector(`#chartTabs button[data-tab="${name}"]`).classList.add('tab-active');
+}
+</script>
+</body>
+</html>

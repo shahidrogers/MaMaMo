@@ -6,6 +6,22 @@
 
 ---
 
+## Index
+
+1. [What is this?](#what-is-this)
+2. [What's inside](#whats-inside)
+3. [What makes it Malaysian](#what-makes-it-malaysian)
+4. [Key assumptions](#key-assumptions)
+5. [Use cases](#use-cases)
+6. [What's next](#whats-next-contributions-welcome)
+7. [Files](#files)
+8. [Studies](#studies)
+9. [Changelog](#changelog)
+10. [License](#license)
+11. [References](#references)
+
+---
+
 ## What is this?
 
 MaMaMo (Malaysia Macro Model) is a structural quarterly macroeconomic model for the Malaysian economy. It takes the battle-tested architecture of the UK OBR/HM Treasury model and rebuilds it — every block, every coefficient, every institutional detail — for Malaysia.
@@ -95,6 +111,12 @@ malaysia_macroeconomic_model_code.md    # The model (~200 equations, EViews synt
 macroeconomic_model_code.md             # Original UK OBR model (reference)
 README.md                               # You are here
 ```
+
+## Studies
+
+| Scenario | What it models | Link |
+|----------|---------------|------|
+| **$200 Oil — Iran War** | Brent spikes to $200/bbl on a US–Iran ground war. Traces fiscal, trade, household, and Petronas impacts over 8 quarters. | [View simulation →](studies/simulations/oil-200-iran-war/index.html) |
 
 ---
 

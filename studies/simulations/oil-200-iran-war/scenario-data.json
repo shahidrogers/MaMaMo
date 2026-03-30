@@ -386,7 +386,7 @@
     "policy_imperative": "Fuel subsidy reform essential but politically difficult. Government must use Petronas windfall for one-time transfers and debt reduction, not recurring spending expansion. OPR hike to 3.50% correct to anchor expectations."
   },
   "model_sources": {
-    "core_model": "/sessions/keen-great-maxwell/mnt/stagflation/malaysia_macroeconomic_model_code.md",
+    "core_model": "model/malaysia-quarterly-model.md",
     "calibration": "BNM working papers, DOSM national accounts, IMF Article IV, Petronas annual reports",
     "parameters": {
       "okun_coefficient": 0.45,

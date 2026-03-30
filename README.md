@@ -1,8 +1,8 @@
 # MaMaMo
 
-**Malaysia's open-source macroeconomic model — ~200 equations, zero gatekeeping.**
+**An open structural quarterly macro model prototype for Malaysia.**
 
-`v0.2.0` · A curiosity project by [Shahid Rogers](mailto:shahidrogers+mamamo@gmail.com), built with [Claude](https://claude.ai)
+`v0.3.0` · A curiosity project by [Shahid Rogers](mailto:shahidrogers+mamamo@gmail.com), built with [Claude](https://claude.ai)
 
 ---
 
@@ -24,17 +24,24 @@
 
 ## What is this?
 
-MaMaMo (Malaysia Macro Model) is a structural quarterly macroeconomic model for the Malaysian economy. It takes the battle-tested architecture of the UK OBR/HM Treasury model and rebuilds it — every block, every coefficient, every institutional detail — for Malaysia.
+MaMaMo (Malaysia Macro Model) is a structural quarterly macroeconomic model prototype for the Malaysian economy. It adapts the broad architecture of the UK OBR/HM Treasury model and re-specifies its major blocks for Malaysian institutions, trade structure, and policy settings.
 
-The idea is simple: Malaysia deserves a transparent, publicly available macro model. BNM and MOF have their own, but those are proprietary. Academic models tend to be partial. MaMaMo aims to be the thing you can actually open, read, run, break, fix, and learn from.
+The idea is simple: Malaysia deserves a transparent, publicly inspectable macro model. BNM and MOF have their own, but those are proprietary. Academic models tend to be partial. MaMaMo aims to be something you can open, read, inspect, critique, extend, and learn from.
 
-This is a curiosity project — built by [Shahid Rogers](mailto:shahidrogers+mamamo@gmail.com) with [Claude](https://claude.ai) to see what happens when you point an LLM at 200 equations and a country's economy. It's not finished. It might never be. But it's a start.
+This is a curiosity project — built by [Shahid Rogers](mailto:shahidrogers+mamamo@gmail.com) with [Claude](https://claude.ai) to see what happens when you point an LLM at a government-style macro framework and a country's economy. It is not a validated production forecasting system. It is a documented research build with enough structure to support serious iteration.
+
+If you are new to the repo, start here:
+
+- [Research Prototype Summary](docs/research-prototype-summary.md)
+- [Model Architecture Diagram](docs/model-architecture.md)
+- [How To Interpret This Model](docs/how-to-interpret-this-model.md)
+- [Model Standalone Readiness Audit](docs/model_standalone_readiness_audit.md)
 
 ---
 
 ## What's inside
 
-~200 equations across 17 blocks, written in EViews-compatible syntax:
+~200 equations, identities, and calibration rules across 17 blocks, written in EViews-compatible syntax:
 
 | Block | What it covers |
 |-------|---------------|
@@ -55,7 +62,7 @@ This is a curiosity project — built by [Shahid Rogers](mailto:shahidrogers+mam
 
 ## What makes it Malaysian
 
-This isn't a UK model with the labels swapped. Key Malaysia-specific features:
+This is not just the UK model with labels swapped. Key Malaysia-specific features:
 
 - **Administered prices** — RON95, diesel, electricity tariffs treated separately from market-driven CPI
 - **Petronas** — upstream profits, PITA (38%), and dividends (~20% of federal revenue) flow through to the fiscal block
@@ -75,15 +82,49 @@ Crisis dummies for: 1997–98 AFC, 2008–09 GFC, 2013 minimum wage, 2015 oil cr
 
 **Structural:** Error-correction (ECM) framework — long-run equilibrium with short-run adjustment dynamics. Small open economy — Malaysia is a price-taker in commodity and capital markets. Managed float exchange rate — REER exogenous, NEER determined by relative prices.
 
-**Coefficients:** Calibrated from BNM working papers, IMF Article IV reports, DOSM Input-Output tables, and published Malaysian macro studies. Not estimated from raw data — treat as informed starting points that need proper econometric validation.
+**Coefficients:** Calibrated from BNM working papers, IMF Article IV reports, DOSM Input-Output tables, and published Malaysian macro studies. They are not yet fully estimated from raw data in a reproducible econometric pipeline, so treat them as informed starting points rather than validated structural parameters.
 
 **Policy variables (exogenous):** OPR, administered fuel price, SST rate, CPO export duty rate, development expenditure growth.
+
+**Operational status:** The model file is documented and internally coherent, but several important drivers and wedges are still external inputs or preprocessing products. That makes this a publishable research prototype, not yet a one-command forecasting system.
 
 ---
 
 ## Use cases
 
-Fiscal forecasting under different oil/CPO price paths. OPR transmission analysis. Subsidy rationalisation scenarios. Minimum wage impact assessment. Stress testing macro scenarios. Teaching structural macro modelling. Or just poking around to see how Malaysia's economy hangs together.
+Fiscal scenario analysis under different oil/CPO paths. OPR transmission analysis. Subsidy rationalisation scenarios. Minimum wage impact assessment. Stress testing macro scenarios. Teaching structural macro modelling. Or just poking around to see how Malaysia's economy hangs together.
+
+Not for:
+
+- official forecasting
+- policy sign-off
+- investment advice
+- point-estimate precision claims without separate validation
+
+Use the model as a transparent scenario and learning framework unless and until the coefficients, preprocessing, and back-testing are upgraded.
+
+---
+
+## Current status
+
+This is the shortest honest description of the project today:
+
+| Area | Status |
+|------|--------|
+| **Structure** | Strong — 17-block Malaysia-specific model architecture is in place |
+| **Documentation** | Strong — model file, glossary, and input docs are explicit |
+| **Calibration** | Provisional — many coefficients are informed calibrations, not final estimates |
+| **Data pipeline** | Partial — input contract exists, preprocessing builder is still needed |
+| **Scenario readiness** | Usable — especially for structured what-if exercises |
+| **Production readiness** | Not yet — too many important wedges remain external or loosely governed |
+
+For a fuller operational view, see:
+
+- [Research Prototype Summary](docs/research-prototype-summary.md)
+- [How To Interpret This Model](docs/how-to-interpret-this-model.md)
+- [Model Architecture Diagram](docs/model-architecture.md)
+- [Model Input Spec](docs/model_input_spec.md)
+- [Model Operationalization Checklist](docs/model_operationalization_checklist.md)
 
 ---
 
@@ -102,7 +143,7 @@ The biggest wins, roughly in priority order:
 9. **Forward-looking expectations** — rational expectations for inflation and exchange rates
 10. **Digital economy** — capture the ~23% of GDP that's now digital
 
-In practice, [model/malaysia-quarterly-model.md](/Users/shahidrogers/Desktop/stagflation/model/malaysia-quarterly-model.md) is now documented well enough to support a governed input pipeline. What it still lacks for true production quality is a preprocessing builder plus better treatment of the big external wedges, especially `CREDIT`, `MCCI`, `GOVDEBTADJ`, and `HARAREA`.
+In practice, [model/malaysia-quarterly-model.md](model/malaysia-quarterly-model.md) is now documented well enough to support a governed input pipeline. What it still lacks for true production quality is a preprocessing builder plus better treatment of the big external wedges, especially `CREDIT`, `MCCI`, `GOVDEBTADJ`, and `HARAREA`.
 
 The next highest-value step is to build that preprocessing layer and satellite-rule set so the model can be run from raw source data instead of hand-assembled quarterly inputs.
 
@@ -115,6 +156,10 @@ model/
   malaysia-quarterly-model.md          # The model (~200 equations, EViews syntax)
   reference/
     uk-obr-reference.md               # Original UK OBR model (reference)
+docs/
+  research-prototype-summary.md       # One-page project summary
+  model-architecture.md               # Clean architecture diagram
+  how-to-interpret-this-model.md      # Reading guide and limitations
 studies/
   simulations/
     oil-200-iran-war/
@@ -137,6 +182,8 @@ README.md                              # You are here
 ---
 
 ## Changelog
+
+**v0.3.0** — Documentation and presentation pass. Repositioned the project as a publishable research prototype, added a one-page summary, architecture diagram, interpretation note, and updated the landing page with inline document modals and clearer visitor-facing status.
 
 **v0.2.0** — Audit pass. Fixed 3 critical undefined variables (PDINV, TYCADJ, PXEE), added 2008–09 GFC dummies, corrected E&E import content (0.65 → 0.52), defined ~20 previously missing variables, made administered price weight time-varying for GST/SST.
 

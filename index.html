@@ -3,28 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MaMaMo | Open-Source Malaysia Macroeconomic Model</title>
-    <meta name="description" content="MaMaMo is an open-source quarterly macroeconomic model for Malaysia with about 200 equations, scenario studies, and public documentation for researchers, students, and policy-curious builders.">
+    <title>MaMaMo | Malaysia Structural Macro Model Prototype</title>
+    <meta name="description" content="MaMaMo is a structural quarterly macro model prototype for Malaysia with roughly 200 equations, public scenario studies, and transparent documentation for research and scenario analysis.">
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
     <meta name="author" content="Shahid Rogers">
     <meta name="theme-color" content="#05070a">
     <link rel="canonical" href="https://shahidrogers.github.io/MaMaMo/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="MaMaMo">
-    <meta property="og:title" content="MaMaMo | Open-Source Malaysia Macroeconomic Model">
-    <meta property="og:description" content="An open-source quarterly macroeconomic model for Malaysia with roughly 200 equations, public scenario studies, and transparent model structure.">
+    <meta property="og:title" content="MaMaMo | Malaysia Structural Macro Model Prototype">
+    <meta property="og:description" content="A structural quarterly macro model prototype for Malaysia with public scenario studies and transparent model structure.">
     <meta property="og:url" content="https://shahidrogers.github.io/MaMaMo/">
     <meta property="og:locale" content="en_MY">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="MaMaMo | Open-Source Malaysia Macroeconomic Model">
-    <meta name="twitter:description" content="Open-source Malaysia macro model with public scenarios, documentation, and a transparent structural framework.">
+    <meta name="twitter:title" content="MaMaMo | Malaysia Structural Macro Model Prototype">
+    <meta name="twitter:description" content="Malaysia structural macro model prototype with public scenarios, documentation, and a transparent research framework.">
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+        window.mermaid = mermaid;
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'base',
+            themeVariables: {
+                background: '#0b0f14',
+                primaryColor: '#131a22',
+                primaryTextColor: '#d8dee8',
+                primaryBorderColor: 'rgba(240,138,56,0.35)',
+                lineColor: '#7f8b99',
+                secondaryColor: '#111821',
+                tertiaryColor: '#0f151d',
+                clusterBkg: '#0f151d',
+                clusterBorder: 'rgba(110,164,255,0.25)'
+            },
+            flowchart: {
+                curve: 'basis'
+            }
+        });
+    </script>
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
             "@type": "WebSite",
             "name": "MaMaMo",
             "url": "https://shahidrogers.github.io/MaMaMo/",
-            "description": "Open-source quarterly macroeconomic model for Malaysia with public scenario studies and transparent documentation.",
+            "description": "Structural quarterly macro model prototype for Malaysia with public scenario studies and transparent documentation.",
             "publisher": {
                 "@type": "Person",
                 "name": "Shahid Rogers"
@@ -310,6 +332,214 @@
         .ref-item { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text-muted); line-height: 1.55; }
         .ref-item:last-child { border-bottom: none; }
         .ref-item strong { color: var(--text); font-weight: 500; }
+        .mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+        .mini-link {
+            display: block;
+            padding: 16px;
+            color: var(--text);
+            border: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+            border-radius: 2px;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+        .mini-link:hover { border-color: rgba(240,138,56,0.28); transform: translateY(-1px); opacity: 1; }
+        .doc-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(2, 5, 8, 0.72);
+            backdrop-filter: blur(8px);
+        }
+        .doc-modal.is-open { display: flex; }
+        .doc-modal-panel {
+            width: min(980px, 100%);
+            max-height: min(88vh, 920px);
+            overflow: hidden;
+            border: 1px solid rgba(115,146,175,0.2);
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)), #0b0f14;
+            box-shadow: 0 28px 80px rgba(0,0,0,0.42);
+            display: flex;
+            flex-direction: column;
+        }
+        .doc-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(255,255,255,0.015);
+        }
+        .doc-modal-close {
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.02);
+            color: var(--text-muted);
+            font: inherit;
+            cursor: pointer;
+            padding: 8px 10px;
+            line-height: 1;
+        }
+        .doc-modal-close:hover { color: var(--text); border-color: rgba(240,138,56,0.28); }
+        .doc-modal-body {
+            overflow: auto;
+            padding: 24px 24px 28px;
+        }
+        .doc-markdown {
+            max-width: 820px;
+            margin: 0 auto;
+            color: var(--text-muted);
+        }
+        .doc-markdown h1,
+        .doc-markdown h2,
+        .doc-markdown h3,
+        .doc-markdown h4 {
+            color: var(--text);
+            line-height: 1.25;
+            margin: 1.6em 0 0.6em;
+        }
+        .doc-markdown h1 { font-size: 30px; margin-top: 0; }
+        .doc-markdown h2 { font-size: 22px; }
+        .doc-markdown h3 { font-size: 17px; }
+        .doc-markdown p,
+        .doc-markdown li,
+        .doc-markdown blockquote {
+            font-size: 14px;
+            line-height: 1.75;
+        }
+        .doc-markdown p,
+        .doc-markdown ul,
+        .doc-markdown ol,
+        .doc-markdown table,
+        .doc-markdown blockquote,
+        .doc-markdown pre {
+            margin: 0 0 16px;
+        }
+        .doc-markdown ul,
+        .doc-markdown ol {
+            padding-left: 20px;
+        }
+        .doc-markdown li + li {
+            margin-top: 6px;
+        }
+        .doc-markdown code {
+            font-family: var(--mono);
+            font-size: 0.92em;
+            color: #f5c15d;
+            background: rgba(255,255,255,0.04);
+            padding: 1px 5px;
+        }
+        .doc-markdown pre {
+            overflow: auto;
+            padding: 16px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.02);
+        }
+        .doc-markdown pre code {
+            background: transparent;
+            padding: 0;
+            color: var(--text);
+        }
+        .doc-markdown blockquote {
+            border-left: 2px solid rgba(240,138,56,0.42);
+            padding-left: 14px;
+            color: var(--text);
+        }
+        .doc-markdown table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid var(--border);
+        }
+        .doc-markdown th,
+        .doc-markdown td {
+            text-align: left;
+            vertical-align: top;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .doc-markdown th {
+            color: var(--text);
+            background: rgba(255,255,255,0.02);
+        }
+        .doc-markdown hr {
+            border: 0;
+            height: 1px;
+            background: var(--border);
+            margin: 24px 0;
+        }
+        .doc-markdown a {
+            color: var(--accent);
+        }
+        .doc-diagram {
+            margin: 20px 0 24px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.02);
+            overflow: auto;
+        }
+        .doc-diagram svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        .status-hero {
+            padding: 22px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.3fr) minmax(220px, 0.7fr);
+            gap: 18px;
+            align-items: start;
+        }
+        .status-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-end;
+            align-content: flex-start;
+        }
+        .status-pill {
+            padding: 10px 12px;
+            min-width: 140px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.02);
+        }
+        .status-grid {
+            margin-top: 16px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
+        .status-card {
+            padding: 16px;
+            border: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+        }
+        .status-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            display: inline-block;
+        }
+        .status-strong .status-label { color: var(--green); }
+        .status-strong .status-dot { background: var(--green); box-shadow: 0 0 0 6px rgba(103,211,143,0.12); }
+        .status-usable .status-label { color: var(--amber); }
+        .status-usable .status-dot { background: var(--amber); box-shadow: 0 0 0 6px rgba(245,193,93,0.12); }
+        .status-in-progress .status-label { color: var(--blue); }
+        .status-in-progress .status-dot { background: var(--blue); box-shadow: 0 0 0 6px rgba(110,164,255,0.12); }
+        .status-not-yet .status-label { color: var(--red); }
+        .status-not-yet .status-dot { background: var(--red); box-shadow: 0 0 0 6px rgba(255,107,87,0.12); }
 
         @media (max-width: 760px) {
             .hero-grid { padding: 0; }
@@ -317,6 +547,13 @@
             .study-family { grid-template-columns: 1fr; }
             .study-rail { border-left: none; border-top: 1px solid var(--border); padding-left: 0; padding-top: 18px; }
             .study-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .doc-modal { padding: 12px; }
+            .doc-modal-header { padding: 16px; }
+            .doc-modal-body { padding: 18px 16px 22px; }
+            .doc-markdown h1 { font-size: 24px; }
+            .doc-markdown h2 { font-size: 19px; }
+            .status-hero { grid-template-columns: 1fr; }
+            .status-summary { justify-content: flex-start; }
         }
     </style>
 </head>
@@ -335,39 +572,58 @@
             </div>
 
             <h1 class="fade-in" style="font-size: 22px; color: var(--text); margin-top: 28px; line-height: 1.45; max-width: 600px; font-weight: 500;">
-                Malaysia's open-source macroeconomic model.<br>
-                <span style="color: var(--text-muted);">~200 equations, zero gatekeeping.</span>
+                An open structural quarterly macro model prototype for Malaysia.<br>
+                <span style="color: var(--text-muted);">Roughly 200 equations, identities, and calibration rules.</span>
             </h1>
             <p class="fade-in" style="font-size: 14px; color: var(--text-muted); margin-top: 14px; max-width: 580px; line-height: 1.7;">
-                A curiosity project by <a href="mailto:shahidrogers+mamamo@gmail.com" style="color: var(--text);">Shahid Rogers</a>, built with <a href="https://claude.ai" target="_blank" rel="noopener noreferrer" style="color: var(--text);">Claude</a> to see what happens when you point an LLM at 200 equations and a country's economy.
+                A documented research build by <a href="mailto:shahidrogers+mamamo@gmail.com" style="color: var(--text);">shahid rogers</a> and <a href="https://claude.ai" target="_blank" rel="noopener noreferrer" style="color: var(--text);">claude</a>, built for transparency, critique, and scenario analysis rather than production forecasting claims.
             </p>
 
             <div class="eyebrow-row fade-in">
-                <span class="terminal-pill">v0.2.0</span>
+                <span class="terminal-pill">v0.3.0</span>
                 <a href="https://github.com/shahidrogers/MaMaMo" target="_blank" rel="noopener noreferrer" aria-label="View the MaMaMo source code on GitHub" class="terminal-pill" style="display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted);">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                     View on GitHub
                 </a>
-                <span class="terminal-pill">By Shahid Rogers + Claude</span>
             </div>
         </header>
     </div>
 </section>
 
-<div class="divider container"></div>
+<div class="divider"></div>
 
 <!-- What is this -->
 <section class="container fade-in">
     <h2 class="section-label">What is this?</h2>
     <p style="font-size: 15px; color: var(--text-muted); line-height: 1.7; max-width: 640px;">
-        MaMaMo is a structural quarterly macroeconomic model for the Malaysian economy. It takes the architecture of the UK OBR/HM Treasury model and rebuilds it — every block, every coefficient, every institutional detail — for Malaysia.
+        MaMaMo is a structural quarterly macroeconomic model prototype for the Malaysian economy. It adapts the broad architecture of the UK OBR/HM Treasury model and re-specifies its major blocks for Malaysian institutions, trade structure, and policy settings.
     </p>
     <p style="font-size: 15px; color: var(--text-muted); line-height: 1.7; max-width: 640px; margin-top: 16px;">
-        BNM and MOF have their own models, but those are proprietary. Academic models tend to be partial. MaMaMo is the one you can actually open, read, run, break, fix, and learn from.
+        BNM and MOF have their own models, but those are proprietary. Academic models tend to be partial. MaMaMo is meant to be something you can open, inspect, critique, extend, and learn from.
     </p>
+    <p style="font-size: 15px; color: var(--text-muted); line-height: 1.7; max-width: 640px; margin-top: 16px;">
+        It is not a validated production forecasting system. It is a publishable research prototype with enough structure to support serious iteration.
+    </p>
+    <div class="mini-grid" style="margin-top: 22px;">
+        <a class="mini-link" href="docs/research-prototype-summary.md" data-doc-title="Research Prototype Summary" data-doc-id="research-prototype-summary">
+            <div class="mono" style="font-size: 10px; color: var(--accent); letter-spacing: 0.08em; margin-bottom: 6px;">START HERE</div>
+            <div style="font-size: 14px; font-weight: 600;">Research Prototype Summary</div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">One-page scope, strengths, and limits.</div>
+        </a>
+        <a class="mini-link" href="docs/model-architecture.md" data-doc-title="Model Architecture Diagram" data-doc-id="model-architecture">
+            <div class="mono" style="font-size: 10px; color: var(--accent); letter-spacing: 0.08em; margin-bottom: 6px;">SYSTEM MAP</div>
+            <div style="font-size: 14px; font-weight: 600;">Model Architecture Diagram</div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">High-level view of the 17-block system.</div>
+        </a>
+        <a class="mini-link" href="docs/how-to-interpret-this-model.md" data-doc-title="How To Interpret This Model" data-doc-id="how-to-interpret-this-model">
+            <div class="mono" style="font-size: 10px; color: var(--accent); letter-spacing: 0.08em; margin-bottom: 6px;">READING GUIDE</div>
+            <div style="font-size: 14px; font-weight: 600;">How To Interpret This Model</div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">How to read outputs without overclaiming.</div>
+        </a>
+    </div>
 </section>
 
-<div class="divider container"></div>
+<div class="divider"></div>
 
 <!-- Studies -->
 <section class="container fade-in">
@@ -421,22 +677,17 @@
                 <p style="font-size: 12px; color: var(--text-muted); line-height: 1.65;">
                     Construction costs, launch deferrals, delivery delays, contractor stress, and LAD under the same oil-war shock.
                 </p>
-                <div class="study-satellite-statline">
-                    <span class="study-satellite-stat">+21% build cost</span>
-                    <span class="study-satellite-stat">6.0 mo delay</span>
-                    <span class="study-satellite-stat">RM16.0B LAD</span>
-                </div>
             </a>
         </div>
     </div>
 </section>
 
-<div class="divider container"></div>
+<div class="divider"></div>
 
 <!-- What's inside -->
 <section class="container fade-in">
     <h2 class="section-label">What's inside</h2>
-    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">~200 equations across 17 blocks, written in EViews-compatible syntax.</p>
+    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">Roughly 200 equations, identities, and calibration rules across 17 blocks, written in EViews-compatible syntax.</p>
 
     <div class="card" style="padding: 20px; overflow-x: auto;">
         <table class="blocks-table">
@@ -456,12 +707,12 @@
     </div>
 </section>
 
-<div class="divider container"></div>
+<div class="divider"></div>
 
 <!-- What makes it Malaysian -->
 <section class="container fade-in">
     <h2 class="section-label">What makes it Malaysian</h2>
-    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">This isn't a UK model with the labels swapped.</p>
+    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">This is not just the UK model with labels swapped.</p>
 
     <div class="card" style="padding: 20px;">
         <div class="feature-item">
@@ -501,7 +752,7 @@
     <p style="font-size: 12px; color: var(--text-muted); margin-top: 12px;">Crisis dummies for: 1997-98 AFC, 2008-09 GFC, 2013 minimum wage, 2015 oil crash, 2020 COVID.</p>
 </section>
 
-<div class="divider container"></div>
+<div class="divider"></div>
 
 <!-- Key assumptions -->
 <section class="container fade-in">
@@ -513,31 +764,103 @@
         </div>
         <div class="card" style="padding: 16px;">
             <div class="mono" style="font-size: 10px; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 6px;">COEFFICIENTS</div>
-            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.55;">Calibrated from BNM working papers, IMF Article IV reports, DOSM IO tables. Informed starting points, not final estimates.</p>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.55;">Calibrated from BNM working papers, IMF Article IV reports, DOSM IO tables. Informed starting points, not fully estimated structural parameters.</p>
         </div>
         <div class="card" style="padding: 16px;">
             <div class="mono" style="font-size: 10px; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 6px;">POLICY (EXOGENOUS)</div>
             <p style="font-size: 13px; color: var(--text-muted); line-height: 1.55;">OPR, administered fuel price, SST rate, CPO export duty rate, development expenditure growth.</p>
         </div>
+        <div class="card" style="padding: 16px;">
+            <div class="mono" style="font-size: 10px; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 6px;">OPERATIONAL STATUS</div>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.55;">Documented and structurally coherent, but still dependent on some external wedges and preprocessing inputs. Publishable as a research prototype, not yet as a one-command forecasting engine.</p>
+        </div>
     </div>
 </section>
 
-<div class="divider container"></div>
+<div class="divider"></div>
+
+<!-- Current status -->
+<section class="container fade-in">
+    <h2 class="section-label">Current status</h2>
+    <div class="card status-hero">
+        <div>
+            <div class="mono" style="font-size: 10px; color: var(--amber); letter-spacing: 0.08em; margin-bottom: 8px;">VISITOR SNAPSHOT</div>
+            <h3 style="font-size: 24px; line-height: 1.3; color: var(--text); margin-bottom: 10px;">A serious research prototype, not a finished forecasting product.</h3>
+            <p style="font-size: 14px; color: var(--text-muted); line-height: 1.75; max-width: 640px;">
+                The model structure is real, the Malaysia-specific institutional detail is real, and the scenario work is already useful. What is still missing is the last mile: a stronger preprocessing layer, tighter governance around external wedges, and full econometric estimation.
+            </p>
+        </div>
+        <div class="status-summary">
+            <div class="status-pill">
+                <div class="mono" style="font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em; margin-bottom: 6px;">BEST USE TODAY</div>
+                <div style="font-size: 14px; color: var(--text); font-weight: 600;">Scenario analysis</div>
+            </div>
+            <div class="status-pill">
+                <div class="mono" style="font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em; margin-bottom: 6px;">PUBLIC CLAIM</div>
+                <div style="font-size: 14px; color: var(--text); font-weight: 600;">Publishable research build</div>
+            </div>
+            <div class="status-pill">
+                <div class="mono" style="font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em; margin-bottom: 6px;">NOT YET</div>
+                <div style="font-size: 14px; color: var(--text); font-weight: 600;">Production forecast engine</div>
+            </div>
+        </div>
+    </div>
+    <div class="status-grid">
+        <div class="status-card status-strong">
+            <div class="status-label"><span class="status-dot"></span>Strong</div>
+            <div style="font-size: 16px; color: var(--text); font-weight: 600; margin-bottom: 6px;">Model structure</div>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.65;">The 17-block architecture is in place and clearly adapted to Malaysian institutions rather than copied over mechanically.</p>
+        </div>
+        <div class="status-card status-strong">
+            <div class="status-label"><span class="status-dot"></span>Strong</div>
+            <div style="font-size: 16px; color: var(--text); font-weight: 600; margin-bottom: 6px;">Documentation</div>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.65;">Visitors can inspect the model logic, inputs, assumptions, and studies without relying on hidden institutional context.</p>
+        </div>
+        <div class="status-card status-usable">
+            <div class="status-label"><span class="status-dot"></span>Usable Now</div>
+            <div style="font-size: 16px; color: var(--text); font-weight: 600; margin-bottom: 6px;">Scenario work</div>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.65;">Good for what-if analysis, transmission mapping, and public-facing studies where the assumptions are disclosed.</p>
+        </div>
+        <div class="status-card status-in-progress">
+            <div class="status-label"><span class="status-dot"></span>In Progress</div>
+            <div style="font-size: 16px; color: var(--text); font-weight: 600; margin-bottom: 6px;">Data pipeline</div>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.65;">The input contract exists, but the preprocessing builder and satellite rules still need to be made more repeatable.</p>
+        </div>
+        <div class="status-card status-in-progress">
+            <div class="status-label"><span class="status-dot"></span>In Progress</div>
+            <div style="font-size: 16px; color: var(--text); font-weight: 600; margin-bottom: 6px;">Calibration quality</div>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.65;">Many coefficients are informed calibrations from public sources, but not yet fully estimated in a reproducible econometric workflow.</p>
+        </div>
+        <div class="status-card status-not-yet">
+            <div class="status-label"><span class="status-dot"></span>Not Yet</div>
+            <div style="font-size: 16px; color: var(--text); font-weight: 600; margin-bottom: 6px;">Production readiness</div>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.65;">Too many important wedges still sit outside the model for this to be presented as a push-button forecasting system.</p>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
 
 <!-- Use cases -->
 <section class="container fade-in">
     <h2 class="section-label">Use cases</h2>
     <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-        <span style="font-size: 12px; padding: 6px 14px; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);">Fiscal forecasting under different oil/CPO paths</span>
+        <span style="font-size: 12px; padding: 6px 14px; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);">Fiscal scenario analysis under different oil/CPO paths</span>
         <span style="font-size: 12px; padding: 6px 14px; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);">OPR transmission analysis</span>
         <span style="font-size: 12px; padding: 6px 14px; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);">Subsidy rationalisation scenarios</span>
         <span style="font-size: 12px; padding: 6px 14px; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);">Minimum wage impact</span>
         <span style="font-size: 12px; padding: 6px 14px; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);">Macro stress testing</span>
         <span style="font-size: 12px; padding: 6px 14px; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);">Teaching structural macro</span>
     </div>
+    <div class="card" style="padding: 18px; margin-top: 16px; border-left: 3px solid rgba(110,164,255,0.45);">
+        <div class="mono" style="font-size: 10px; color: var(--blue); letter-spacing: 0.08em; margin-bottom: 8px;">NOT FOR</div>
+        <p style="font-size: 13px; color: var(--text-muted); line-height: 1.65; max-width: 700px;">
+            Official forecasting, policy sign-off, investment advice, or point-estimate precision claims without separate validation and governed input assumptions.
+        </p>
+    </div>
 </section>
 
-<div class="divider container"></div>
+<div class="divider"></div>
 
 <!-- Roadmap -->
 <section class="container fade-in">
@@ -567,14 +890,18 @@
     </div>
 </section>
 
-<div class="divider container"></div>
+<div class="divider"></div>
 
 <!-- Changelog -->
 <section class="container fade-in">
     <h2 class="section-label">Changelog</h2>
     <div style="display: flex; flex-direction: column; gap: 12px;">
         <div class="card" style="padding: 16px; display: flex; gap: 16px; align-items: flex-start;">
-            <span class="mono" style="font-size: 12px; font-weight: 600; color: var(--accent); flex-shrink: 0;">v0.2.0</span>
+            <span class="mono" style="font-size: 12px; font-weight: 600; color: var(--accent); flex-shrink: 0;">v0.3.0</span>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.55;">Documentation and presentation pass. Repositioned the project as a publishable research prototype, added a one-page summary, architecture diagram, interpretation note, and updated the landing page with inline document modals and clearer visitor-facing status.</p>
+        </div>
+        <div class="card" style="padding: 16px; display: flex; gap: 16px; align-items: flex-start;">
+            <span class="mono" style="font-size: 12px; font-weight: 600; color: var(--text-muted); flex-shrink: 0;">v0.2.0</span>
             <p style="font-size: 13px; color: var(--text-muted); line-height: 1.55;">Audit pass. Fixed 3 critical undefined variables, added 2008-09 GFC dummies, corrected E&E import content (0.65 &rarr; 0.52), defined ~20 previously missing variables, made administered price weight time-varying for GST/SST.</p>
         </div>
         <div class="card" style="padding: 16px; display: flex; gap: 16px; align-items: flex-start;">
@@ -584,7 +911,7 @@
     </div>
 </section>
 
-<div class="divider container"></div>
+<div class="divider"></div>
 
 <!-- References -->
 <section class="container fade-in">
@@ -620,14 +947,457 @@
     </div>
 </section>
 
-<div class="divider container"></div>
+<div class="divider"></div>
 
 <!-- Footer -->
 <footer class="container" style="padding-bottom: 64px; display: flex; justify-content: space-between; align-items: center;">
-    <div class="mono" style="font-size: 11px; color: var(--text-muted);">MaMaMo v0.2.0</div>
+    <div class="mono" style="font-size: 11px; color: var(--text-muted);">MaMaMo v0.3.0</div>
     <div style="font-size: 11px; color: var(--text-muted);">Research and educational use. Not financial advice.</div>
 </footer>
 
 </main>
+<script type="text/plain" id="doc-source-research-prototype-summary"># Research Prototype Summary
+
+## What This Is
+
+MaMaMo is an open structural quarterly macro model prototype for Malaysia.
+
+It adapts the broad block architecture of the UK OBR/HM Treasury model and re-specifies it for Malaysian institutions, fiscal structure, trade composition, administered prices, and household balance-sheet features.
+
+This is best understood as a documented research model:
+
+- strong enough to inspect, critique, and run governed scenarios
+- not yet strong enough to present as a validated production forecasting engine
+
+## What Is In The Model
+
+The model file contains roughly 17 linked blocks covering:
+
+- private consumption and durables
+- inventories and investment
+- labour market and wages
+- exports and imports
+- prices and administered-price pass-through
+- oil and gas, palm oil, and commodity-linked fiscal channels
+- government expenditure and revenue
+- balance of payments
+- public debt dynamics
+- monetary policy and domestic finance
+- income accounts
+- GDP identities
+- household and external balance sheets
+
+The model is written in EViews-compatible syntax and combines behavioral equations, identities, and calibration rules.
+
+## What Makes It Specifically Malaysian
+
+The most important Malaysia-specific features are:
+
+- administered fuel and utility price treatment inside CPI
+- GST-to-SST policy treatment
+- Petronas profits, petroleum income tax, and dividends
+- palm oil production, export duties, and weather sensitivity
+- E&E exports tied to the global semiconductor cycle
+- foreign worker and remittance channels
+- EPF as a distinct household wealth and savings mechanism
+- fuel subsidy mechanics linked to Brent, administered prices, and consumption volume
+- BNM-style operating vs development expenditure structure
+
+## Current Status
+
+| Area | Status |
+| --- | --- |
+| Structure | Strong |
+| Documentation | Strong |
+| Malaysia-specific adaptation | Strong |
+| Calibration discipline | Moderate |
+| Raw-data reproducibility | Partial |
+| Econometric estimation | Incomplete |
+| Production readiness | Not yet |
+
+## What The Model Is Good For Today
+
+- structured scenario analysis
+- policy transmission thought experiments
+- fiscal and commodity sensitivity exercises
+- teaching and discussion
+- transparent model design review
+
+## What The Model Is Not Yet Good For
+
+- official forecasts
+- high-confidence point projections
+- policy sign-off without supplementary validation
+- repeated production use without a preprocessing and governance layer
+
+## Why The Limitation Matters
+
+Some important drivers are still external inputs or preprocessing products rather than internally modeled series. The highest-impact examples are:
+
+- `CREDIT`
+- `MCCI`
+- `GOVDEBTADJ`
+- `HARAREA`
+
+That does not invalidate the model. It means scenario quality still depends materially on the quality and discipline of the input layer.
+
+## Publishable Claim
+
+The strongest defensible public claim today is:
+
+> MaMaMo is a transparent, Malaysia-specific structural quarterly macro model prototype built for research, scenario analysis, and open iteration.
+
+That claim is strong enough for publication and honest enough to hold up under scrutiny.</script>
+<script type="text/plain" id="doc-source-model-architecture"># Model Architecture
+
+This page gives a clean high-level map of the system in [model/malaysia-quarterly-model.md](../model/malaysia-quarterly-model.md).
+
+## Diagram
+
+```mermaid
+flowchart LR
+    EXT["External Environment<br/>Brent, CPO, world prices, tourism,<br/>semiconductor cycle, UST10, REER"] --> TRADE["Trade And External Sector<br/>Exports, imports, current account,<br/>capital flows, reserves"]
+    EXT --> COM["Commodity Block<br/>Oil & gas, Petronas,<br/>palm oil, export duties"]
+    EXT --> MON["Monetary And Financial Conditions<br/>OPR, BLR, MGS10, deposit and lending rates"]
+
+    HH["Households<br/>Income, consumption, durables,<br/>wealth, debt, EPF"] --> GDP["GDP And Identities<br/>Demand, value added,<br/>output gap"]
+    FIRMS["Firms And Investment<br/>Business investment, inventories,<br/>cost of capital, prices"] --> GDP
+    GOV["Government<br/>Revenue, expenditure,<br/>subsidies, debt"] --> GDP
+    TRADE --> GDP
+    COM --> GDP
+
+    LAB["Labour Market<br/>Employment, unemployment,<br/>participation, foreign workers, wages"] --> HH
+    LAB --> FIRMS
+    GDP --> LAB
+
+    MON --> HH
+    MON --> FIRMS
+    MON --> GOV
+
+    COM --> GOV
+    COM --> TRADE
+
+    PRICES["Prices Block<br/>CPI, administered prices, PPI,<br/>import/export prices, unit labour costs"] --> HH
+    PRICES --> FIRMS
+    PRICES --> GOV
+    LAB --> PRICES
+    TRADE --> PRICES
+    COM --> PRICES
+
+    GOV --> BS["Balance Sheets<br/>Household assets and debt,<br/>public debt, NIIP"]
+    HH --> BS
+    TRADE --> BS
+    MON --> BS
+```
+
+## Reading Guide
+
+- Start with households, firms, government, and trade.
+- Then read prices, labour, and commodities as the main transmission layers.
+- Treat balance sheets and debt dynamics as the stock-flow discipline around the core demand system.
+- Treat some external wedges as governed inputs rather than fully endogenous outputs.
+
+## Scope Note
+
+This is an architecture diagram, not a causal proof. Several links are reduced-form and some important drivers remain exogenous in the current version of the model.</script>
+<script type="text/plain" id="doc-source-how-to-interpret-this-model"># How To Interpret This Model
+
+## Start With The Right Mental Model
+
+Read MaMaMo as a structural research model, not a black-box forecasting engine.
+
+It does three useful things:
+
+- makes assumptions explicit
+- links Malaysian institutions into a coherent macro system
+- forces scenarios to move through named channels rather than narrative handwaving
+
+It does not yet eliminate judgment.
+
+## What A Forecast From This Model Means
+
+A model output here should be interpreted as:
+
+- the implied path of the system given the specified external conditions, policy paths, and calibration settings
+- not an objective truth about what Malaysia will do next quarter
+
+If two people run the same model with different paths for `CREDIT`, `MCCI`, `GOVDEBTADJ`, or `HARAREA`, they can get materially different results. That is a model governance issue, not necessarily a flaw in the structural design.
+
+## How To Read The Equation File
+
+The model file contains three kinds of relationships:
+
+1. Behavioral equations
+Examples:
+- consumption
+- business investment
+- export demand
+- wage dynamics
+
+2. Accounting identities
+Examples:
+- GDP identities
+- fiscal balances
+- debt accumulation
+- household net wealth
+
+3. Calibration rules and closures
+Examples:
+- residual deflators
+- smoothing rules
+- exogenous wedges
+- policy paths
+
+Do not treat all three categories as equal evidence. Behavioral equations say something about transmission. Identities say something about consistency. Calibration rules say something about closure assumptions.
+
+## What The Model Is Strongest At
+
+- comparative scenarios
+- tracing transmission channels
+- organizing fiscal and external-sector thinking
+- showing where Malaysian institutional details matter
+
+The model is especially useful when the question is:
+
+“If these external conditions and policy settings hold, what does the rest of the system have to do?”
+
+## What Requires Extra Caution
+
+Be careful when interpreting:
+
+- point forecast precision
+- medium-run debt paths if `GOVDEBTADJ` is not well governed
+- household-demand sensitivity when `CREDIT` or `MCCI` paths are judgmental
+- commodity scenarios when `HARAREA`, `PETMARG`, or other wedges are loosely specified
+
+## Best Practice For Public Use
+
+When sharing outputs publicly:
+
+- state that the model is a research prototype
+- disclose the key scenario inputs
+- disclose any manually governed wedges
+- distinguish structural equations from exogenous assumptions
+- avoid language that implies official or production-grade forecasting accuracy
+
+## Short Version
+
+The right way to read MaMaMo is:
+
+> a transparent, Malaysia-specific scenario model with serious structure, useful transmission logic, and still-meaningful dependence on governed external inputs.</script>
+<div class="doc-modal" id="doc-modal" aria-hidden="true">
+    <div class="doc-modal-panel">
+        <div class="doc-modal-header">
+            <button class="doc-modal-close" id="doc-modal-close" type="button" aria-label="Close document">Close</button>
+        </div>
+        <div class="doc-modal-body">
+            <div class="doc-markdown" id="doc-modal-content"></div>
+        </div>
+    </div>
+</div>
+<script>
+    const docModal = document.getElementById('doc-modal');
+    const docModalBody = docModal.querySelector('.doc-modal-body');
+    const docModalContent = document.getElementById('doc-modal-content');
+    const docModalClose = document.getElementById('doc-modal-close');
+    const docLinks = document.querySelectorAll('.mini-link[data-doc-id]');
+    let currentDocRequest = 0;
+
+    function escapeHtml(value) {
+        return value
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    function renderInline(text) {
+        let out = escapeHtml(text);
+        out = out.replace(/`([^`]+)`/g, '<code>$1</code>');
+        out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+        out = out.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        out = out.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+        return out;
+    }
+
+    function parseTable(lines, startIndex) {
+        const rows = [];
+        let i = startIndex;
+        while (i < lines.length && lines[i].trim().startsWith('|')) {
+            rows.push(lines[i].trim());
+            i += 1;
+        }
+        if (rows.length < 2 || !/^\|(?:\s*:?-+:?\s*\|)+$/.test(rows[1])) {
+            return null;
+        }
+        const parseRow = (line) => line.slice(1, -1).split('|').map((cell) => renderInline(cell.trim()));
+        const header = parseRow(rows[0]);
+        const body = rows.slice(2).map(parseRow);
+        const html = `
+            <table>
+                <thead><tr>${header.map((cell) => `<th>${cell}</th>`).join('')}</tr></thead>
+                <tbody>${body.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody>
+            </table>
+        `;
+        return { html, nextIndex: i };
+    }
+
+    function markdownToHtml(markdown) {
+        const lines = markdown.replace(/\r\n/g, '\n').split('\n');
+        const html = [];
+        let i = 0;
+
+        while (i < lines.length) {
+            const line = lines[i];
+            const trimmed = line.trim();
+
+            if (!trimmed) {
+                i += 1;
+                continue;
+            }
+
+            if (trimmed.startsWith('```')) {
+                const lang = trimmed.slice(3).trim();
+                const block = [];
+                i += 1;
+                while (i < lines.length && !lines[i].trim().startsWith('```')) {
+                    block.push(lines[i]);
+                    i += 1;
+                }
+                i += 1;
+                if (lang === 'mermaid') {
+                    html.push(`<div class="doc-diagram"><pre class="mermaid">${escapeHtml(block.join('\n'))}</pre></div>`);
+                } else {
+                    html.push(`<pre><code>${escapeHtml(block.join('\n'))}</code></pre>`);
+                }
+                continue;
+            }
+
+            const table = parseTable(lines, i);
+            if (table) {
+                html.push(table.html);
+                i = table.nextIndex;
+                continue;
+            }
+
+            if (/^#{1,6}\s/.test(trimmed)) {
+                const level = trimmed.match(/^#+/)[0].length;
+                html.push(`<h${level}>${renderInline(trimmed.slice(level).trim())}</h${level}>`);
+                i += 1;
+                continue;
+            }
+
+            if (trimmed === '---') {
+                html.push('<hr>');
+                i += 1;
+                continue;
+            }
+
+            if (trimmed.startsWith('>')) {
+                const block = [];
+                while (i < lines.length && lines[i].trim().startsWith('>')) {
+                    block.push(renderInline(lines[i].trim().replace(/^>\s?/, '')));
+                    i += 1;
+                }
+                html.push(`<blockquote>${block.join('<br>')}</blockquote>`);
+                continue;
+            }
+
+            if (/^\d+\.\s+/.test(trimmed)) {
+                const items = [];
+                while (i < lines.length && /^\d+\.\s+/.test(lines[i].trim())) {
+                    items.push(`<li>${renderInline(lines[i].trim().replace(/^\d+\.\s+/, ''))}</li>`);
+                    i += 1;
+                }
+                html.push(`<ol>${items.join('')}</ol>`);
+                continue;
+            }
+
+            if (/^-\s+/.test(trimmed)) {
+                const items = [];
+                while (i < lines.length && /^-\s+/.test(lines[i].trim())) {
+                    items.push(`<li>${renderInline(lines[i].trim().replace(/^-\s+/, ''))}</li>`);
+                    i += 1;
+                }
+                html.push(`<ul>${items.join('')}</ul>`);
+                continue;
+            }
+
+            const paragraph = [];
+            while (i < lines.length && lines[i].trim() && !/^#{1,6}\s/.test(lines[i].trim()) && !lines[i].trim().startsWith('```') && !lines[i].trim().startsWith('|') && !/^-\s+/.test(lines[i].trim()) && !/^\d+\.\s+/.test(lines[i].trim()) && !lines[i].trim().startsWith('>') && lines[i].trim() !== '---') {
+                paragraph.push(lines[i].trim());
+                i += 1;
+            }
+            html.push(`<p>${renderInline(paragraph.join(' '))}</p>`);
+        }
+
+        return html.join('\n');
+    }
+
+    async function renderMermaidBlocks() {
+        if (!window.mermaid) return;
+        const blocks = Array.from(docModalContent.querySelectorAll('.mermaid'));
+        for (const block of blocks) {
+            const source = block.textContent;
+            const id = `mermaid-${Math.random().toString(36).slice(2)}`;
+            try {
+                const { svg } = await window.mermaid.render(id, source);
+                block.outerHTML = svg;
+            } catch (error) {
+                block.outerHTML = `<pre><code>${escapeHtml(source)}</code></pre>`;
+            }
+        }
+    }
+
+    function openModal() {
+        docModal.classList.add('is-open');
+        docModal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        docModalBody.scrollTop = 0;
+    }
+
+    function closeModal() {
+        docModal.classList.remove('is-open');
+        docModal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+
+    async function openDoc(title, docId, fallbackHref) {
+        const requestId = ++currentDocRequest;
+        docModalContent.innerHTML = '<p>Loading document…</p>';
+        openModal();
+        docModalBody.scrollTop = 0;
+
+        try {
+            const sourceNode = document.getElementById(`doc-source-${docId}`);
+            if (!sourceNode) throw new Error(`Missing embedded doc source for ${docId}`);
+            const markdown = sourceNode.textContent || '';
+            if (requestId !== currentDocRequest) return;
+            docModalContent.innerHTML = markdownToHtml(markdown);
+            docModalBody.scrollTop = 0;
+            await renderMermaidBlocks();
+        } catch (error) {
+            if (requestId !== currentDocRequest) return;
+            docModalContent.innerHTML = `<p>Could not load the document inline. <a href="${fallbackHref}">Open the source file instead</a>.</p>`;
+            docModalBody.scrollTop = 0;
+        }
+    }
+
+    docLinks.forEach((link) => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            openDoc(link.dataset.docTitle || 'Document', link.dataset.docId, link.getAttribute('href'));
+        });
+    });
+
+    docModalClose.addEventListener('click', closeModal);
+    docModal.addEventListener('click', (event) => {
+        if (event.target === docModal) closeModal();
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && docModal.classList.contains('is-open')) {
+            closeModal();
+        }
+    });
+</script>
 </body>
 </html>

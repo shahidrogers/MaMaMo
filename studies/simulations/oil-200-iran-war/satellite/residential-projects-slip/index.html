@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaMaMo Scenario: When Oil Hits $200, Residential Projects Slip</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+        :root {
+            --bg: #05070a;
+            --bg-elevated: #0b0f14;
+            --bg-card: rgba(12,18,24,0.88);
+            --border: rgba(115,146,175,0.18);
+            --text: #d8dee8;
+            --text-muted: #7f8b99;
+            --accent: #f08a38;
+            --accent-dim: rgba(240,138,56,0.12);
+            --red: #ff6b57;
+            --red-dim: rgba(255,107,87,0.12);
+            --green: #67d38f;
+            --green-dim: rgba(103,211,143,0.12);
+            --blue: #6ea4ff;
+            --blue-dim: rgba(110,164,255,0.12);
+            --amber: #f5c15d;
+            --serif: 'Rubik', system-ui, sans-serif;
+            --sans: 'Rubik', system-ui, sans-serif;
+            --mono: 'IBM Plex Mono', monospace;
+        }
+
+        body {
+            font-family: var(--sans);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.015) 0, rgba(255,255,255,0) 160px),
+                linear-gradient(90deg, rgba(240,138,56,0.04), transparent 26%, transparent 74%, rgba(110,164,255,0.035)),
+                var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.32;
+            background:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 100% 36px, 36px 100%;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at top left, rgba(240,138,56,0.12), transparent 30%),
+                radial-gradient(circle at top right, rgba(110,164,255,0.09), transparent 26%),
+                linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.32) 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body > *:not(.sidebar):not(.sb-toggle) { position: relative; z-index: 1; }
+
+        .serif { font-family: var(--serif); }
+        .mono { font-family: var(--mono); }
+        h1, h2, h3 { letter-spacing: -0.01em; }
+
+        .glass,
+        .glass-warm,
+        .glass-red,
+        .glass-green,
+        .glass-blue {
+            border-radius: 2px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.025), 0 18px 40px rgba(0,0,0,0.22);
+            transition: border-color 0.3s ease, transform 0.2s ease;
+        }
+        .glass {
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)), var(--bg-card);
+            border: 1px solid var(--border);
+        }
+        .glass:hover { border-color: rgba(240,138,56,0.28); transform: translateY(-1px); }
+        .glass-warm { background: rgba(240,138,56,0.08); border: 1px solid rgba(240,138,56,0.18); }
+        .glass-red { background: var(--red-dim); border: 1px solid rgba(255,107,87,0.2); }
+        .glass-green { background: var(--green-dim); border: 1px solid rgba(103,211,143,0.2); }
+        .glass-blue { background: var(--blue-dim); border: 1px solid rgba(110,164,255,0.2); }
+
+        .glow-line {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(110,164,255,0.14) 14%, rgba(240,138,56,0.24) 50%, rgba(110,164,255,0.14) 86%, transparent);
+            position: relative;
+        }
+        .glow-line::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: -8px;
+            height: 17px;
+            background: linear-gradient(180deg, transparent, rgba(255,255,255,0.025), transparent);
+            pointer-events: none;
+        }
+
+        .chart-container { position: relative; height: 280px; }
+        .tab-active { border-bottom: 2px solid var(--accent); color: var(--accent); }
+        .tab-inactive { border-bottom: 2px solid transparent; color: var(--text-muted); }
+        .tab-inactive:hover { color: var(--text); }
+
+        .scroll-reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+        .scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+
+        .tl-step { opacity: 0.2; transform: translateX(-8px); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .tl-step.active { opacity: 1; transform: translateX(0); }
+        .tl-line { position: absolute; left: 15px; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,0.06); }
+        .tl-progress { position: absolute; left: 15px; top: 0; width: 1px; background: linear-gradient(180deg, var(--accent), var(--red)); transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .tl-dot { width: 9px; height: 9px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.12); background: var(--bg); transition: all 0.4s ease; z-index: 1; position: relative; flex-shrink: 0; }
+        .tl-step.active .tl-dot { border-color: var(--accent); background: var(--accent); box-shadow: 0 0 16px rgba(232,131,58,0.35); }
+        .tl-step .tl-quarter { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; }
+        .tl-step .tl-headline { font-family: var(--serif); font-weight: 600; }
+
+        .section-label {
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--amber);
+            font-weight: 500;
+            margin-bottom: 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-label::before {
+            content: '';
+            width: 18px;
+            height: 1px;
+            background: var(--accent);
+            box-shadow: 24px 0 0 rgba(240,138,56,0.28);
+        }
+
+        .impact-headline { font-family: var(--serif); font-weight: 700; line-height: 1.2; }
+        .flash-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+        .flash-card { position: relative; overflow: hidden; padding: 24px; border-left: 2px solid transparent; display: flex; flex-direction: column; min-height: 100%; }
+        .flash-card::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 68px; background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent); pointer-events: none; }
+        .flash-kicker { display: inline-block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 14px; }
+        .flash-foot { display: flex; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-muted); }
+        .flash-foot strong { display: block; margin-bottom: 3px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); font-weight: 500; }
+
+        .stat-number { font-family: var(--mono); font-weight: 600; letter-spacing: -0.02em; }
+        a { transition: color 0.2s ease; }
+        ::selection { background: rgba(232,131,58,0.25); color: white; }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 220px;
+            height: 100vh;
+            padding: 80px 0 32px 0;
+            overflow-y: auto;
+            z-index: 40;
+            display: none;
+            border-right: 1px solid var(--border);
+            background: rgba(8,12,17,0.92);
+            backdrop-filter: blur(20px);
+        }
+        @media (min-width: 1280px) {
+            .sidebar { display: block; }
+            .main-content { margin-left: 220px; }
+        }
+        .sb-group { padding: 0 20px; margin-bottom: 20px; }
+        .sb-group-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber); padding: 0 0 8px 0; margin-bottom: 4px; border-bottom: 1px solid var(--border); }
+        .sb-link { display: block; padding: 5px 0; font-size: 12px; color: var(--text-muted); text-decoration: none; transition: color 0.2s ease, padding-left 0.2s ease; cursor: pointer; line-height: 1.4; }
+        .sb-link.active { color: var(--accent); padding-left: 8px; border-left: 2px solid var(--accent); margin-left: -2px; }
+        .sb-divider { height: 1px; margin: 16px 20px; background: linear-gradient(90deg, var(--accent), transparent); opacity: 0.25; }
+
+        .sb-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 50;
+            width: 40px;
+            height: 40px;
+            border-radius: 2px;
+            background: rgba(240,138,56,0.15);
+            border: 1px solid rgba(240,138,56,0.25);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(12px);
+        }
+        @media (min-width: 1280px) { .sb-toggle { display: none; } }
+        .sidebar.mobile-open { display: block; z-index: 45; }
+
+        .hero-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+        .terminal-pill { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; padding: 6px 10px; border: 1px solid var(--border); color: var(--text-muted); background: rgba(255,255,255,0.02); }
+        .budget-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+        .budget-row:last-child { border-bottom: none; }
+        .budget-change { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-family: var(--mono); }
+
+        @media (max-width: 900px) { .flash-grid { grid-template-columns: 1fr; } }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #1a1f28; border-radius: 3px; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+<nav class="sidebar" id="sidebar">
+    <div style="padding: 0 20px 20px;">
+        <a href="../../index.html" class="text-sm font-semibold" style="color: var(--text); display: inline-block;">MaMa<span style="color: var(--accent);">Mo</span></a>
+        <div class="text-[10px]" style="color: var(--text-muted);">Malaysia Macro Model</div>
+        <div style="margin-top: 14px; padding: 8px 10px; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border);">
+            <div class="mono text-[9px] font-medium" style="color: var(--amber); letter-spacing: 0.08em;">PARENT SCENARIO</div>
+            <a href="../../index.html" class="text-[13px] font-bold mt-1 inline-block" style="color: var(--text);">$200 Oil Shock</a>
+            <div class="text-[10px] mt-0.5" style="color: var(--text-muted);">Iran war escalation</div>
+        </div>
+        <div style="margin-top: 14px; padding: 8px 10px; border-radius: 8px; background: var(--red-dim); border: 1px solid rgba(224,82,82,0.12);">
+            <div class="mono text-[9px] font-medium" style="color: var(--red); letter-spacing: 0.08em;">SATELLITE STUDY</div>
+            <div class="text-[13px] font-bold mt-1" style="color: var(--text);">Residential Projects Slip</div>
+            <div class="text-[10px] mt-0.5" style="color: var(--text-muted);">Residential delivery and cost transmission</div>
+        </div>
+    </div>
+
+    <div class="sb-group">
+        <div class="sb-group-label">The Story</div>
+        <a class="sb-link active" data-target="sec-top">Intro</a>
+        <a class="sb-link" data-target="sec-tldr">The 30-Second Version</a>
+        <a class="sb-link" data-target="sec-timeline">How It Unfolds</a>
+        <a class="sb-link" data-target="sec-budget">Project Economics</a>
+        <a class="sb-link" data-target="sec-impact">What It Means</a>
+        <a class="sb-link" data-target="sec-industry">Who Gets Hit First</a>
+        <a class="sb-link" data-target="sec-bigpicture">The Bigger Picture</a>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <div class="sb-group">
+        <div class="sb-group-label">The Model</div>
+        <a class="sb-link" data-target="sec-assumptions">Assumptions</a>
+        <a class="sb-link" data-target="sec-kpi">Headline Impact</a>
+        <a class="sb-link" data-target="sec-charts">Charts</a>
+        <a class="sb-link" data-target="sec-table">Data Table</a>
+    </div>
+</nav>
+
+<button class="sb-toggle" id="sbToggle" onclick="document.getElementById('sidebar').classList.toggle('mobile-open')">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+</button>
+
+<div class="main-content">
+<section id="sec-top" class="max-w-7xl mx-auto px-6 pt-20 pb-14">
+    <div class="hero-grid">
+        <div>
+            <div class="mono text-[11px] mb-6" style="color: var(--amber); letter-spacing: 0.14em; text-transform: uppercase;">Scenario Study / Malaysia Macro Model</div>
+            <h1 class="serif text-5xl md:text-6xl font-bold tracking-tight leading-[1.1] mb-5" style="color: #f0f4fa;">
+                What happens to <em style="color: var(--accent); font-style: italic;">new projects</em><br>if oil hits $200?
+            </h1>
+            <p class="serif text-xl md:text-[22px] max-w-3xl mt-8 leading-relaxed" style="color: var(--text-muted); font-weight: 400;">
+                Same macro shock as the oil-war study. Different lens. This version traces the hit to Malaysian property development:
+                construction costs, launch delays, completion slippage, contractor stress, and LAD.
+            </p>
+            <div class="flex flex-wrap gap-3 mt-10">
+                <div class="terminal-pill"><span class="mono text-[10px]">TRIGGER</span><span class="text-xs ml-2 font-medium" style="color: var(--red);">US/Israel-Iran war escalation</span></div>
+                <div class="terminal-pill"><span class="mono text-[10px]">OIL</span><span class="text-xs ml-2 font-medium" style="color: var(--accent);">$82 → $200/bbl</span></div>
+                <div class="terminal-pill"><span class="mono text-[10px]">SECTOR</span><span class="text-xs ml-2 font-medium" style="color: var(--text);">Property development</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<section id="sec-tldr" class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="section-label mb-6">The 30-Second Version</h2>
+    <div class="flash-grid">
+        <div class="glass-red flash-card" style="border-left-color: rgba(255,107,87,0.55);">
+            <div class="flash-kicker" style="color: var(--red);">Construction</div>
+            <div class="impact-headline text-[28px] mb-3" style="color: var(--red);">Build costs jump before selling prices can.</div>
+            <p class="text-sm" style="color: var(--text-muted); line-height: 1.65;">Imported MEP, fit-out packages, diesel, logistics, and ringgit weakness push the construction cost index up 21% at the peak.</p>
+            <div class="flash-foot">
+                <div><strong>Peak cost</strong><span style="color: var(--red);">+21%</span></div>
+                <div><strong>Peak quarter</strong>Q3 2026</div>
+            </div>
+        </div>
+        <div class="glass-warm flash-card" style="border-left-color: rgba(240,138,56,0.55);">
+            <div class="flash-kicker" style="color: var(--accent);">Launches</div>
+            <div class="impact-headline text-[28px] mb-3" style="color: var(--accent);">Developers delay first. They cancel later.</div>
+            <p class="text-sm" style="color: var(--text-muted); line-height: 1.65;">New launches fall from 28,000 units a quarter to 14,000 at the trough as developers cut phase sizes and wait for cost visibility.</p>
+            <div class="flash-foot">
+                <div><strong>Launch trough</strong>14,000 units</div>
+                <div><strong>Take-up</strong>26%</div>
+            </div>
+        </div>
+        <div class="glass-blue flash-card" style="border-left-color: rgba(110,164,255,0.55);">
+            <div class="flash-kicker" style="color: var(--blue);">Delivery</div>
+            <div class="impact-headline text-[28px] mb-3" style="color: var(--blue);">Delays and LAD show up later.</div>
+            <p class="text-sm" style="color: var(--text-muted); line-height: 1.65;">The macro shock peaks first. Project slippage peaks after. Average delays hit 6 months and cumulative LAD exposure reaches RM16.0 billion over the horizon.</p>
+            <div class="flash-foot">
+                <div><strong>Peak delay</strong>6.0 months</div>
+                <div><strong>LAD risk</strong>RM16.0B</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<section id="sec-timeline" class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="section-label mb-2">How It Unfolds</h2>
+    <p class="text-sm mb-10" style="color: var(--text-muted);">Quarter by quarter, from cost shock to delivery backlog.</p>
+    <div class="relative max-w-2xl mx-auto" id="timeline">
+        <div class="tl-line"></div>
+        <div class="tl-progress" id="tlProgress" style="height: 0%"></div>
+
+        <div class="tl-step active flex items-start gap-5 pb-12">
+            <div class="tl-dot mt-1"></div>
+            <div>
+                <div class="tl-quarter" style="color: var(--accent);">Q1 2026 — BASELINE</div>
+                <div class="tl-headline text-lg mb-2" style="color: #f0f0f5;">The pipeline is working.</div>
+                <p class="text-sm text-slate-400">Construction cost index at 100. New launches around 28,000 units a quarter. Take-up close to 48%. Average delay only half a month.</p>
+            </div>
+        </div>
+        <div class="tl-step flex items-start gap-5 pb-12">
+            <div class="tl-dot mt-1"></div>
+            <div>
+                <div class="tl-quarter" style="color: var(--red);">Q2 2026 — COST SHOCK</div>
+                <div class="tl-headline text-lg mb-2" style="color: var(--red);">Procurement gets repriced immediately.</div>
+                <p class="text-sm text-slate-400">Oil spikes to $200, USD/MYR weakens to 4.70, and imported MEP packages jump. Ongoing fixed-price projects take the hit first. Construction cost index rises 18% in one quarter.</p>
+            </div>
+        </div>
+        <div class="tl-step flex items-start gap-5 pb-12">
+            <div class="tl-dot mt-1"></div>
+            <div>
+                <div class="tl-quarter" style="color: var(--red);">Q3–Q4 2026 — MARGIN SQUEEZE</div>
+                <div class="tl-headline text-lg mb-2" style="color: var(--accent);">Launches freeze and margins collapse.</div>
+                <p class="text-sm text-slate-400">Cost inflation peaks at 21%, take-up falls below 30%, and gross margin compresses toward 9.5%. Developers defer launches rather than sell into a weak buyer market.</p>
+            </div>
+        </div>
+        <div class="tl-step flex items-start gap-5 pb-12">
+            <div class="tl-dot mt-1"></div>
+            <div>
+                <div class="tl-quarter" style="color: var(--accent);">Q1–Q2 2027 — DELIVERY STRESS</div>
+                <div class="tl-headline text-lg mb-2" style="color: var(--accent);">The backlog becomes visible.</div>
+                <p class="text-sm text-slate-400">Average delay peaks at 6 months. 41% of projects are running late. LAD exposure becomes a balance-sheet item instead of a footnote.</p>
+            </div>
+        </div>
+        <div class="tl-step flex items-start gap-5 pb-4">
+            <div class="tl-dot mt-1"></div>
+            <div>
+                <div class="tl-quarter" style="color: var(--text-muted);">Q3 2027 – Q1 2028 — THINNER NORMAL</div>
+                <div class="tl-headline text-lg mb-2" style="color: var(--text);">The shock fades. The pipeline stays weaker.</div>
+                <p class="text-sm text-slate-400">Costs normalise only partially. Launches recover, but remain below baseline. Delays and overhang stay elevated. The sector stabilises with less margin and more delivery risk.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<section id="sec-budget" class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="section-label mb-2">Project Economics</h2>
+    <p class="text-slate-500 text-sm mb-8">A stylised high-rise residential phase. Same project, different macro world.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="glass rounded-xl p-6">
+            <div class="text-xs uppercase tracking-widest text-slate-500 mb-4 font-semibold">Before (Baseline)</div>
+            <div class="space-y-0">
+                <div class="budget-row"><span class="text-sm text-slate-300">Construction cost</span><span class="text-sm mono text-slate-300">RM100m</span></div>
+                <div class="budget-row"><span class="text-sm text-slate-300">Bridging finance</span><span class="text-sm mono text-slate-300">5.8%</span></div>
+                <div class="budget-row"><span class="text-sm text-slate-300">6-month take-up</span><span class="text-sm mono text-slate-300">48%</span></div>
+                <div class="budget-row"><span class="text-sm text-slate-300">Expected completion delay</span><span class="text-sm mono text-slate-300">0.5 mo</span></div>
+                <div class="budget-row"><span class="text-sm text-slate-300">Developer gross margin</span><span class="text-sm mono text-slate-300">22%</span></div>
+                <div class="budget-row border-t border-white/10 pt-3 mt-2"><span class="text-sm font-bold text-slate-200">LAD exposure</span><span class="text-sm mono font-bold text-green-400">RM0.3b</span></div>
+            </div>
+        </div>
+        <div class="glass-red rounded-xl p-6">
+            <div class="text-xs uppercase tracking-widest text-red-400 mb-4 font-semibold">After (Peak Stress)</div>
+            <div class="space-y-0">
+                <div class="budget-row"><span class="text-sm text-slate-300">Construction cost</span><div class="flex items-center gap-2"><span class="text-sm mono text-red-400">RM121m</span><span class="budget-change bg-red-500/20 text-red-400">+21%</span></div></div>
+                <div class="budget-row"><span class="text-sm text-slate-300">Bridging finance</span><div class="flex items-center gap-2"><span class="text-sm mono text-orange-400">6.3%</span><span class="budget-change bg-orange-500/20 text-orange-400">+50bps</span></div></div>
+                <div class="budget-row"><span class="text-sm text-slate-300">6-month take-up</span><div class="flex items-center gap-2"><span class="text-sm mono text-red-400">26%</span><span class="budget-change bg-red-500/20 text-red-400">-22pts</span></div></div>
+                <div class="budget-row"><span class="text-sm text-slate-300">Expected completion delay</span><div class="flex items-center gap-2"><span class="text-sm mono text-red-400">6.0 mo</span><span class="budget-change bg-red-500/20 text-red-400">+5.5 mo</span></div></div>
+                <div class="budget-row"><span class="text-sm text-slate-300">Developer gross margin</span><div class="flex items-center gap-2"><span class="text-sm mono text-red-400">9%</span><span class="budget-change bg-red-500/20 text-red-400">-13pts</span></div></div>
+                <div class="budget-row border-t border-red-500/20 pt-3 mt-2"><span class="text-sm font-bold text-slate-200">LAD exposure</span><div class="flex items-center gap-2"><span class="text-sm mono font-bold text-red-400">RM16.0b</span><span class="budget-change bg-red-500/20 text-red-400">8 qtrs</span></div></div>
+            </div>
+        </div>
+    </div>
+    <div class="glass rounded-xl p-4 mt-4 text-xs text-slate-500">
+        Based on the scenario path: construction cost index peaks at 121 in Q3 2026, bridging rates hit 6.3%, take-up falls to 26% by Q4 2026, and average completion delays peak at 6 months in Q1 2027.
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<section id="sec-impact" class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="section-label mb-2">What It Means</h2>
+    <p class="text-sm mb-10" style="color: var(--text-muted);">Plain English, but for property development.</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="glass-red rounded-xl p-5"><div class="mono text-3xl font-semibold mb-2" style="color: var(--red);">+21%</div><div class="impact-headline text-[15px] mb-2" style="color: var(--red);">Materials shock hits first</div><p class="text-xs leading-relaxed" style="color: var(--text-muted);">Steel, imported MEP, façade systems, lifts, and fit-out packages all reprice faster than developers can reprice units already sold.</p></div>
+        <div class="glass-warm rounded-xl p-5"><div class="mono text-3xl font-semibold mb-2" style="color: var(--accent);">14,000</div><div class="impact-headline text-[15px] mb-2" style="color: var(--accent);">New launches get pushed out</div><p class="text-xs leading-relaxed" style="color: var(--text-muted);">The first line of defense is deferral. Land is held longer, phase sizes shrink, and launch calendars get rewritten.</p></div>
+        <div class="glass-blue rounded-xl p-5"><div class="mono text-3xl font-semibold mb-2" style="color: var(--blue);">6.0 mo</div><div class="impact-headline text-[15px] mb-2" style="color: var(--blue);">Completion slippage peaks later</div><p class="text-xs leading-relaxed" style="color: var(--text-muted);">The worst delays arrive after the macro peak because procurement friction and contractor cash-flow stress work with a lag.</p></div>
+        <div class="glass-red rounded-xl p-5"><div class="mono text-3xl font-semibold mb-2" style="color: var(--red);">41%</div><div class="impact-headline text-[15px] mb-2" style="color: var(--red);">Late projects become common</div><p class="text-xs leading-relaxed" style="color: var(--text-muted);">By Q1 2027, about two in five projects in the scenario are running behind plan.</p></div>
+        <div class="glass-warm rounded-xl p-5"><div class="mono text-3xl font-semibold mb-2" style="color: var(--accent);">9%</div><div class="impact-headline text-[15px] mb-2" style="color: var(--accent);">Gross margins halve</div><p class="text-xs leading-relaxed" style="color: var(--text-muted);">Margin trough arrives before recovery in sales. Existing contracts lock in revenue while costs continue repricing upward.</p></div>
+        <div class="glass-green rounded-xl p-5"><div class="mono text-3xl font-semibold mb-2" style="color: var(--green);">RM16.0B</div><div class="impact-headline text-[15px] mb-2" style="color: var(--green);">LAD stops being theoretical</div><p class="text-xs leading-relaxed" style="color: var(--text-muted);">At this scale, LAD is not just a legal tail risk. It starts to matter for provisioning, lender conversations, and earnings quality.</p></div>
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<section id="sec-industry" class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="section-label mb-2">Who Gets Hit First</h2>
+    <p class="text-slate-500 text-sm mb-8">Not every player in the stack gets hit the same way.</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div class="glass rounded-xl p-6">
+            <div class="text-sm font-bold text-green-400 mb-5 uppercase tracking-wide">More Resilient</div>
+            <div class="space-y-4">
+                <div><div class="text-sm font-semibold text-slate-200">Industrial / logistics with pre-lets</div><div class="text-xs text-slate-500">Projects with committed tenants and simpler fit-out specs handle the shock better than high-end residential towers.</div></div>
+                <div><div class="text-sm font-semibold text-slate-200">Low-ticket mass housing</div><div class="text-xs text-slate-500">Lower absolute price points keep take-up from collapsing as badly, especially where land costs were locked in earlier.</div></div>
+                <div><div class="text-sm font-semibold text-slate-200">Well-capitalised integrated developers</div><div class="text-xs text-slate-500">Big balance sheets buy time. They can phase launches, support contractors, and absorb timing mismatches better than smaller peers.</div></div>
+            </div>
+        </div>
+        <div class="glass rounded-xl p-6">
+            <div class="text-sm font-bold text-red-400 mb-5 uppercase tracking-wide">Most Exposed</div>
+            <div class="space-y-4">
+                <div><div class="text-sm font-semibold text-slate-200">High-rise residential with heavy imported content</div><div class="text-xs text-slate-500">Lifts, MEP, façade and fit-out packages carry the sharpest FX and import-cost sensitivity.</div></div>
+                <div><div class="text-sm font-semibold text-slate-200">Thinly capitalised contractors</div><div class="text-xs text-slate-500">Working-capital strain, slower certification, and repriced materials push distress rates higher into 2027.</div></div>
+                <div><div class="text-sm font-semibold text-slate-200">Projects sold aggressively before costs reset</div><div class="text-xs text-slate-500">These face the worst combination of locked-in revenue, repriced costs, delivery delay, and potential LAD.</div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<section id="sec-bigpicture" class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="section-label mb-6">The Bigger Picture</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="glass-red rounded-xl p-6"><h3 class="serif font-bold mb-3" style="color: var(--red); font-size: 17px;">This is a margin crisis first</h3><p class="text-sm text-slate-300 leading-relaxed">The immediate problem is not that every project stops. The immediate problem is that cost inflation outruns sales repricing on existing phases, compressing margin and weakening cash conversion.</p></div>
+        <div class="glass-warm rounded-xl p-6"><h3 class="serif font-bold mb-3" style="color: var(--accent); font-size: 17px;">The delivery pain arrives with a lag</h3><p class="text-sm text-slate-300 leading-relaxed">Macro headlines peak in mid-2026. Project delivery stress peaks in early 2027. That lag matters because earnings can still look acceptable just before the backlog problem surfaces.</p></div>
+        <div class="glass-blue rounded-xl p-6"><h3 class="serif font-bold mb-3" style="color: var(--blue); font-size: 17px;">Rates hurt both sides of the equation</h3><p class="text-sm text-slate-300 leading-relaxed">Higher BLR and mortgage rates raise developer finance costs while simultaneously reducing end-buyer affordability. That is what turns a cost shock into a launch and take-up shock.</p></div>
+        <div class="glass-green rounded-xl p-6"><h3 class="serif font-bold mb-3" style="color: var(--green); font-size: 17px;">Normalisation is not a reset</h3><p class="text-sm text-slate-300 leading-relaxed">By Q1 2028 the sector is more stable, but still not back to baseline. Launch volumes, margin, and delivery performance all remain structurally weaker than where they started.</p></div>
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<section id="sec-assumptions" class="max-w-7xl mx-auto px-6 py-8">
+    <h2 class="section-label mb-6">Scenario Assumptions</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="glass rounded-xl p-5"><div class="text-xs text-slate-500 mb-1">Brent Crude Path</div><div class="text-2xl font-bold text-orange-400">$200</div><div class="text-xs text-slate-400 mt-1">Peak Q2 2026 → $140 by Q1 2028</div></div>
+        <div class="glass rounded-xl p-5"><div class="text-xs text-slate-500 mb-1">USD/MYR Peak</div><div class="text-2xl font-bold text-red-400">4.79</div><div class="text-xs text-slate-400 mt-1">Imported content repriced in ringgit</div></div>
+        <div class="glass rounded-xl p-5"><div class="text-xs text-slate-500 mb-1">BLR Response</div><div class="text-2xl font-bold text-blue-400">5.75%</div><div class="text-xs text-slate-400 mt-1">Financing and mortgages reprice up</div></div>
+        <div class="glass rounded-xl p-5"><div class="text-xs text-slate-500 mb-1">LAD Regime</div><div class="text-2xl font-bold text-green-400">10% p.a.</div><div class="text-xs text-slate-400 mt-1">Accrued daily beyond delivery date</div></div>
+    </div>
+</section>
+
+<section id="sec-kpi" class="max-w-7xl mx-auto px-6 pb-8">
+    <h2 class="section-label mb-6">Headline Impact (Peak Quarter vs Baseline)</h2>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div class="glass-red rounded-xl p-5 text-center"><div class="stat-number text-3xl" style="color: var(--red);">21%</div><div class="text-xs text-slate-400 mt-1">Peak cost inflation</div><div class="text-xs text-red-400/60 mono">vs index 100 baseline</div></div>
+        <div class="glass-red rounded-xl p-5 text-center"><div class="stat-number text-3xl" style="color: var(--red);">41%</div><div class="text-xs text-slate-400 mt-1">Projects running late</div><div class="text-xs text-red-400/60 mono">peak Q1 2027</div></div>
+        <div class="glass-warm rounded-xl p-5 text-center"><div class="stat-number text-3xl" style="color: var(--accent);">14,000</div><div class="text-xs text-slate-400 mt-1">Launch trough</div><div class="text-xs text-orange-400/60 mono">vs 28,000 baseline</div></div>
+        <div class="glass-blue rounded-xl p-5 text-center"><div class="stat-number text-3xl" style="color: var(--blue);">6.0 mo</div><div class="text-xs text-slate-400 mt-1">Average delay peak</div><div class="text-xs text-blue-400/60 mono">Q1 2027</div></div>
+        <div class="glass-green rounded-xl p-5 text-center"><div class="stat-number text-3xl" style="color: var(--green);">RM16.0B</div><div class="text-xs text-slate-400 mt-1">Cumulative LAD exposure</div><div class="text-xs text-green-400/60 mono">over 8 quarters</div></div>
+    </div>
+</section>
+
+<section id="sec-charts" class="max-w-7xl mx-auto px-6 py-8">
+    <div class="flex gap-6 border-b border-white/5 mb-8 overflow-x-auto" id="chartTabs">
+        <button onclick="showTab('overview')" class="pb-3 text-sm font-medium tab-active whitespace-nowrap" data-tab="overview">Overview</button>
+        <button onclick="showTab('delivery')" class="pb-3 text-sm font-medium tab-inactive whitespace-nowrap" data-tab="delivery">Delivery & LAD</button>
+        <button onclick="showTab('demand')" class="pb-3 text-sm font-medium tab-inactive whitespace-nowrap" data-tab="demand">Demand & Launches</button>
+        <button onclick="showTab('finance')" class="pb-3 text-sm font-medium tab-inactive whitespace-nowrap" data-tab="finance">Margins & Finance</button>
+    </div>
+
+    <div id="tab-overview">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass rounded-xl p-6"><h3 class="text-sm font-semibold text-slate-300 mb-4">Construction Cost Index</h3><div class="chart-container"><canvas id="chartCost"></canvas></div></div>
+            <div class="glass rounded-xl p-6"><h3 class="text-sm font-semibold text-slate-300 mb-4">Developer Gross Margin (%)</h3><div class="chart-container"><canvas id="chartMargin"></canvas></div></div>
+            <div class="glass rounded-xl p-6"><h3 class="text-sm font-semibold text-slate-300 mb-4">New Launches (units)</h3><div class="chart-container"><canvas id="chartLaunches"></canvas></div></div>
+            <div class="glass rounded-xl p-6"><h3 class="text-sm font-semibold text-slate-300 mb-4">Average Completion Delay (months)</h3><div class="chart-container"><canvas id="chartDelay"></canvas></div></div>
+        </div>
+    </div>
+
+    <div id="tab-delivery" class="hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass rounded-xl p-6"><h3 class="text-sm font-semibold text-slate-300 mb-4">Projects Late (%)</h3><div class="chart-container"><canvas id="chartLate"></canvas></div></div>
+            <div class="glass rounded-xl p-6"><h3 class="text-sm font-semibold text-slate-300 mb-4">LAD Exposure (RM bn / quarter)</h3><div class="chart-container"><canvas id="chartLad"></canvas></div></div>
+            <div class="glass rounded-xl p-6"><h3 class="text-sm font-semibold text-slate-300 mb-4">Contractor Distress (%)</h3><div class="chart-container"><canvas id="chartDistress"></canvas></div></div>
+            <div class="glass rounded-xl p-6"><h3 class="text-sm font-semibold text-slate-300 mb-4">Workforce Shortfall (%)</h3><div class="chart-container"><canvas id="chartWorkforce"></canvas></div></div>
+        </div>
+    </div>
+
+    <div id="tab-demand" class="hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass rounded-xl p-6"><h3 class="text-sm font-semibold text-slate-300 mb-4">6-Month Take-Up (%)</h3><div class="chart-container"><canvas id="chartTakeup"></canvas></div></div>
+            <div class="glass rounded-xl p-6"><h3 class="text-sm font-semibold text-slate-300 mb-4">Residential Overhang (units)</h3><div class="chart-container"><canvas id="chartOverhang"></canvas></div></div>
+            <div class="glass rounded-xl p-6"><h3 class="text-sm font-semibold text-slate-300 mb-4">Housing Investment Growth (% y-o-y)</h3><div class="chart-container"><canvas id="chartHousing"></canvas></div></div>
+            <div class="glass rounded-xl p-6"><h3 class="text-sm font-semibold text-slate-300 mb-4">Mortgage Rate (%)</h3><div class="chart-container"><canvas id="chartMortgage"></canvas></div></div>
+        </div>
+    </div>
+
+    <div id="tab-finance" class="hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass rounded-xl p-6"><h3 class="text-sm font-semibold text-slate-300 mb-4">Bridging Finance (%)</h3><div class="chart-container"><canvas id="chartBridge"></canvas></div></div>
+            <div class="glass rounded-xl p-6"><h3 class="text-sm font-semibold text-slate-300 mb-4">USD/MYR Exchange Rate</h3><div class="chart-container"><canvas id="chartFX"></canvas></div></div>
+            <div class="glass rounded-xl p-6"><h3 class="text-sm font-semibold text-slate-300 mb-4">Imported Fit-Out Cost Index</h3><div class="chart-container"><canvas id="chartFitout"></canvas></div></div>
+            <div class="glass rounded-xl p-6"><h3 class="text-sm font-semibold text-slate-300 mb-4">Energy & Logistics Cost Index</h3><div class="chart-container"><canvas id="chartLogistics"></canvas></div></div>
+        </div>
+    </div>
+</section>
+
+<section id="sec-table" class="max-w-7xl mx-auto px-6 py-8">
+    <h2 class="section-label mb-6">Complete Quarterly Projections</h2>
+    <div class="glass rounded-xl overflow-x-auto">
+        <table class="w-full text-xs mono">
+            <thead>
+                <tr class="border-b border-white/5">
+                    <th class="text-left px-4 py-3 text-slate-500 font-medium sticky left-0 bg-[#0d0d14]">Variable</th>
+                    <th class="text-right px-3 py-3 text-slate-600 font-medium">Baseline</th>
+                    <th class="text-right px-3 py-3 text-orange-400/70 font-medium">Q2 26</th>
+                    <th class="text-right px-3 py-3 text-slate-400 font-medium">Q3 26</th>
+                    <th class="text-right px-3 py-3 text-slate-400 font-medium">Q4 26</th>
+                    <th class="text-right px-3 py-3 text-slate-400 font-medium">Q1 27</th>
+                    <th class="text-right px-3 py-3 text-slate-400 font-medium">Q2 27</th>
+                    <th class="text-right px-3 py-3 text-slate-400 font-medium">Q3 27</th>
+                    <th class="text-right px-3 py-3 text-slate-400 font-medium">Q4 27</th>
+                    <th class="text-right px-3 py-3 text-slate-400 font-medium">Q1 28</th>
+                </tr>
+            </thead>
+            <tbody id="dataTable"></tbody>
+        </table>
+    </div>
+</section>
+
+<footer class="max-w-7xl mx-auto px-6 py-10 border-t border-white/5 flex items-center justify-between">
+    <div class="mono text-[11px]" style="color: var(--text-muted);">MaMaMo · Satellite Study · oil-200-iran-war/residential-projects-slip</div>
+    <div class="text-[11px]" style="color: var(--text-muted);">By Shahid Rogers · March 2026 · Property development satellite scenario</div>
+</footer>
+</div>
+
+<script id="scenario-data" type="application/json">{"scenario_title":"When Oil Hits $200, Residential Projects Slip","shock_description":"Using the Q2 2026 US-Israel-Iran oil shock path as the macro backdrop, this satellite simulation traces how higher energy costs, imported-material inflation, ringgit weakness, and tighter financing conditions hit Malaysian residential development.","analysis_date":"2026-03-30","baseline_period":"Q1 2026","analysis_period":"Q2 2026 - Q1 2028 (8 quarters)","model_source":"Malaysia Quarterly Macroeconomic Model + real-estate delivery satellite assumptions","baseline_assumptions":{"gdp_growth_pct":4.2,"cpi_inflation_pct":2.3,"opr_pct":3,"blr_pct":5.25,"mortgage_rate_pct":4.75,"bridging_rate_pct":5.8,"usdmyr":4.35,"construction_cost_index":100,"imported_fitout_cost_index":100,"new_launches_units":28000,"six_month_take_up_pct":48,"developer_gross_margin_pct":22,"housing_investment_growth_pct":6,"average_completion_delay_months":0.5,"projects_late_pct":18,"lad_exposure_bln_rm":0.3,"contractor_distress_pct":3,"workforce_shortfall_pct":5,"residential_overhang_units":23000},"headline_metrics":{"peak_construction_cost_increase_pct":21,"new_launch_trough_units":14000,"peak_average_delay_months":6,"peak_projects_late_pct":41,"cumulative_lad_exposure_bln_rm":16,"margin_trough_pct":9},"quarterly_projections":{"Q2 2026":{"quarter":"Q2 2026","brent_usd_bbl":200,"usdmyr":4.698,"gdp_growth_yoy_pct":3.4,"cpi_inflation_yoy_pct":25.46,"opr_pct":3.5,"blr_pct":5.75,"mortgage_rate_pct":5.25,"bridging_rate_pct":6.3,"construction_cost_index":118,"imported_fitout_cost_index":128,"energy_logistics_cost_index":135,"new_launches_units":18000,"six_month_take_up_pct":32,"developer_gross_margin_pct":14,"housing_investment_growth_pct":-8,"average_completion_delay_months":2.5,"projects_late_pct":24,"lad_exposure_bln_rm":0.9,"contractor_distress_pct":6,"workforce_shortfall_pct":8,"residential_overhang_units":25500},"Q3 2026":{"quarter":"Q3 2026","brent_usd_bbl":180,"usdmyr":4.745,"gdp_growth_yoy_pct":2.8,"cpi_inflation_yoy_pct":22.45,"opr_pct":3.5,"blr_pct":5.75,"mortgage_rate_pct":5.25,"bridging_rate_pct":6.3,"construction_cost_index":121,"imported_fitout_cost_index":130,"energy_logistics_cost_index":128,"new_launches_units":15000,"six_month_take_up_pct":28,"developer_gross_margin_pct":11,"housing_investment_growth_pct":-12,"average_completion_delay_months":4,"projects_late_pct":31,"lad_exposure_bln_rm":1.5,"contractor_distress_pct":8,"workforce_shortfall_pct":9,"residential_overhang_units":27000},"Q4 2026":{"quarter":"Q4 2026","brent_usd_bbl":160,"usdmyr":4.792,"gdp_growth_yoy_pct":2.5,"cpi_inflation_yoy_pct":20.25,"opr_pct":3.5,"blr_pct":5.75,"mortgage_rate_pct":5.25,"bridging_rate_pct":6.3,"construction_cost_index":119,"imported_fitout_cost_index":126,"energy_logistics_cost_index":120,"new_launches_units":14000,"six_month_take_up_pct":26,"developer_gross_margin_pct":9.5,"housing_investment_growth_pct":-14,"average_completion_delay_months":5.5,"projects_late_pct":38,"lad_exposure_bln_rm":2.1,"contractor_distress_pct":9.5,"workforce_shortfall_pct":9,"residential_overhang_units":28500},"Q1 2027":{"quarter":"Q1 2027","brent_usd_bbl":150,"usdmyr":4.72,"gdp_growth_yoy_pct":3.2,"cpi_inflation_yoy_pct":18.5,"opr_pct":3.5,"blr_pct":5.75,"mortgage_rate_pct":5.25,"bridging_rate_pct":6.3,"construction_cost_index":117,"imported_fitout_cost_index":123,"energy_logistics_cost_index":116,"new_launches_units":15500,"six_month_take_up_pct":27,"developer_gross_margin_pct":9,"housing_investment_growth_pct":-13,"average_completion_delay_months":6,"projects_late_pct":41,"lad_exposure_bln_rm":2.4,"contractor_distress_pct":10,"workforce_shortfall_pct":8.5,"residential_overhang_units":30000},"Q2 2027":{"quarter":"Q2 2027","brent_usd_bbl":145,"usdmyr":4.649,"gdp_growth_yoy_pct":3.6,"cpi_inflation_yoy_pct":17.69,"opr_pct":3.25,"blr_pct":5.5,"mortgage_rate_pct":5,"bridging_rate_pct":6.05,"construction_cost_index":115,"imported_fitout_cost_index":120,"energy_logistics_cost_index":113,"new_launches_units":17000,"six_month_take_up_pct":29,"developer_gross_margin_pct":10,"housing_investment_growth_pct":-11,"average_completion_delay_months":5.8,"projects_late_pct":40,"lad_exposure_bln_rm":2.5,"contractor_distress_pct":9.2,"workforce_shortfall_pct":8,"residential_overhang_units":30800},"Q3 2027":{"quarter":"Q3 2027","brent_usd_bbl":142,"usdmyr":4.579,"gdp_growth_yoy_pct":3.6,"cpi_inflation_yoy_pct":17.26,"opr_pct":3.25,"blr_pct":5.5,"mortgage_rate_pct":5,"bridging_rate_pct":6,"construction_cost_index":113,"imported_fitout_cost_index":118,"energy_logistics_cost_index":110,"new_launches_units":18500,"six_month_take_up_pct":31,"developer_gross_margin_pct":11,"housing_investment_growth_pct":-9,"average_completion_delay_months":5.3,"projects_late_pct":38,"lad_exposure_bln_rm":2.4,"contractor_distress_pct":8.5,"workforce_shortfall_pct":7,"residential_overhang_units":31200},"Q4 2027":{"quarter":"Q4 2027","brent_usd_bbl":140,"usdmyr":4.51,"gdp_growth_yoy_pct":3.9,"cpi_inflation_yoy_pct":17.02,"opr_pct":3.25,"blr_pct":5.5,"mortgage_rate_pct":5,"bridging_rate_pct":5.95,"construction_cost_index":111,"imported_fitout_cost_index":115,"energy_logistics_cost_index":108,"new_launches_units":20000,"six_month_take_up_pct":33,"developer_gross_margin_pct":12.5,"housing_investment_growth_pct":-7,"average_completion_delay_months":4.8,"projects_late_pct":35,"lad_exposure_bln_rm":2.2,"contractor_distress_pct":7.8,"workforce_shortfall_pct":6,"residential_overhang_units":31500},"Q1 2028":{"quarter":"Q1 2028","brent_usd_bbl":140,"usdmyr":4.442,"gdp_growth_yoy_pct":3.9,"cpi_inflation_yoy_pct":17.15,"opr_pct":3.25,"blr_pct":5.5,"mortgage_rate_pct":5,"bridging_rate_pct":5.9,"construction_cost_index":110,"imported_fitout_cost_index":113,"energy_logistics_cost_index":107,"new_launches_units":21500,"six_month_take_up_pct":35,"developer_gross_margin_pct":13.5,"housing_investment_growth_pct":-5,"average_completion_delay_months":4.2,"projects_late_pct":32,"lad_exposure_bln_rm":2,"contractor_distress_pct":7.2,"workforce_shortfall_pct":5.5,"residential_overhang_units":31700}}}</script>
+
+<script>
+const scenario = JSON.parse(document.getElementById('scenario-data').textContent);
+const labels = ['Baseline','Q2 26','Q3 26','Q4 26','Q1 27','Q2 27','Q3 27','Q4 27','Q1 28'];
+const b = scenario.baseline_assumptions;
+const q = scenario.quarterly_projections;
+const D = {
+    cost: [b.construction_cost_index, q["Q2 2026"].construction_cost_index, q["Q3 2026"].construction_cost_index, q["Q4 2026"].construction_cost_index, q["Q1 2027"].construction_cost_index, q["Q2 2027"].construction_cost_index, q["Q3 2027"].construction_cost_index, q["Q4 2027"].construction_cost_index, q["Q1 2028"].construction_cost_index],
+    margin: [b.developer_gross_margin_pct, q["Q2 2026"].developer_gross_margin_pct, q["Q3 2026"].developer_gross_margin_pct, q["Q4 2026"].developer_gross_margin_pct, q["Q1 2027"].developer_gross_margin_pct, q["Q2 2027"].developer_gross_margin_pct, q["Q3 2027"].developer_gross_margin_pct, q["Q4 2027"].developer_gross_margin_pct, q["Q1 2028"].developer_gross_margin_pct],
+    launches: [b.new_launches_units, q["Q2 2026"].new_launches_units, q["Q3 2026"].new_launches_units, q["Q4 2026"].new_launches_units, q["Q1 2027"].new_launches_units, q["Q2 2027"].new_launches_units, q["Q3 2027"].new_launches_units, q["Q4 2027"].new_launches_units, q["Q1 2028"].new_launches_units],
+    delay: [b.average_completion_delay_months, q["Q2 2026"].average_completion_delay_months, q["Q3 2026"].average_completion_delay_months, q["Q4 2026"].average_completion_delay_months, q["Q1 2027"].average_completion_delay_months, q["Q2 2027"].average_completion_delay_months, q["Q3 2027"].average_completion_delay_months, q["Q4 2027"].average_completion_delay_months, q["Q1 2028"].average_completion_delay_months],
+    late: [b.projects_late_pct, q["Q2 2026"].projects_late_pct, q["Q3 2026"].projects_late_pct, q["Q4 2026"].projects_late_pct, q["Q1 2027"].projects_late_pct, q["Q2 2027"].projects_late_pct, q["Q3 2027"].projects_late_pct, q["Q4 2027"].projects_late_pct, q["Q1 2028"].projects_late_pct],
+    lad: [b.lad_exposure_bln_rm, q["Q2 2026"].lad_exposure_bln_rm, q["Q3 2026"].lad_exposure_bln_rm, q["Q4 2026"].lad_exposure_bln_rm, q["Q1 2027"].lad_exposure_bln_rm, q["Q2 2027"].lad_exposure_bln_rm, q["Q3 2027"].lad_exposure_bln_rm, q["Q4 2027"].lad_exposure_bln_rm, q["Q1 2028"].lad_exposure_bln_rm],
+    distress: [b.contractor_distress_pct, q["Q2 2026"].contractor_distress_pct, q["Q3 2026"].contractor_distress_pct, q["Q4 2026"].contractor_distress_pct, q["Q1 2027"].contractor_distress_pct, q["Q2 2027"].contractor_distress_pct, q["Q3 2027"].contractor_distress_pct, q["Q4 2027"].contractor_distress_pct, q["Q1 2028"].contractor_distress_pct],
+    workforce: [b.workforce_shortfall_pct, q["Q2 2026"].workforce_shortfall_pct, q["Q3 2026"].workforce_shortfall_pct, q["Q4 2026"].workforce_shortfall_pct, q["Q1 2027"].workforce_shortfall_pct, q["Q2 2027"].workforce_shortfall_pct, q["Q3 2027"].workforce_shortfall_pct, q["Q4 2027"].workforce_shortfall_pct, q["Q1 2028"].workforce_shortfall_pct],
+    takeup: [b.six_month_take_up_pct, q["Q2 2026"].six_month_take_up_pct, q["Q3 2026"].six_month_take_up_pct, q["Q4 2026"].six_month_take_up_pct, q["Q1 2027"].six_month_take_up_pct, q["Q2 2027"].six_month_take_up_pct, q["Q3 2027"].six_month_take_up_pct, q["Q4 2027"].six_month_take_up_pct, q["Q1 2028"].six_month_take_up_pct],
+    overhang: [b.residential_overhang_units, q["Q2 2026"].residential_overhang_units, q["Q3 2026"].residential_overhang_units, q["Q4 2026"].residential_overhang_units, q["Q1 2027"].residential_overhang_units, q["Q2 2027"].residential_overhang_units, q["Q3 2027"].residential_overhang_units, q["Q4 2027"].residential_overhang_units, q["Q1 2028"].residential_overhang_units],
+    housing: [b.housing_investment_growth_pct, q["Q2 2026"].housing_investment_growth_pct, q["Q3 2026"].housing_investment_growth_pct, q["Q4 2026"].housing_investment_growth_pct, q["Q1 2027"].housing_investment_growth_pct, q["Q2 2027"].housing_investment_growth_pct, q["Q3 2027"].housing_investment_growth_pct, q["Q4 2027"].housing_investment_growth_pct, q["Q1 2028"].housing_investment_growth_pct],
+    mort: [b.mortgage_rate_pct, q["Q2 2026"].mortgage_rate_pct, q["Q3 2026"].mortgage_rate_pct, q["Q4 2026"].mortgage_rate_pct, q["Q1 2027"].mortgage_rate_pct, q["Q2 2027"].mortgage_rate_pct, q["Q3 2027"].mortgage_rate_pct, q["Q4 2027"].mortgage_rate_pct, q["Q1 2028"].mortgage_rate_pct],
+    bridge: [b.bridging_rate_pct, q["Q2 2026"].bridging_rate_pct, q["Q3 2026"].bridging_rate_pct, q["Q4 2026"].bridging_rate_pct, q["Q1 2027"].bridging_rate_pct, q["Q2 2027"].bridging_rate_pct, q["Q3 2027"].bridging_rate_pct, q["Q4 2027"].bridging_rate_pct, q["Q1 2028"].bridging_rate_pct],
+    fx: [b.usdmyr, q["Q2 2026"].usdmyr, q["Q3 2026"].usdmyr, q["Q4 2026"].usdmyr, q["Q1 2027"].usdmyr, q["Q2 2027"].usdmyr, q["Q3 2027"].usdmyr, q["Q4 2027"].usdmyr, q["Q1 2028"].usdmyr],
+    fitout: [b.imported_fitout_cost_index, q["Q2 2026"].imported_fitout_cost_index, q["Q3 2026"].imported_fitout_cost_index, q["Q4 2026"].imported_fitout_cost_index, q["Q1 2027"].imported_fitout_cost_index, q["Q2 2027"].imported_fitout_cost_index, q["Q3 2027"].imported_fitout_cost_index, q["Q4 2027"].imported_fitout_cost_index, q["Q1 2028"].imported_fitout_cost_index],
+    logistics: [100, q["Q2 2026"].energy_logistics_cost_index, q["Q3 2026"].energy_logistics_cost_index, q["Q4 2026"].energy_logistics_cost_index, q["Q1 2027"].energy_logistics_cost_index, q["Q2 2027"].energy_logistics_cost_index, q["Q3 2027"].energy_logistics_cost_index, q["Q4 2027"].energy_logistics_cost_index, q["Q1 2028"].energy_logistics_cost_index]
+};
+
+Chart.defaults.color = '#6b6b7b';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.035)';
+Chart.defaults.font.family = 'Rubik';
+Chart.defaults.font.size = 11;
+Chart.defaults.elements.line.tension = 0.35;
+Chart.defaults.elements.line.borderWidth = 2;
+Chart.defaults.elements.point.radius = 3;
+
+function mkLine(id, datasets, yTitle) {
+    return new Chart(document.getElementById(id), {
+        type: 'line',
+        data: { labels, datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' } },
+            scales: {
+                y: { title: { display: true, text: yTitle, color: '#475569', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.03)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+}
+
+function mkBar(id, datasets, yTitle) {
+    return new Chart(document.getElementById(id), {
+        type: 'bar',
+        data: { labels, datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' } },
+            scales: {
+                y: { title: { display: true, text: yTitle, color: '#475569', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.03)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+}
+
+mkLine('chartCost', [
+    { label: 'Scenario', data: D.cost, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.1)', fill: true },
+    { label: 'Baseline', data: Array(9).fill(100), borderColor: '#334155', borderDash: [5,5] }
+], 'Index');
+
+mkLine('chartMargin', [
+    { label: 'Scenario', data: D.margin, borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.1)', fill: true },
+    { label: 'Baseline', data: Array(9).fill(22), borderColor: '#334155', borderDash: [5,5] }
+], '%');
+
+mkBar('chartLaunches', [{ label: 'New Launches', data: D.launches, backgroundColor: 'rgba(240,138,56,0.45)', borderColor: '#f08a38', borderWidth: 1 }], 'Units');
+mkLine('chartDelay', [{ label: 'Delay', data: D.delay, borderColor: '#6ea4ff', backgroundColor: 'rgba(110,164,255,0.1)', fill: true }], 'Months');
+mkLine('chartLate', [{ label: 'Projects Late', data: D.late, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.1)', fill: true }], '%');
+mkBar('chartLad', [{ label: 'LAD Exposure', data: D.lad, backgroundColor: 'rgba(103,211,143,0.45)', borderColor: '#67d38f', borderWidth: 1 }], 'RM bn');
+mkLine('chartDistress', [{ label: 'Contractor Distress', data: D.distress, borderColor: '#f08a38', backgroundColor: 'rgba(240,138,56,0.1)', fill: true }], '%');
+mkLine('chartWorkforce', [{ label: 'Workforce Shortfall', data: D.workforce, borderColor: '#6ea4ff', backgroundColor: 'rgba(110,164,255,0.1)', fill: true }], '%');
+mkLine('chartTakeup', [
+    { label: 'Scenario', data: D.takeup, borderColor: '#f08a38', backgroundColor: 'rgba(240,138,56,0.1)', fill: true },
+    { label: 'Baseline', data: Array(9).fill(48), borderColor: '#334155', borderDash: [5,5] }
+], '%');
+mkLine('chartOverhang', [{ label: 'Overhang', data: D.overhang, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.1)', fill: true }], 'Units');
+mkLine('chartHousing', [{ label: 'Housing Investment', data: D.housing, borderColor: '#6ea4ff', backgroundColor: 'rgba(110,164,255,0.1)', fill: true }], '% y-o-y');
+mkLine('chartMortgage', [{ label: 'Mortgage Rate', data: D.mort, borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.1)', fill: true }], '%');
+mkLine('chartBridge', [{ label: 'Bridging Rate', data: D.bridge, borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.1)', fill: true }], '%');
+mkLine('chartFX', [{ label: 'USD/MYR', data: D.fx, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true }], 'MYR per USD');
+mkLine('chartFitout', [{ label: 'Imported Fit-Out', data: D.fitout, borderColor: '#6ea4ff', backgroundColor: 'rgba(110,164,255,0.1)', fill: true }], 'Index');
+mkLine('chartLogistics', [{ label: 'Energy & Logistics', data: D.logistics, borderColor: '#f08a38', backgroundColor: 'rgba(240,138,56,0.1)', fill: true }], 'Index');
+
+const rows = [
+    { name: 'Construction Cost Index', unit: '', data: D.cost, fmt: v => v.toFixed(0) },
+    { name: 'Imported Fit-Out Index', unit: '', data: D.fitout, fmt: v => v.toFixed(0) },
+    { name: 'Energy & Logistics Index', unit: '', data: D.logistics, fmt: v => v.toFixed(0) },
+    { sep: true, name: 'PROJECT FLOW' },
+    { name: 'New Launches', unit: 'units', data: D.launches, fmt: v => v.toLocaleString() },
+    { name: '6-Month Take-Up', unit: '%', data: D.takeup, fmt: v => v.toFixed(1), warn: v => v < 30 && v !== 48 },
+    { name: 'Overhang', unit: 'units', data: D.overhang, fmt: v => v.toLocaleString() },
+    { sep: true, name: 'DELIVERY' },
+    { name: 'Avg Completion Delay', unit: 'months', data: D.delay, fmt: v => v.toFixed(1), warn: v => v >= 5 },
+    { name: 'Projects Late', unit: '%', data: D.late, fmt: v => v.toFixed(1), warn: v => v >= 35 },
+    { name: 'LAD Exposure', unit: 'RM bn', data: D.lad, fmt: v => v.toFixed(1), warn: v => v >= 2 },
+    { name: 'Contractor Distress', unit: '%', data: D.distress, fmt: v => v.toFixed(1), warn: v => v >= 8 },
+    { sep: true, name: 'FINANCE' },
+    { name: 'Developer Gross Margin', unit: '%', data: D.margin, fmt: v => v.toFixed(1), warn: v => v <= 10 },
+    { name: 'Mortgage Rate', unit: '%', data: D.mort, fmt: v => v.toFixed(2) },
+    { name: 'Bridging Rate', unit: '%', data: D.bridge, fmt: v => v.toFixed(2) },
+    { name: 'USD/MYR', unit: '', data: D.fx, fmt: v => v.toFixed(2) },
+    { name: 'Housing Investment Growth', unit: '%', data: D.housing, fmt: v => v.toFixed(1), warn: v => v < -10 }
+];
+
+const tbody = document.getElementById('dataTable');
+rows.forEach(r => {
+    if (r.sep) {
+        tbody.innerHTML += `<tr class="border-t border-white/5"><td colspan="10" class="px-4 py-2 text-[10px] tracking-widest text-slate-600 font-semibold sticky left-0 bg-[#0d0d14]">${r.name}</td></tr>`;
+        return;
+    }
+    let html = `<tr class="border-t border-white/5 hover:bg-white/[0.02]">`;
+    html += `<td class="px-4 py-2 text-slate-400 sticky left-0 bg-[#0d0d14]">${r.name} <span class="text-slate-600">${r.unit}</span></td>`;
+    r.data.forEach((v, i) => {
+        let cls = 'text-slate-300';
+        if (i === 0) cls = 'text-slate-500';
+        else if (r.warn && r.warn(v)) cls = 'text-red-400';
+        html += `<td class="text-right px-3 py-2 ${cls}">${r.fmt(v)}</td>`;
+    });
+    html += `</tr>`;
+    tbody.innerHTML += html;
+});
+
+function showTab(name) {
+    document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.add('hidden'));
+    document.getElementById('tab-' + name).classList.remove('hidden');
+    document.querySelectorAll('#chartTabs button').forEach(btn => {
+        btn.classList.remove('tab-active');
+        btn.classList.add('tab-inactive');
+    });
+    document.querySelector(`#chartTabs button[data-tab="${name}"]`).classList.remove('tab-inactive');
+    document.querySelector(`#chartTabs button[data-tab="${name}"]`).classList.add('tab-active');
+}
+
+(function() {
+    const timeline = document.getElementById('timeline');
+    const steps = timeline.querySelectorAll('.tl-step');
+    const progress = document.getElementById('tlProgress');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('active');
+        });
+        let lastActive = 0;
+        steps.forEach((step, i) => { if (step.classList.contains('active')) lastActive = i; });
+        progress.style.height = (lastActive / (steps.length - 1)) * 100 + '%';
+    }, { rootMargin: '-20% 0px -30% 0px', threshold: 0.3 });
+    steps.forEach(step => observer.observe(step));
+})();
+
+(function() {
+    const cards = document.querySelectorAll('.glass-red, .glass-green, .glass-warm, .glass-blue, .glass');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { rootMargin: '0px 0px -60px 0px', threshold: 0.1 });
+    cards.forEach(card => {
+        card.classList.add('scroll-reveal');
+        observer.observe(card);
+    });
+})();
+
+(function() {
+    const sections = document.querySelectorAll('section[id]');
+    const links = document.querySelectorAll('.sb-link');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            links.forEach(link => link.classList.remove('active'));
+            const active = document.querySelector(`.sb-link[data-target="${entry.target.id}"]`);
+            if (active) active.classList.add('active');
+        });
+    }, { rootMargin: '-30% 0px -55% 0px', threshold: 0 });
+    sections.forEach(section => observer.observe(section));
+    links.forEach(link => link.addEventListener('click', () => {
+        document.getElementById(link.dataset.target).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.getElementById('sidebar').classList.remove('mobile-open');
+    }));
+})();
+</script>
+</body>
+</html>

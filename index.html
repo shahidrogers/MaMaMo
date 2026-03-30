@@ -8,19 +8,21 @@
         @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
         :root {
-            --bg: #08080d;
-            --bg-card: rgba(255,255,255,0.025);
-            --border: rgba(255,255,255,0.05);
-            --text: #d4d4dc;
-            --text-muted: #6b6b7b;
-            --accent: #e8833a;
-            --accent-dim: rgba(232,131,58,0.12);
-            --red: #e05252;
-            --red-dim: rgba(224,82,82,0.08);
-            --green: #3bb06a;
-            --green-dim: rgba(59,176,106,0.08);
-            --blue: #5b8dee;
-            --blue-dim: rgba(91,141,238,0.08);
+            --bg: #05070a;
+            --bg-elevated: #0b0f14;
+            --bg-card: rgba(12,18,24,0.88);
+            --border: rgba(115,146,175,0.18);
+            --text: #d8dee8;
+            --text-muted: #7f8b99;
+            --accent: #f08a38;
+            --accent-dim: rgba(240,138,56,0.12);
+            --red: #ff6b57;
+            --red-dim: rgba(255,107,87,0.12);
+            --green: #67d38f;
+            --green-dim: rgba(103,211,143,0.12);
+            --blue: #6ea4ff;
+            --blue-dim: rgba(110,164,255,0.12);
+            --amber: #f5c15d;
             --sans: 'Rubik', system-ui, sans-serif;
             --mono: 'IBM Plex Mono', monospace;
         }
@@ -29,34 +31,37 @@
 
         body {
             font-family: var(--sans);
-            background: var(--bg);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.015) 0, rgba(255,255,255,0) 160px),
+                linear-gradient(90deg, rgba(240,138,56,0.04), transparent 26%, transparent 74%, rgba(110,164,255,0.035)),
+                var(--bg);
             color: var(--text);
             -webkit-font-smoothing: antialiased;
             line-height: 1.6;
+            min-height: 100vh;
         }
 
-        /* Grain */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
             z-index: 9999;
             pointer-events: none;
-            opacity: 0.035;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-            background-repeat: repeat;
-            background-size: 256px 256px;
+            opacity: 0.32;
+            background:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 100% 36px, 36px 100%;
         }
 
         body::after {
             content: '';
             position: fixed;
-            top: -40%;
-            left: -20%;
-            width: 140%;
-            height: 80%;
-            background: radial-gradient(ellipse at 30% 20%, rgba(232,131,58,0.04) 0%, transparent 60%),
-                        radial-gradient(ellipse at 70% 40%, rgba(91,141,238,0.03) 0%, transparent 50%);
+            inset: 0;
+            background:
+                radial-gradient(circle at top left, rgba(240,138,56,0.12), transparent 30%),
+                radial-gradient(circle at top right, rgba(110,164,255,0.09), transparent 26%),
+                linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.32) 100%);
             pointer-events: none;
             z-index: 0;
         }
@@ -72,10 +77,18 @@
         a:hover { opacity: 0.8; }
 
         .mono { font-family: var(--mono); }
-        .container { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+        .container { max-width: 880px; margin: 0 auto; padding: 0 24px; }
 
-        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; transition: border-color 0.3s ease; }
-        .card:hover { border-color: rgba(255,255,255,0.09); }
+        .card {
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)),
+                var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.025), 0 18px 40px rgba(0,0,0,0.22);
+            transition: border-color 0.3s ease, transform 0.2s ease;
+        }
+        .card:hover { border-color: rgba(240,138,56,0.28); transform: translateY(-1px); }
 
         /* Fade in on load */
         @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
@@ -86,9 +99,64 @@
         .fade-in:nth-child(5) { animation-delay: 0.24s; }
         .fade-in:nth-child(6) { animation-delay: 0.30s; }
 
-        .section-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); font-weight: 500; margin-bottom: 16px; }
+        .section-label {
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--amber);
+            font-weight: 500;
+            margin-bottom: 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-label::before {
+            content: '';
+            width: 18px;
+            height: 1px;
+            background: var(--accent);
+            box-shadow: 24px 0 0 rgba(240,138,56,0.28);
+        }
 
-        .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent); margin: 48px 0; }
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(110,164,255,0.14) 14%, rgba(240,138,56,0.24) 50%, rgba(110,164,255,0.14) 86%, transparent);
+            margin: 48px 0;
+            position: relative;
+        }
+        .divider::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: -8px;
+            height: 17px;
+            background: linear-gradient(180deg, transparent, rgba(255,255,255,0.025), transparent);
+            pointer-events: none;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            padding: 0;
+        }
+        .eyebrow-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 24px;
+        }
+        .terminal-pill {
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: 0.06em;
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.02);
+        }
 
         /* Model blocks table */
         .blocks-table { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -100,7 +168,7 @@
         /* Feature list */
         .feature-item { padding: 10px 0; border-bottom: 1px solid var(--border); display: flex; gap: 12px; }
         .feature-item:last-child { border-bottom: none; }
-        .feature-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; padding: 2px 8px; border-radius: 4px; background: var(--accent-dim); color: var(--accent); white-space: nowrap; height: fit-content; margin-top: 2px; }
+        .feature-tag { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; padding: 2px 8px; border: 1px solid rgba(240,138,56,0.22); background: var(--accent-dim); color: var(--accent); white-space: nowrap; height: fit-content; margin-top: 2px; }
 
         /* Study card */
         .study-card { display: block; padding: 24px; border-left: 3px solid var(--accent); transition: border-color 0.3s, transform 0.2s; }
@@ -114,36 +182,43 @@
         .ref-item { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text-muted); line-height: 1.55; }
         .ref-item:last-child { border-bottom: none; }
         .ref-item strong { color: var(--text); font-weight: 500; }
+
+        @media (max-width: 760px) {
+            .hero-grid { padding: 0; }
+            .container { padding: 0 18px; }
+        }
     </style>
 </head>
 <body>
 
 <!-- Hero -->
 <section class="container" style="padding-top: 80px; padding-bottom: 48px;">
-    <div class="fade-in">
-        <div class="text-lg font-semibold" style="font-size: 28px; font-weight: 700; color: #f0f0f5; letter-spacing: -0.02em;">
-            MaMa<span style="color: var(--accent);">Mo</span>
+    <div class="hero-grid">
+        <div>
+            <div class="fade-in">
+                <div class="text-lg font-semibold" style="font-size: 30px; font-weight: 700; color: #f0f4fa; letter-spacing: -0.02em;">
+                    MaMa<span style="color: var(--accent);">Mo</span>
+                </div>
+                <div style="font-size: 14px; color: var(--text-muted); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.12em;">Malaysia Macro Model</div>
+            </div>
+
+            <p class="fade-in" style="font-size: 22px; color: var(--text); margin-top: 28px; line-height: 1.45; max-width: 600px; font-weight: 500;">
+                Malaysia's open-source macroeconomic model.<br>
+                <span style="color: var(--text-muted);">~200 equations, zero gatekeeping.</span>
+            </p>
+            <p class="fade-in" style="font-size: 14px; color: var(--text-muted); margin-top: 14px; max-width: 580px; line-height: 1.7;">
+                A curiosity project by <a href="mailto:shahidrogers+mamamo@gmail.com" style="color: var(--text);">Shahid Rogers</a>, built with <a href="https://claude.ai" target="_blank" style="color: var(--text);">Claude</a> to see what happens when you point an LLM at 200 equations and a country's economy.
+            </p>
+
+            <div class="eyebrow-row fade-in">
+                <span class="terminal-pill">v0.2.0</span>
+                <a href="https://github.com/shahidrogers/MaMaMo" target="_blank" class="terminal-pill" style="display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted);">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    View on GitHub
+                </a>
+                <span class="terminal-pill">By Shahid Rogers + Claude</span>
+            </div>
         </div>
-        <div style="font-size: 15px; color: var(--text-muted); margin-top: 4px;">Malaysia Macro Model</div>
-    </div>
-
-    <p class="fade-in" style="font-size: 20px; color: var(--text); margin-top: 32px; line-height: 1.55; max-width: 600px; font-weight: 400;">
-        Malaysia's open-source macroeconomic model.<br>
-        <span style="color: var(--text-muted);">~200 equations, zero gatekeeping.</span>
-    </p>
-    <p class="fade-in" style="font-size: 14px; color: var(--text-muted); margin-top: 14px; max-width: 560px; line-height: 1.6;">
-        A curiosity project by <a href="mailto:shahidrogers+mamamo@gmail.com" style="color: var(--text);">Shahid Rogers</a>, built with <a href="https://claude.ai" target="_blank" style="color: var(--text);">Claude</a> — to see what happens when you point an LLM at 200 equations and a country's economy.
-    </p>
-
-    <div class="fade-in" style="display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap;">
-        <span class="mono" style="font-size: 11px; padding: 5px 12px; border-radius: 6px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);">v0.2.0</span>
-        <a href="https://github.com/shahidrogers/MaMaMo" target="_blank" style="font-size: 11px; padding: 5px 12px; border-radius: 6px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-            View on GitHub
-        </a>
-        <span style="font-size: 11px; padding: 5px 12px; border-radius: 6px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);">
-            By <a href="mailto:shahidrogers+mamamo@gmail.com" style="color: var(--text);">Shahid Rogers</a> + <a href="https://claude.ai" target="_blank" style="color: var(--text);">Claude</a>
-        </span>
     </div>
 </section>
 
@@ -165,7 +240,7 @@
 <!-- Studies -->
 <section class="container fade-in">
     <div class="section-label">Studies</div>
-    <a href="studies/simulations/oil-200-iran-war/" class="card study-card" style="display: block; margin-top: 8px;">
+    <a href="studies/simulations/oil-200-iran-war/index.html" class="card study-card" style="display: block; margin-top: 8px;">
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
             <span class="mono" style="font-size: 10px; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; background: var(--red-dim); color: var(--red);">SIMULATION</span>
             <span class="mono" style="font-size: 10px; color: var(--text-muted);">8 quarters</span>

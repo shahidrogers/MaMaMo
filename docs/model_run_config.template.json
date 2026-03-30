@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0.0",
+  "model_version": "v0.2.0",
+  "scenario_name": "baseline",
+  "scenario_owner": "research-team",
+  "data_vintage": "2026-03-30",
+  "historical_end_quarter": "2025Q4",
+  "forecast_start_quarter": "2026Q1",
+  "forecast_end_quarter": "2028Q4",
+  "source_notes": {
+    "PBRENT": "ICE Brent futures strip as of vintage date",
+    "PCPO": "MPOB spot history plus analyst scenario path",
+    "CREDIT": "BNM historical through vintage date; forecast path manually overridden",
+    "GOVDEBTADJ": "Quarterly reconciliation bridge from fiscal team"
+  },
+  "manual_overrides": [
+    "CREDIT",
+    "PETMARG"
+  ],
+  "reconciliation_required": true
+}

@@ -1,0 +1,505 @@
+{
+  "schema_version": "1.0.0",
+  "model": "Malaysia Quarterly Model",
+  "model_file": "/Users/shahidrogers/Desktop/stagflation/model/malaysia-quarterly-model.md",
+  "frequency": "quarterly",
+  "index_field": "quarter",
+  "quarter_format": "YYYYQn",
+  "required_layers": [
+    "historical_input",
+    "scenario_input",
+    "policy_input",
+    "demographic_anchor",
+    "calibration_input",
+    "preprocess_derived"
+  ],
+  "series": [
+    {
+      "name": "PBRENT",
+      "category": "scenario_input",
+      "required": true,
+      "unit": "USD per barrel",
+      "source_hint": "ICE Brent or equivalent benchmark series",
+      "notes": "Primary oil-price shock input; used in energy, subsidy, inflation, and fiscal blocks."
+    },
+    {
+      "name": "PCPO",
+      "category": "scenario_input",
+      "required": true,
+      "unit": "RM per tonne",
+      "source_hint": "MPOB or scenario override",
+      "notes": "World CPO price path; must be supplied for both history and scenario horizon."
+    },
+    {
+      "name": "WEQPR",
+      "category": "scenario_input",
+      "required": true,
+      "unit": "index",
+      "source_hint": "Global equity index level normalized to model dataset",
+      "notes": "Used in external income and household wealth channels."
+    },
+    {
+      "name": "WSTD",
+      "category": "scenario_input",
+      "required": true,
+      "unit": "index",
+      "source_hint": "Global semiconductor demand/trade proxy",
+      "notes": "Key export demand driver for E&E block."
+    },
+    {
+      "name": "WTOUR",
+      "category": "scenario_input",
+      "required": true,
+      "unit": "index",
+      "source_hint": "Global tourism demand proxy",
+      "notes": "Drives services export recovery path."
+    },
+    {
+      "name": "WPG",
+      "category": "scenario_input",
+      "required": true,
+      "unit": "index",
+      "source_hint": "World goods price index",
+      "notes": "Needed for traded-goods pricing equations."
+    },
+    {
+      "name": "WCPI",
+      "category": "scenario_input",
+      "required": true,
+      "unit": "index",
+      "source_hint": "Trade-weighted world CPI or imported inflation proxy",
+      "notes": "Required for NEER/REER pass-through block."
+    },
+    {
+      "name": "UST10",
+      "category": "scenario_input",
+      "required": true,
+      "unit": "percent",
+      "source_hint": "US 10-year Treasury yield",
+      "notes": "Feeds Malaysian long-end rate formation."
+    },
+    {
+      "name": "OPR",
+      "category": "policy_input",
+      "required": true,
+      "unit": "percent",
+      "source_hint": "BNM policy path",
+      "notes": "Primary monetary policy instrument."
+    },
+    {
+      "name": "REER",
+      "category": "policy_input",
+      "required": true,
+      "unit": "index",
+      "source_hint": "BNM REER history plus scenario path",
+      "notes": "Treated as externally supplied in current model setup."
+    },
+    {
+      "name": "PADMINPRICE",
+      "category": "policy_input",
+      "required": true,
+      "unit": "RM per litre",
+      "source_hint": "Administered fuel price assumption",
+      "notes": "Needed for subsidy and administered CPI block."
+    },
+    {
+      "name": "SSTRATE",
+      "category": "policy_input",
+      "required": true,
+      "unit": "share",
+      "source_hint": "Effective SST rate schedule",
+      "notes": "Express as decimal rate compatible with tax equations."
+    },
+    {
+      "name": "DEVGR",
+      "category": "policy_input",
+      "required": true,
+      "unit": "quarterly growth rate",
+      "source_hint": "Development expenditure growth assumption",
+      "notes": "Policy lever for real development spending."
+    },
+    {
+      "name": "CPODRATE",
+      "category": "policy_input",
+      "required": true,
+      "unit": "share",
+      "source_hint": "CPO export duty schedule",
+      "notes": "Express as decimal rate."
+    },
+    {
+      "name": "FUELCONS",
+      "category": "policy_input",
+      "required": true,
+      "unit": "volume index or million litres",
+      "source_hint": "Energy ministry or calibrated demand path",
+      "notes": "Must use a consistent unit with subsidy scaling."
+    },
+    {
+      "name": "EPFWDRAW",
+      "category": "policy_input",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "EPF withdrawal policy assumption",
+      "notes": "Zero in baseline unless policy explicitly changes."
+    },
+    {
+      "name": "ELNINO",
+      "category": "scenario_input",
+      "required": true,
+      "unit": "indicator",
+      "source_hint": "Binary or scaled weather shock flag",
+      "notes": "Drives palm-oil production downside."
+    },
+    {
+      "name": "TRGDP",
+      "category": "demographic_anchor",
+      "required": true,
+      "unit": "RM million, constant prices",
+      "source_hint": "HP/filter estimate or production-function potential GDP",
+      "notes": "Potential output anchor; should be versioned with methodology."
+    },
+    {
+      "name": "POPAL",
+      "category": "demographic_anchor",
+      "required": true,
+      "unit": "persons",
+      "source_hint": "DOSM population series or demographic projection",
+      "notes": "Total population."
+    },
+    {
+      "name": "WAP",
+      "category": "demographic_anchor",
+      "required": true,
+      "unit": "persons",
+      "source_hint": "DOSM working-age population or projection",
+      "notes": "Required for labour-force block."
+    },
+    {
+      "name": "ADJW",
+      "category": "calibration_input",
+      "required": true,
+      "unit": "multiplier",
+      "source_hint": "Calibration series",
+      "notes": "Household wage adjustment wedge; should eventually be replaced or tightly governed."
+    },
+    {
+      "name": "GWADJ",
+      "category": "calibration_input",
+      "required": true,
+      "unit": "multiplier",
+      "source_hint": "Calibration series",
+      "notes": "Government wage adjustment wedge."
+    },
+    {
+      "name": "ERGOV",
+      "category": "calibration_input",
+      "required": true,
+      "unit": "ratio",
+      "source_hint": "Calibration series",
+      "notes": "Government average earnings ratio."
+    },
+    {
+      "name": "MCCI",
+      "category": "calibration_input",
+      "required": true,
+      "unit": "index",
+      "source_hint": "Consumer confidence series or scenario assumption",
+      "notes": "High-value gap; currently external but should get a clearer rule."
+    },
+    {
+      "name": "IIB",
+      "category": "calibration_input",
+      "required": true,
+      "unit": "share",
+      "source_hint": "Tax incentive schedule",
+      "notes": "Initial investment allowance rate."
+    },
+    {
+      "name": "SIB",
+      "category": "calibration_input",
+      "required": true,
+      "unit": "share",
+      "source_hint": "Tax incentive schedule",
+      "notes": "Subsequent investment allowance rate."
+    },
+    {
+      "name": "NDIV",
+      "category": "calibration_input",
+      "required": true,
+      "unit": "share",
+      "source_hint": "Dividend yield assumption",
+      "notes": "Used in equity return block."
+    },
+    {
+      "name": "PETMARG",
+      "category": "calibration_input",
+      "required": true,
+      "unit": "share",
+      "source_hint": "Petronas profit margin calibration",
+      "notes": "Should be documented as a policy/calibration layer, not hidden inside scenario notes."
+    },
+    {
+      "name": "SSTADJ",
+      "category": "calibration_input",
+      "required": true,
+      "unit": "multiplier",
+      "source_hint": "Tax collection efficiency adjustment",
+      "notes": "Collection-efficiency wedge."
+    },
+    {
+      "name": "TLEVIES",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "Historical fiscal dataset",
+      "notes": "Other tax levies; can stay external but should be fed by fiscal preprocessing."
+    },
+    {
+      "name": "TOTHER",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "Historical fiscal dataset",
+      "notes": "Other direct taxes."
+    },
+    {
+      "name": "GOVOREV",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "Historical fiscal dataset",
+      "notes": "Other non-tax revenue."
+    },
+    {
+      "name": "GOVDEBTADJ",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "Debt reconciliation bridge",
+      "notes": "Should explicitly reconcile stock-flow differences, valuation changes, and off-budget items."
+    },
+    {
+      "name": "GOVGRANT",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "Government finance dataset",
+      "notes": "Government grants/transfers component."
+    },
+    {
+      "name": "GOVPEN",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "Government finance dataset",
+      "notes": "Pension component."
+    },
+    {
+      "name": "GOVOTR",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "Government finance dataset",
+      "notes": "Other transfers."
+    },
+    {
+      "name": "GOVINVI",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "Government investment income series",
+      "notes": "Non-tax revenue component."
+    },
+    {
+      "name": "GOVFEES",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "Government finance dataset",
+      "notes": "Fees and charges."
+    },
+    {
+      "name": "BSHTRF",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "Balance-sheet transfer bridge",
+      "notes": "Should be documented if it carries one-off balance-sheet operations."
+    },
+    {
+      "name": "DLFDI",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "International investment position dataset",
+      "notes": "Direct investment liabilities stock."
+    },
+    {
+      "name": "FLIAB",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "International investment position dataset",
+      "notes": "Total foreign liabilities stock."
+    },
+    {
+      "name": "DAFDI",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "International investment position dataset",
+      "notes": "Direct investment assets stock."
+    },
+    {
+      "name": "FASSET",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "International investment position dataset",
+      "notes": "Total foreign assets stock."
+    },
+    {
+      "name": "EQFLI",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "International investment position dataset",
+      "notes": "Equity liabilities stock."
+    },
+    {
+      "name": "BFLI",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "International investment position dataset",
+      "notes": "Debt liabilities stock."
+    },
+    {
+      "name": "OTFLI",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "International investment position dataset",
+      "notes": "Other liabilities stock."
+    },
+    {
+      "name": "EQFA",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "International investment position dataset",
+      "notes": "Equity assets stock."
+    },
+    {
+      "name": "BFA",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "International investment position dataset",
+      "notes": "Debt assets stock."
+    },
+    {
+      "name": "OTFA",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "International investment position dataset",
+      "notes": "Other assets stock."
+    },
+    {
+      "name": "M3BUS",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "Monetary statistics dataset",
+      "notes": "Business money holdings."
+    },
+    {
+      "name": "M3OFI",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "Monetary statistics dataset",
+      "notes": "Other financial institutions' money holdings."
+    },
+    {
+      "name": "OSB",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "Household balance-sheet dataset",
+      "notes": "Other savings/financial balance stock."
+    },
+    {
+      "name": "KGHH",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "Household wealth reconciliation dataset",
+      "notes": "Capital gains/transfers to households."
+    },
+    {
+      "name": "VALHH",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "Household wealth dataset",
+      "notes": "Valuables held by households."
+    },
+    {
+      "name": "IHHPS",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "National accounts household capital formation",
+      "notes": "Household investment at current prices."
+    },
+    {
+      "name": "OAHH",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "Household financial assets dataset",
+      "notes": "Other assets held by households."
+    },
+    {
+      "name": "HARAREA",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "hectares",
+      "source_hint": "MPOB planted/harvested area series",
+      "notes": "High-value structural input for CPO supply; should eventually have a clearer rule."
+    },
+    {
+      "name": "NNOILGVA",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million, constant prices",
+      "source_hint": "Derived from national accounts",
+      "notes": "Non-oil GDP proxy used in oil-demand block."
+    },
+    {
+      "name": "SDI",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "National accounts balancing item",
+      "notes": "Statistical discrepancy on income side."
+    },
+    {
+      "name": "CREDIT",
+      "category": "preprocess_derived",
+      "required": true,
+      "unit": "RM million",
+      "source_hint": "Bank Negara private-sector credit series",
+      "notes": "Currently external; high-priority candidate for its own satellite equation."
+    }
+  ],
+  "validation_rules": [
+    "All required series must exist for every quarterly observation in the historical and forecast horizon.",
+    "Rates expressed as shares must be stored as decimals, not percentages.",
+    "Stock variables must carry level values, not quarter-on-quarter changes.",
+    "Scenario overrides must not silently overwrite historical observations without versioning.",
+    "Any non-zero GOVDEBTADJ must be accompanied by a reconciliation note."
+  ]
+}

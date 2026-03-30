@@ -3,7 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MaMaMo — Malaysia Macro Model</title>
+    <title>MaMaMo | Open-Source Malaysia Macroeconomic Model</title>
+    <meta name="description" content="MaMaMo is an open-source quarterly macroeconomic model for Malaysia with about 200 equations, scenario studies, and public documentation for researchers, students, and policy-curious builders.">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <meta name="author" content="Shahid Rogers">
+    <meta name="theme-color" content="#05070a">
+    <link rel="canonical" href="https://shahidrogers.github.io/MaMaMo/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="MaMaMo">
+    <meta property="og:title" content="MaMaMo | Open-Source Malaysia Macroeconomic Model">
+    <meta property="og:description" content="An open-source quarterly macroeconomic model for Malaysia with roughly 200 equations, public scenario studies, and transparent model structure.">
+    <meta property="og:url" content="https://shahidrogers.github.io/MaMaMo/">
+    <meta property="og:locale" content="en_MY">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MaMaMo | Open-Source Malaysia Macroeconomic Model">
+    <meta name="twitter:description" content="Open-source Malaysia macro model with public scenarios, documentation, and a transparent structural framework.">
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "MaMaMo",
+            "url": "https://shahidrogers.github.io/MaMaMo/",
+            "description": "Open-source quarterly macroeconomic model for Malaysia with public scenario studies and transparent documentation.",
+            "publisher": {
+                "@type": "Person",
+                "name": "Shahid Rogers"
+            },
+            "about": {
+                "@type": "Thing",
+                "name": "Malaysia macroeconomic modeling"
+            },
+            "hasPart": [
+                {
+                    "@type": "CreativeWork",
+                    "name": "$200 Oil — Iran War Escalation",
+                    "url": "https://shahidrogers.github.io/MaMaMo/studies/simulations/oil-200-iran-war/"
+                },
+                {
+                    "@type": "CreativeWork",
+                    "name": "When Oil Hits $200, Residential Projects Slip",
+                    "url": "https://shahidrogers.github.io/MaMaMo/studies/simulations/oil-200-iran-war/satellite/residential-projects-slip/"
+                }
+            ]
+        }
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
@@ -278,11 +321,12 @@
     </style>
 </head>
 <body>
+<main>
 
 <!-- Hero -->
 <section class="container" style="padding-top: 80px; padding-bottom: 48px;">
     <div class="hero-grid">
-        <div>
+        <header>
             <div class="fade-in">
                 <div class="text-lg font-semibold" style="font-size: 30px; font-weight: 700; color: #f0f4fa; letter-spacing: -0.02em;">
                     MaMa<span style="color: var(--accent);">Mo</span>
@@ -290,23 +334,23 @@
                 <div style="font-size: 14px; color: var(--text-muted); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.12em;">Malaysia Macro Model</div>
             </div>
 
-            <p class="fade-in" style="font-size: 22px; color: var(--text); margin-top: 28px; line-height: 1.45; max-width: 600px; font-weight: 500;">
+            <h1 class="fade-in" style="font-size: 22px; color: var(--text); margin-top: 28px; line-height: 1.45; max-width: 600px; font-weight: 500;">
                 Malaysia's open-source macroeconomic model.<br>
                 <span style="color: var(--text-muted);">~200 equations, zero gatekeeping.</span>
-            </p>
+            </h1>
             <p class="fade-in" style="font-size: 14px; color: var(--text-muted); margin-top: 14px; max-width: 580px; line-height: 1.7;">
-                A curiosity project by <a href="mailto:shahidrogers+mamamo@gmail.com" style="color: var(--text);">Shahid Rogers</a>, built with <a href="https://claude.ai" target="_blank" style="color: var(--text);">Claude</a> to see what happens when you point an LLM at 200 equations and a country's economy.
+                A curiosity project by <a href="mailto:shahidrogers+mamamo@gmail.com" style="color: var(--text);">Shahid Rogers</a>, built with <a href="https://claude.ai" target="_blank" rel="noopener noreferrer" style="color: var(--text);">Claude</a> to see what happens when you point an LLM at 200 equations and a country's economy.
             </p>
 
             <div class="eyebrow-row fade-in">
                 <span class="terminal-pill">v0.2.0</span>
-                <a href="https://github.com/shahidrogers/MaMaMo" target="_blank" class="terminal-pill" style="display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted);">
+                <a href="https://github.com/shahidrogers/MaMaMo" target="_blank" rel="noopener noreferrer" aria-label="View the MaMaMo source code on GitHub" class="terminal-pill" style="display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted);">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                     View on GitHub
                 </a>
                 <span class="terminal-pill">By Shahid Rogers + Claude</span>
             </div>
-        </div>
+        </header>
     </div>
 </section>
 
@@ -314,7 +358,7 @@
 
 <!-- What is this -->
 <section class="container fade-in">
-    <div class="section-label">What is this?</div>
+    <h2 class="section-label">What is this?</h2>
     <p style="font-size: 15px; color: var(--text-muted); line-height: 1.7; max-width: 640px;">
         MaMaMo is a structural quarterly macroeconomic model for the Malaysian economy. It takes the architecture of the UK OBR/HM Treasury model and rebuilds it — every block, every coefficient, every institutional detail — for Malaysia.
     </p>
@@ -327,7 +371,7 @@
 
 <!-- Studies -->
 <section class="container fade-in">
-    <div class="section-label">Studies</div>
+    <h2 class="section-label">Studies</h2>
     <div class="card study-family" style="margin-top: 8px;">
         <a href="studies/simulations/oil-200-iran-war/index.html" class="study-main">
             <div class="study-meta">
@@ -335,7 +379,7 @@
                 <span class="mono" style="font-size: 10px; color: var(--text-muted);">8 quarters</span>
                 <span class="mono" style="font-size: 10px; color: var(--text-muted);">scenario family</span>
             </div>
-            <div class="study-main-title" style="font-size: 22px; font-weight: 700; color: #f0f0f5; margin-bottom: 8px;">$200 Oil — Iran War Escalation</div>
+            <h3 class="study-main-title" style="font-size: 22px; font-weight: 700; color: #f0f0f5; margin-bottom: 8px;">$200 Oil — Iran War Escalation</h3>
             <p style="font-size: 14px; color: var(--text-muted); line-height: 1.7; max-width: 580px;">
                 Brent crude spikes to $200/bbl on a US/Israel-Iran ground war. Traced through all 17 model blocks, from Petronas profits to fuel subsidies, from the ringgit to household balance sheets.
             </p>
@@ -373,7 +417,7 @@
                     <span class="study-badge" style="background: rgba(240,138,56,0.12); color: var(--accent);">RESIDENTIAL</span>
                     <span class="mono" style="font-size: 10px; color: var(--text-muted);">satellite</span>
                 </div>
-                <div class="study-satellite-title" style="font-size: 16px; font-weight: 700; color: #f0f0f5; margin-bottom: 6px;">When Oil Hits $200, Residential Projects Slip</div>
+                <h3 class="study-satellite-title" style="font-size: 16px; font-weight: 700; color: #f0f0f5; margin-bottom: 6px;">When Oil Hits $200, Residential Projects Slip</h3>
                 <p style="font-size: 12px; color: var(--text-muted); line-height: 1.65;">
                     Construction costs, launch deferrals, delivery delays, contractor stress, and LAD under the same oil-war shock.
                 </p>
@@ -391,7 +435,7 @@
 
 <!-- What's inside -->
 <section class="container fade-in">
-    <div class="section-label">What's inside</div>
+    <h2 class="section-label">What's inside</h2>
     <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">~200 equations across 17 blocks, written in EViews-compatible syntax.</p>
 
     <div class="card" style="padding: 20px; overflow-x: auto;">
@@ -416,7 +460,7 @@
 
 <!-- What makes it Malaysian -->
 <section class="container fade-in">
-    <div class="section-label">What makes it Malaysian</div>
+    <h2 class="section-label">What makes it Malaysian</h2>
     <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">This isn't a UK model with the labels swapped.</p>
 
     <div class="card" style="padding: 20px;">
@@ -461,7 +505,7 @@
 
 <!-- Key assumptions -->
 <section class="container fade-in">
-    <div class="section-label">Key assumptions</div>
+    <h2 class="section-label">Key assumptions</h2>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
         <div class="card" style="padding: 16px;">
             <div class="mono" style="font-size: 10px; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 6px;">STRUCTURAL</div>
@@ -482,7 +526,7 @@
 
 <!-- Use cases -->
 <section class="container fade-in">
-    <div class="section-label">Use cases</div>
+    <h2 class="section-label">Use cases</h2>
     <div style="display: flex; flex-wrap: wrap; gap: 8px;">
         <span style="font-size: 12px; padding: 6px 14px; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);">Fiscal forecasting under different oil/CPO paths</span>
         <span style="font-size: 12px; padding: 6px 14px; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);">OPR transmission analysis</span>
@@ -497,7 +541,7 @@
 
 <!-- Roadmap -->
 <section class="container fade-in">
-    <div class="section-label">What's next</div>
+    <h2 class="section-label">What's next</h2>
     <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Contributions welcome. Roughly in priority order:</p>
 
     <div class="card" style="padding: 20px;">
@@ -527,7 +571,7 @@
 
 <!-- Changelog -->
 <section class="container fade-in">
-    <div class="section-label">Changelog</div>
+    <h2 class="section-label">Changelog</h2>
     <div style="display: flex; flex-direction: column; gap: 12px;">
         <div class="card" style="padding: 16px; display: flex; gap: 16px; align-items: flex-start;">
             <span class="mono" style="font-size: 12px; font-weight: 600; color: var(--accent); flex-shrink: 0;">v0.2.0</span>
@@ -544,34 +588,34 @@
 
 <!-- References -->
 <section class="container fade-in">
-    <div class="section-label">References</div>
+    <h2 class="section-label">References</h2>
 
     <div style="margin-bottom: 24px;">
-        <div style="font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 8px;">Official data sources</div>
+        <h3 style="font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 8px;">Official data sources</h3>
         <div class="card" style="padding: 16px;">
-            <div class="ref-item"><strong>OpenDOSM</strong> — Malaysia's open data platform. GDP, inflation, employment, trade under CC BY 4.0. <a href="https://open.dosm.gov.my/" target="_blank">open.dosm.gov.my</a></div>
-            <div class="ref-item"><strong>DOSM Input-Output Tables 2015</strong> — Basis for import content ratios and cost structure weights. <a href="https://www.dosm.gov.my/portal-main/release-subthemes/economy" target="_blank">dosm.gov.my</a></div>
-            <div class="ref-item"><strong>BNM Monthly Statistical Bulletin</strong> — Interest rates, monetary aggregates, credit, BOP, financial data. <a href="https://www.bnm.gov.my/publications" target="_blank">bnm.gov.my</a></div>
+            <div class="ref-item"><strong>OpenDOSM</strong> — Malaysia's open data platform. GDP, inflation, employment, trade under CC BY 4.0. <a href="https://open.dosm.gov.my/" target="_blank" rel="noopener noreferrer">open.dosm.gov.my</a></div>
+            <div class="ref-item"><strong>DOSM Input-Output Tables 2015</strong> — Basis for import content ratios and cost structure weights. <a href="https://www.dosm.gov.my/portal-main/release-subthemes/economy" target="_blank" rel="noopener noreferrer">dosm.gov.my</a></div>
+            <div class="ref-item"><strong>BNM Monthly Statistical Bulletin</strong> — Interest rates, monetary aggregates, credit, BOP, financial data. <a href="https://www.bnm.gov.my/publications" target="_blank" rel="noopener noreferrer">bnm.gov.my</a></div>
         </div>
     </div>
 
     <div style="margin-bottom: 24px;">
-        <div style="font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 8px;">Institutional reports</div>
+        <h3 style="font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 8px;">Institutional reports</h3>
         <div class="card" style="padding: 16px;">
-            <div class="ref-item"><strong>BNM Annual Report 2024</strong> — Macro outlook, monetary policy review, financial stability. <a href="https://www.bnm.gov.my/ar2024" target="_blank">bnm.gov.my</a></div>
-            <div class="ref-item"><strong>IMF Malaysia: 2025 Article IV</strong> — Country Report No. 25/57. Staff report with macro projections. <a href="https://www.imf.org/en/publications/cr/issues/2025/03/03/malaysia-2025-article-iv-consultation-press-release-and-staff-report-562916" target="_blank">imf.org</a></div>
-            <div class="ref-item"><strong>IMF Malaysia: 2024 Article IV</strong> — Country Report No. 24/70. <a href="https://www.imf.org/en/Publications/CR/Issues/2024/03/08/Malaysia-2024-Article-IV-Consultation-Press-Release-Staff-Report-and-Statement-by-the-546087" target="_blank">imf.org</a></div>
-            <div class="ref-item"><strong>World Bank Malaysia Economic Monitor, Oct 2025</strong> — Digital transformation & public sector productivity. <a href="https://www.worldbank.org/en/country/malaysia/publication/malaysia-economic-monitor-reports" target="_blank">worldbank.org</a></div>
-            <div class="ref-item"><strong>OBR (UK) Forecast Methodology</strong> — Original UK model architecture that MaMaMo adapts. <a href="https://obr.uk/forecasts-in-depth/forecast-methodology/" target="_blank">obr.uk</a></div>
+            <div class="ref-item"><strong>BNM Annual Report 2024</strong> — Macro outlook, monetary policy review, financial stability. <a href="https://www.bnm.gov.my/ar2024" target="_blank" rel="noopener noreferrer">bnm.gov.my</a></div>
+            <div class="ref-item"><strong>IMF Malaysia: 2025 Article IV</strong> — Country Report No. 25/57. Staff report with macro projections. <a href="https://www.imf.org/en/publications/cr/issues/2025/03/03/malaysia-2025-article-iv-consultation-press-release-and-staff-report-562916" target="_blank" rel="noopener noreferrer">imf.org</a></div>
+            <div class="ref-item"><strong>IMF Malaysia: 2024 Article IV</strong> — Country Report No. 24/70. <a href="https://www.imf.org/en/Publications/CR/Issues/2024/03/08/Malaysia-2024-Article-IV-Consultation-Press-Release-Staff-Report-and-Statement-by-the-546087" target="_blank" rel="noopener noreferrer">imf.org</a></div>
+            <div class="ref-item"><strong>World Bank Malaysia Economic Monitor, Oct 2025</strong> — Digital transformation & public sector productivity. <a href="https://www.worldbank.org/en/country/malaysia/publication/malaysia-economic-monitor-reports" target="_blank" rel="noopener noreferrer">worldbank.org</a></div>
+            <div class="ref-item"><strong>OBR (UK) Forecast Methodology</strong> — Original UK model architecture that MaMaMo adapts. <a href="https://obr.uk/forecasts-in-depth/forecast-methodology/" target="_blank" rel="noopener noreferrer">obr.uk</a></div>
         </div>
     </div>
 
     <div>
-        <div style="font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 8px;">Academic papers</div>
+        <h3 style="font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 8px;">Academic papers</h3>
         <div class="card" style="padding: 16px;">
-            <div class="ref-item">Alp, Elekdag & Lall (2012). "An Assessment of Malaysian Monetary Policy During the GFC." <em>IMF WP No. 12/35</em>. <a href="https://www.imf.org/en/Publications/WP/Issues/2016/12/31/An-Assessment-of-Malaysian-Monetary-Policy-During-the-Global-Financial-Crisis-of-2008-09-25685" target="_blank">imf.org</a></div>
-            <div class="ref-item">BIS (2008). "The Monetary Transmission Mechanism in Malaysia." <em>BIS Papers No. 35</em>. <a href="https://www.bis.org/publ/bppdf/bispap35p.pdf" target="_blank">bis.org</a></div>
-            <div class="ref-item">Pham & Nguyen (2018). "The Transmission Mechanism of Malaysian Monetary Policy: A TV-VAR Approach." <em>Empirical Economics</em>, 55(2). <a href="https://ideas.repec.org/a/spr/empeco/v55y2018i2d10.1007_s00181-017-1280-z.html" target="_blank">ideas.repec.org</a></div>
+            <div class="ref-item">Alp, Elekdag & Lall (2012). "An Assessment of Malaysian Monetary Policy During the GFC." <em>IMF WP No. 12/35</em>. <a href="https://www.imf.org/en/Publications/WP/Issues/2016/12/31/An-Assessment-of-Malaysian-Monetary-Policy-During-the-Global-Financial-Crisis-of-2008-09-25685" target="_blank" rel="noopener noreferrer">imf.org</a></div>
+            <div class="ref-item">BIS (2008). "The Monetary Transmission Mechanism in Malaysia." <em>BIS Papers No. 35</em>. <a href="https://www.bis.org/publ/bppdf/bispap35p.pdf" target="_blank" rel="noopener noreferrer">bis.org</a></div>
+            <div class="ref-item">Pham & Nguyen (2018). "The Transmission Mechanism of Malaysian Monetary Policy: A TV-VAR Approach." <em>Empirical Economics</em>, 55(2). <a href="https://ideas.repec.org/a/spr/empeco/v55y2018i2d10.1007_s00181-017-1280-z.html" target="_blank" rel="noopener noreferrer">ideas.repec.org</a></div>
         </div>
     </div>
 </section>
@@ -584,5 +628,6 @@
     <div style="font-size: 11px; color: var(--text-muted);">Research and educational use. Not financial advice.</div>
 </footer>
 
+</main>
 </body>
 </html>

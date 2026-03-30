@@ -27,6 +27,9 @@
         .tab-inactive { border-bottom: 2px solid transparent; color: #64748b; }
         .tab-inactive:hover { color: #94a3b8; }
         .scenario-tag { background: linear-gradient(135deg, #dc2626, #ea580c); }
+        .budget-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .budget-row:last-child { border-bottom: none; }
+        .budget-change { font-size: 11px; padding: 2px 8px; border-radius: 999px; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #0a0a0f; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
@@ -56,34 +59,411 @@
         <div>
             <p class="text-xs uppercase tracking-widest text-red-400 mb-2 font-medium">Active Scenario Simulation</p>
             <h1 class="text-4xl md:text-5xl font-black tracking-tight leading-tight">
-                What happens to Malaysia<br>at <span class="text-orange-400">$200 oil</span>?
+                What happens to <span class="text-orange-400">your life</span><br>if oil hits $200?
             </h1>
         </div>
     </div>
     <p class="text-lg text-slate-400 max-w-3xl mt-6 leading-relaxed">
-        A full-model simulation of a severe oil price shock triggered by a US/Israel–Iran war escalation and potential ground invasion. Brent crude spikes to $200/bbl in Q2 2026, then gradually declines.
-        Traced through all 17 blocks of the MaMaMo structural model — from Petronas profits to fuel subsidies, from the ringgit to your EPF.
+        A US/Israel–Iran war sends oil to $200 a barrel. We ran the numbers through a 200-equation model of Malaysia's economy.
+        Here's what it means for your groceries, your pay, your home loan — and who wins and loses.
     </p>
     <div class="flex flex-wrap gap-3 mt-8">
         <div class="glass rounded-lg px-4 py-2 text-xs">
-            <span class="text-slate-500">Horizon</span>
-            <span class="text-white ml-2 font-semibold">8 quarters · Q2 2026 → Q1 2028</span>
+            <span class="text-slate-500">Trigger</span>
+            <span class="text-red-400 ml-2 font-semibold">US/Israel-Iran war escalation</span>
         </div>
         <div class="glass rounded-lg px-4 py-2 text-xs">
-            <span class="text-slate-500">Peak shock</span>
-            <span class="text-orange-400 ml-2 font-semibold">Brent $200/bbl (+144% from baseline)</span>
+            <span class="text-slate-500">Oil price</span>
+            <span class="text-orange-400 ml-2 font-semibold">$82 → $200/barrel (+144%)</span>
         </div>
         <div class="glass rounded-lg px-4 py-2 text-xs">
-            <span class="text-slate-500">Model</span>
-            <span class="text-white ml-2 font-semibold">MaMaMo v0.2.0 · ~200 equations</span>
+            <span class="text-slate-500">Timeline</span>
+            <span class="text-white ml-2 font-semibold">Q2 2026 → Q1 2028</span>
         </div>
     </div>
 </section>
 
 <div class="glow-line max-w-7xl mx-auto"></div>
 
-<!-- Scenario Assumptions -->
+<!-- ============================================================ -->
+<!-- TL;DR — The 30-Second Version -->
+<!-- ============================================================ -->
 <section class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="text-sm uppercase tracking-widest text-slate-500 mb-6 font-semibold">The 30-Second Version</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass-red rounded-xl p-6 border-l-2 border-red-500/50">
+            <div class="text-2xl font-black text-red-400 mb-2">Everything costs 25% more.</div>
+            <p class="text-sm text-slate-400">Your salary doesn't move. Groceries, eating out, electricity, cooking oil — all jump. Your ringgit buys 24% less than it did yesterday. This lasts 2 years.</p>
+        </div>
+        <div class="glass-green rounded-xl p-6 border-l-2 border-green-500/50">
+            <div class="text-2xl font-black text-green-400 mb-2">The government gets rich.</div>
+            <p class="text-sm text-slate-400">Petronas makes RM422 billion over 8 quarters. The budget flips from deficit to surplus. Government debt falls. Malaysia the country wins.</p>
+        </div>
+        <div class="glass-warm rounded-xl p-6 border-l-2 border-orange-500/50">
+            <div class="text-2xl font-black text-orange-400 mb-2">You don't see the money.</div>
+            <p class="text-sm text-slate-400">The Petronas windfall goes to Putrajaya. Your petrol stays at RM2.05, but the government burns RM20.6 billion holding that line. What's left for you?</p>
+        </div>
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<!-- ============================================================ -->
+<!-- YOUR MONTHLY BUDGET — Before & After -->
+<!-- ============================================================ -->
+<section class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="text-sm uppercase tracking-widest text-slate-500 mb-2 font-semibold">Your Monthly Budget</h2>
+    <p class="text-slate-500 text-sm mb-8">A typical Malaysian household earning RM5,000/month. Same salary, different world.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Before -->
+        <div class="glass rounded-xl p-6">
+            <div class="text-xs uppercase tracking-widest text-slate-500 mb-4 font-semibold">Before (Baseline)</div>
+            <div class="space-y-0">
+                <div class="budget-row">
+                    <span class="text-sm text-slate-300">Groceries & food</span>
+                    <span class="text-sm mono text-slate-300">RM1,200</span>
+                </div>
+                <div class="budget-row">
+                    <span class="text-sm text-slate-300">Petrol (RON95)</span>
+                    <span class="text-sm mono text-slate-300">RM400</span>
+                </div>
+                <div class="budget-row">
+                    <span class="text-sm text-slate-300">Home loan</span>
+                    <span class="text-sm mono text-slate-300">RM1,400</span>
+                </div>
+                <div class="budget-row">
+                    <span class="text-sm text-slate-300">Utilities & internet</span>
+                    <span class="text-sm mono text-slate-300">RM350</span>
+                </div>
+                <div class="budget-row">
+                    <span class="text-sm text-slate-300">Eating out & leisure</span>
+                    <span class="text-sm mono text-slate-300">RM600</span>
+                </div>
+                <div class="budget-row">
+                    <span class="text-sm text-slate-300">Transport (tolls, parking, Grab)</span>
+                    <span class="text-sm mono text-slate-300">RM250</span>
+                </div>
+                <div class="budget-row border-t border-white/10 pt-3 mt-2">
+                    <span class="text-sm font-bold text-slate-200">Left over</span>
+                    <span class="text-sm mono font-bold text-green-400">RM800</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- After -->
+        <div class="glass-red rounded-xl p-6">
+            <div class="text-xs uppercase tracking-widest text-red-400 mb-4 font-semibold">After ($200 Oil Shock)</div>
+            <div class="space-y-0">
+                <div class="budget-row">
+                    <span class="text-sm text-slate-300">Groceries & food</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm mono text-red-400">RM1,500</span>
+                        <span class="budget-change bg-red-500/20 text-red-400">+25%</span>
+                    </div>
+                </div>
+                <div class="budget-row">
+                    <span class="text-sm text-slate-300">Petrol (RON95)</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm mono text-green-400">RM400</span>
+                        <span class="budget-change bg-green-500/20 text-green-400">held</span>
+                    </div>
+                </div>
+                <div class="budget-row">
+                    <span class="text-sm text-slate-300">Home loan</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm mono text-orange-400">RM1,600</span>
+                        <span class="budget-change bg-orange-500/20 text-orange-400">+14%</span>
+                    </div>
+                </div>
+                <div class="budget-row">
+                    <span class="text-sm text-slate-300">Utilities & internet</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm mono text-orange-400">RM420</span>
+                        <span class="budget-change bg-orange-500/20 text-orange-400">+20%</span>
+                    </div>
+                </div>
+                <div class="budget-row">
+                    <span class="text-sm text-slate-300">Eating out & leisure</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm mono text-red-400">RM750</span>
+                        <span class="budget-change bg-red-500/20 text-red-400">+25%</span>
+                    </div>
+                </div>
+                <div class="budget-row">
+                    <span class="text-sm text-slate-300">Transport (tolls, parking, Grab)</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm mono text-orange-400">RM310</span>
+                        <span class="budget-change bg-orange-500/20 text-orange-400">+24%</span>
+                    </div>
+                </div>
+                <div class="budget-row border-t border-red-500/20 pt-3 mt-2">
+                    <span class="text-sm font-bold text-slate-200">Left over</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm mono font-bold text-red-400">RM20</span>
+                        <span class="budget-change bg-red-500/20 text-red-400">-97%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass rounded-xl p-4 mt-4 text-xs text-slate-500">
+        Based on model outputs: CPI +25.5%, BLR 5.25% → 5.75% (mortgage repricing), RON95 held at RM2.05/L (government subsidy of RM1.41/L). Household income assumed unchanged — nominal wage growth +1.5% rounds to flat monthly. Eating out & transport inflated via administered price shock (21.6pp) and import inflation pass-through (40%).
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<!-- ============================================================ -->
+<!-- WHAT IT MEANS FOR YOU -->
+<!-- ============================================================ -->
+<section class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="text-sm uppercase tracking-widest text-slate-500 mb-2 font-semibold">What It Means For You</h2>
+    <p class="text-slate-500 text-sm mb-10">Plain English. No jargon.</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="glass-red rounded-xl p-5">
+            <div class="text-lg font-bold text-red-400 mb-2">Your pay buys 24% less</div>
+            <p class="text-xs text-slate-400 leading-relaxed">Nominal wages crawl at +1.5% while CPI explodes to 25.5%. The model says real wages drop -24% at peak. Even by Q1 2028, you're still down -15.3%. This doesn't heal fast.</p>
+        </div>
+        <div class="glass-red rounded-xl p-5">
+            <div class="text-lg font-bold text-red-400 mb-2">Pasar malam sticker shock</div>
+            <p class="text-xs text-slate-400 leading-relaxed">Headline CPI hits 25.5% in Q2 2026. Administered price shock alone is 21.6pp — cooking oil, chicken, vegetables, anything that rides a truck or uses palm oil gets repriced.</p>
+        </div>
+        <div class="glass-red rounded-xl p-5">
+            <div class="text-lg font-bold text-red-400 mb-2">Prices stay high even after oil drops</div>
+            <p class="text-xs text-slate-400 leading-relaxed">Core inflation creeps from 3.9% to 6.3% by Q1 2028. Once restaurants, landlords, and shops raise prices, they don't bring them back down. The shock is temporary — the repricing is permanent.</p>
+        </div>
+        <div class="glass-warm rounded-xl p-5">
+            <div class="text-lg font-bold text-orange-400 mb-2">Your home loan goes up RM200-400/mo</div>
+            <p class="text-xs text-slate-400 leading-relaxed">BLR rises from 5.25% to 5.75%. On a RM500K loan, that's roughly RM200-400 extra monthly. MGS 10Y climbs to 4.5% by Q2 2027. Alone it's manageable — stacked with everything else, it breaks budgets.</p>
+        </div>
+        <div class="glass-warm rounded-xl p-5">
+            <div class="text-lg font-bold text-orange-400 mb-2">Household debt climbs to 88.6% of GDP</div>
+            <p class="text-xs text-slate-400 leading-relaxed">Started at 84.2%. Your loan stock stays the same but your income buys less. Debt-to-GDP grinds up every single quarter for 2 years. Default risk elevated for 2-3 years post-shock.</p>
+        </div>
+        <div class="glass-warm rounded-xl p-5">
+            <div class="text-lg font-bold text-orange-400 mb-2">Petrol stays at RM2.05 — for now</div>
+            <p class="text-xs text-slate-400 leading-relaxed">Market price for RON95 hits RM3.46/L. Government absorbs RM1.41/L — that's RM4.9B in one quarter alone, RM20.6B over 8 quarters. If they can't hold the line, your budget gets even worse.</p>
+        </div>
+        <div class="glass-warm rounded-xl p-5">
+            <div class="text-lg font-bold text-orange-400 mb-2">Makan luar becomes a luxury</div>
+            <p class="text-xs text-slate-400 leading-relaxed">Private consumption drops -14.8% in Q2 2026. Still at -10% a year later. Families cut back to basics. Mamak nasi lemak might be the last affordable meal out.</p>
+        </div>
+        <div class="glass-warm rounded-xl p-5">
+            <div class="text-lg font-bold text-orange-400 mb-2">Imported stuff gets pricier</div>
+            <p class="text-xs text-slate-400 leading-relaxed">USD/MYR hits 4.70, peaks at 4.79 by Q4 2026. Your iPhone, Netflix, overseas holidays, kids' imported formula — anything priced in dollars costs 8-10% more overnight.</p>
+        </div>
+        <div class="glass rounded-xl p-5">
+            <div class="text-lg font-bold text-slate-300 mb-2">Job market holds — barely</div>
+            <p class="text-xs text-slate-400 leading-relaxed">Unemployment only rises to 3.37% (from 3.4%). You probably keep your job. But raises freeze, bonuses shrink, and your company isn't hiring. If you're in tourism or retail, it's worse.</p>
+        </div>
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<!-- ============================================================ -->
+<!-- INDUSTRY SCORECARD -->
+<!-- ============================================================ -->
+<section class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="text-sm uppercase tracking-widest text-slate-500 mb-2 font-semibold">Who Wins, Who Loses</h2>
+    <p class="text-slate-500 text-sm mb-8">If you work in one of these industries — or invest in one — here's what the model says.</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <!-- Winners -->
+        <div class="glass rounded-xl p-6">
+            <div class="text-sm font-bold text-green-400 mb-5 uppercase tracking-wide">Winners</div>
+            <div class="space-y-4">
+                <div class="flex items-start gap-3">
+                    <span class="text-green-400 font-bold mono text-sm mt-0.5 shrink-0">+++</span>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-200">Oil & Gas upstream + services</div>
+                        <div class="text-xs text-slate-500">Petronas ecosystem, Sapura, Dialog, Yinson. Petronas prints RM67B in one quarter. Record contracts, emergency maintenance, exploration restarts. If you work on a rig or in a Petronas tower, business is booming.</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-green-400 font-bold mono text-sm mt-0.5 shrink-0">++</span>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-200">Palm oil plantations</div>
+                        <div class="text-xs text-slate-500">CPO +45%, weak ringgit boosts RM prices further. Sime Darby, IOI, KL Kepong — best margins in a decade. Estate workers may see overtime.</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-green-400 font-bold mono text-sm mt-0.5 shrink-0">++</span>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-200">Renewable energy</div>
+                        <div class="text-xs text-slate-500">$200 oil makes solar/wind economics irresistible. Government fast-tracks tenders. Installers, panel manufacturers, EPC contractors — years of tailwind.</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-green-400 font-bold mono text-sm mt-0.5 shrink-0">+</span>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-200">Export manufacturers</div>
+                        <div class="text-xs text-slate-500">Weak ringgit = cheaper exports. Rubber gloves, furniture, electronics — more competitive in USD terms. Factories hiring.</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-green-400 font-bold mono text-sm mt-0.5 shrink-0">+</span>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-200">Defence & security</div>
+                        <div class="text-xs text-slate-500">Regional militaries increase spending. Maritime security, defence contractors — budgets expand when war is in the news.</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-green-400 font-bold mono text-sm mt-0.5 shrink-0">+</span>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-200">Fintech & budget apps</div>
+                        <div class="text-xs text-slate-500">BNPL, micro-lending, budget tracking — anything that helps people manage tighter wallets sees a spike. Financial stress is fintech's growth engine.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Losers -->
+        <div class="glass rounded-xl p-6">
+            <div class="text-sm font-bold text-red-400 mb-5 uppercase tracking-wide">Losers</div>
+            <div class="space-y-4">
+                <div class="flex items-start gap-3">
+                    <span class="text-red-400 font-bold mono text-sm mt-0.5 shrink-0">---</span>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-200">Airlines</div>
+                        <div class="text-xs text-slate-500">Jet fuel is 30-40% of costs. AirAsia, MAS bleed cash. Routes get cut, flights get pricier. Your Langkawi trip costs 40% more — if the route still exists.</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-red-400 font-bold mono text-sm mt-0.5 shrink-0">---</span>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-200">Tourism & hospitality</div>
+                        <div class="text-xs text-slate-500">Global tourism -10%. War kills long-haul travel. Hotels, Genting, duty-free all suffer. If you work in a hotel in Langkawi or KL, expect reduced shifts.</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-red-400 font-bold mono text-sm mt-0.5 shrink-0">--</span>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-200">Logistics & delivery</div>
+                        <div class="text-xs text-slate-500">Diesel costs spike. Last-mile delivery margins vanish. Grab drivers, Lalamove riders, trucking firms — all squeezed. Delivery surcharges appear.</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-red-400 font-bold mono text-sm mt-0.5 shrink-0">--</span>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-200">Retail & malls</div>
+                        <div class="text-xs text-slate-500">Consumption drops 14.8%. Malls thin out. Fashion, electronics, home furnishing — people buy only what they need. Mid-Valley still okay, smaller malls struggle.</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-red-400 font-bold mono text-sm mt-0.5 shrink-0">--</span>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-200">Property developers</div>
+                        <div class="text-xs text-slate-500">Higher mortgage rates + inflation = fewer buyers. New launches delayed. Overhang in Johor and KL worsens. If you're looking to buy, you get more negotiating power.</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-red-400 font-bold mono text-sm mt-0.5 shrink-0">--</span>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-200">F&B / restaurant chains</div>
+                        <div class="text-xs text-slate-500">Ingredient costs up 25%, customers spending less, riders costing more. Margins crushed from every direction. Expect smaller portions, higher prices, some closures.</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-red-400 font-bold mono text-sm mt-0.5 shrink-0">-</span>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-200">Semiconductors & E&E</div>
+                        <div class="text-xs text-slate-500">Global demand -5%. Penang fabs slow hiring. E&E exports drop from +6.5% to -5%. But structural demand (AI, EVs) limits the damage — a pause, not a collapse.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<!-- ============================================================ -->
+<!-- STARTUPS & BUSINESS -->
+<!-- ============================================================ -->
+<section class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="text-sm uppercase tracking-widest text-slate-500 mb-2 font-semibold">If You Run a Business or Startup</h2>
+    <p class="text-slate-500 text-sm mb-8">What changes for founders, SMEs, and corporates.</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="glass-red rounded-xl p-5">
+            <div class="text-lg font-bold text-red-400 mb-2">Your customers stop spending</div>
+            <p class="text-xs text-slate-400 leading-relaxed">Consumption drops -14.8% and stays negative for 6+ quarters. If you sell to consumers — D2C, F&B, lifestyle apps — your revenue drops before you can react.</p>
+        </div>
+        <div class="glass-red rounded-xl p-5">
+            <div class="text-lg font-bold text-red-400 mb-2">Funding dries up</div>
+            <p class="text-xs text-slate-400 leading-relaxed">Global risk-off mode. MGS 10Y hits 4.5% — safe yields compete with equity. VC pulls back. Series A/B rounds near-impossible for 12-18 months.</p>
+        </div>
+        <div class="glass-warm rounded-xl p-5">
+            <div class="text-lg font-bold text-orange-400 mb-2">Your burn rate jumps 10%</div>
+            <p class="text-xs text-slate-400 leading-relaxed">USD/MYR hits 4.79 by Q4 2026. AWS, Figma, Notion, Slack — anything priced in USD costs more. REER depreciates -7.8% over the period.</p>
+        </div>
+        <div class="glass-warm rounded-xl p-5">
+            <div class="text-lg font-bold text-orange-400 mb-2">SMEs can't absorb the hit</div>
+            <p class="text-xs text-slate-400 leading-relaxed">Import price pass-through is 40%. Energy input costs spike but you can't pass through to customers already spending 25% more. Big companies hedge — SMEs absorb the loss.</p>
+        </div>
+        <div class="glass-warm rounded-xl p-5">
+            <div class="text-lg font-bold text-orange-400 mb-2">Hiring bifurcates</div>
+            <p class="text-xs text-slate-400 leading-relaxed">Layoffs in tourism/retail free up talent. But skilled tech workers demand USD-pegged salaries or leave for Singapore. You get more junior resumes, fewer senior ones.</p>
+        </div>
+        <div class="glass-green rounded-xl p-5">
+            <div class="text-lg font-bold text-green-400 mb-2">O&G tech is wide open</div>
+            <p class="text-xs text-slate-400 leading-relaxed">Petronas cumulative profit: RM422B over 8 quarters. The entire O&G supply chain is flushed with cash. If you build for this sector, this is your window.</p>
+        </div>
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<!-- ============================================================ -->
+<!-- THE BIGGER PICTURE -->
+<!-- ============================================================ -->
+<section class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="text-sm uppercase tracking-widest text-slate-500 mb-6 font-semibold">The Bigger Picture</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="glass-green rounded-xl p-6">
+            <h3 class="text-green-400 font-bold mb-3">Malaysia the country wins</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">Petronas profits surge to RM67B in the peak quarter. PITA revenue (RM160B cumulative) covers the fuel subsidy bill 8x over. Current account hits 10.6% of GDP. Government debt <em>falls</em> from 64% to 59%. Fiscal balance flips from -3.2% to +4.3% of GDP. On paper, Malaysia has never looked better.</p>
+        </div>
+        <div class="glass-red rounded-xl p-6">
+            <h3 class="text-red-400 font-bold mb-3">Malaysians the people lose</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">CPI hits 25.5%. Real wages collapse -24%. Consumption craters -14.8%. Household debt climbs to 88.6% of GDP. Even 2 years later, real wages are still -15% below where they started. The national balance sheet improves. The kitchen table gets harder.</p>
+        </div>
+        <div class="glass-warm rounded-xl p-6">
+            <h3 class="text-orange-400 font-bold mb-3">The Petronas paradox</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">Here's what the headlines miss: cumulative 8-quarter Petronas profit is RM422B vs ~RM360B at baseline. The actual windfall is only RM62B (17%) — because Malaysia's oil production is declining (~575k bpd). The price spike is massive, but the volume is shrinking. This windfall is smaller than it looks, and it's the last big one Malaysia will ever get.</p>
+        </div>
+        <div class="glass-blue rounded-xl p-6">
+            <h3 class="text-blue-400 font-bold mb-3">The fiscal trap</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">Petronas windfall is <em>temporary</em>. Fuel subsidies are politically <em>permanent</em>. If the government uses windfall money for civil service bonuses or expanded cash transfers, the structural deficit comes roaring back when oil normalises. The golden rule: windfall goes to debt reduction and the Kumpulan Wang Amanah, not the operating budget.</p>
+        </div>
+    </div>
+
+    <!-- Bottom line -->
+    <div class="glass rounded-xl p-6 mt-6 border-l-2 border-orange-400/50">
+        <div class="text-sm font-bold text-orange-400 mb-2">The bottom line</div>
+        <p class="text-sm text-slate-300 leading-relaxed">The government collects RM160B in PITA revenue and RM78.5B in Petronas dividends over 8 quarters while households absorb 25.5% peak inflation and -24% real wage erosion. The policy question isn't whether the money comes in. It's whether it reaches the people who need it before the damage sets in.</p>
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<!-- ============================================================ -->
+<!-- DEEP DIVE HEADER -->
+<!-- ============================================================ -->
+<section class="max-w-7xl mx-auto px-6 pt-12 pb-4">
+    <div class="flex items-center gap-4">
+        <h2 class="text-lg font-bold text-slate-300">Deep Dive: The Full Model</h2>
+        <div class="h-px flex-1 bg-white/5"></div>
+    </div>
+    <p class="text-sm text-slate-500 mt-2">Scenario assumptions, quarterly projections, and all 200 equations worth of charts. For the policy nerds and macro junkies.</p>
+</section>
+
+<!-- Scenario Assumptions -->
+<section class="max-w-7xl mx-auto px-6 py-8">
     <h2 class="text-sm uppercase tracking-widest text-slate-500 mb-6 font-semibold">Scenario Assumptions</h2>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="glass rounded-xl p-5">
@@ -98,7 +478,7 @@
         </div>
         <div class="glass rounded-xl p-5">
             <div class="text-xs text-slate-500 mb-1">REER Depreciation</div>
-            <div class="text-2xl font-bold text-red-400">−7.8%</div>
+            <div class="text-2xl font-bold text-red-400">-7.8%</div>
             <div class="text-xs text-slate-400 mt-1">Risk-off, offset by commodity FX</div>
         </div>
         <div class="glass rounded-xl p-5">
@@ -110,12 +490,12 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
         <div class="glass rounded-xl p-5">
             <div class="text-xs text-slate-500 mb-1">Global Semicon Demand</div>
-            <div class="text-2xl font-bold text-red-400">−5%</div>
+            <div class="text-2xl font-bold text-red-400">-5%</div>
             <div class="text-xs text-slate-400 mt-1">Risk-off, slower global growth</div>
         </div>
         <div class="glass rounded-xl p-5">
             <div class="text-xs text-slate-500 mb-1">World Tourism Demand</div>
-            <div class="text-2xl font-bold text-red-400">−10%</div>
+            <div class="text-2xl font-bold text-red-400">-10%</div>
             <div class="text-xs text-slate-400 mt-1">War premium, travel disruption</div>
         </div>
         <div class="glass rounded-xl p-5">
@@ -125,13 +505,13 @@
         </div>
         <div class="glass rounded-xl p-5">
             <div class="text-xs text-slate-500 mb-1">Trigger Event</div>
-            <div class="text-lg font-bold text-red-400 leading-tight mt-1">US/Israel–Iran<br>Escalation</div>
+            <div class="text-lg font-bold text-red-400 leading-tight mt-1">US/Israel-Iran<br>Escalation</div>
         </div>
     </div>
 </section>
 
 <!-- KPI Strip -->
-<section class="max-w-7xl mx-auto px-6 pb-12">
+<section class="max-w-7xl mx-auto px-6 pb-8">
     <h2 class="text-sm uppercase tracking-widest text-slate-500 mb-6 font-semibold">Headline Impact (Peak Quarter vs Baseline)</h2>
     <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
         <div class="glass-red rounded-xl p-5 text-center">
@@ -142,7 +522,7 @@
         <div class="glass-green rounded-xl p-5 text-center">
             <div class="text-3xl font-black text-green-400">+4.3%</div>
             <div class="text-xs text-slate-400 mt-1">Fiscal balance / GDP</div>
-            <div class="text-xs text-green-400/60 mono">vs −3.2% baseline</div>
+            <div class="text-xs text-green-400/60 mono">vs -3.2% baseline</div>
         </div>
         <div class="glass-warm rounded-xl p-5 text-center">
             <div class="text-3xl font-black text-orange-400">2.5%</div>
@@ -162,10 +542,8 @@
     </div>
 </section>
 
-<div class="glow-line max-w-7xl mx-auto"></div>
-
 <!-- Charts Section -->
-<section class="max-w-7xl mx-auto px-6 py-12">
+<section class="max-w-7xl mx-auto px-6 py-8">
 
     <!-- Tab navigation -->
     <div class="flex gap-6 border-b border-white/5 mb-8 overflow-x-auto" id="chartTabs">
@@ -225,7 +603,7 @@
                 <div>
                     <div class="text-slate-500 text-xs">Market price RON95</div>
                     <div class="text-xl font-bold text-white mono mt-1">RM3.46/L</div>
-                    <div class="text-xs text-slate-500 mt-1">$200 × 0.85 crack × 3.785L/gal ÷ 42gal/bbl + refining margin, at 4.70 MYR/USD</div>
+                    <div class="text-xs text-slate-500 mt-1">$200 x 0.85 crack x 3.785L/gal / 42gal/bbl + refining margin, at 4.70 MYR/USD</div>
                 </div>
                 <div>
                     <div class="text-slate-500 text-xs">Administered price</div>
@@ -240,7 +618,7 @@
                 <div>
                     <div class="text-slate-500 text-xs">Quarterly cost</div>
                     <div class="text-xl font-bold text-red-400 mono mt-1">RM4.9 bn</div>
-                    <div class="text-xs text-slate-500 mt-1">× 3.5 bn litres/quarter (RON95 + diesel)</div>
+                    <div class="text-xs text-slate-500 mt-1">x 3.5 bn litres/quarter (RON95 + diesel)</div>
                 </div>
             </div>
         </div>
@@ -313,10 +691,8 @@
     </div>
 </section>
 
-<div class="glow-line max-w-7xl mx-auto"></div>
-
 <!-- Full Data Table -->
-<section class="max-w-7xl mx-auto px-6 py-12">
+<section class="max-w-7xl mx-auto px-6 py-8">
     <h2 class="text-sm uppercase tracking-widest text-slate-500 mb-6 font-semibold">Complete Quarterly Projections</h2>
     <div class="glass rounded-xl overflow-x-auto">
         <table class="w-full text-xs mono">
@@ -336,31 +712,6 @@
             </thead>
             <tbody id="dataTable"></tbody>
         </table>
-    </div>
-</section>
-
-<div class="glow-line max-w-7xl mx-auto"></div>
-
-<!-- Narrative -->
-<section class="max-w-7xl mx-auto px-6 py-12">
-    <h2 class="text-sm uppercase tracking-widest text-slate-500 mb-6 font-semibold">Key Takeaways</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="glass-green rounded-xl p-6">
-            <h3 class="text-green-400 font-bold mb-3">The good news</h3>
-            <p class="text-sm text-slate-300 leading-relaxed">Malaysia is one of the few Asian economies that <em>benefits</em> fiscally from an oil shock. Petronas profits surge to RM67 billion in the peak quarter. PITA revenue alone covers the fuel subsidy bill roughly 5× over. The current account swings to a massive 10.6% of GDP surplus — Malaysia becomes a cash machine. Government debt ratio actually <em>falls</em> from 64% to ~59% of GDP as the fiscal balance flips to surplus. GDP growth slows but doesn't collapse — a 2.5% trough is uncomfortable, not catastrophic.</p>
-        </div>
-        <div class="glass-red rounded-xl p-6">
-            <h3 class="text-red-400 font-bold mb-3">The bad news</h3>
-            <p class="text-sm text-slate-300 leading-relaxed">Ordinary Malaysians get crushed. Even with fuel price ceilings held at RM2.05, CPI spikes to 25% through food prices (cooking oil, transport-linked goods), imported inflation via the weaker ringgit, and second-round wage effects. Real wages collapse by ~24% in the peak quarter. Consumption craters. Household debt-to-GDP rises to 89% as incomes shrink while loan stocks remain fixed. The E&E sector (38% of exports) takes a hit from weaker global demand. And if the government eventually has to pass through even <em>partial</em> fuel price increases, inflation gets worse.</p>
-        </div>
-        <div class="glass-warm rounded-xl p-6">
-            <h3 class="text-orange-400 font-bold mb-3">The fiscal trap</h3>
-            <p class="text-sm text-slate-300 leading-relaxed">This scenario exposes Malaysia's fundamental fiscal dilemma. Petronas windfall revenue is <em>temporary</em> and tied to a depleting resource (oil production ~575k bpd, declining). Fuel subsidies are politically <em>permanent</em> — no government has survived removing them. The RM20.6 billion cumulative subsidy bill is manageable <em>only</em> because Petronas covers it many times over. But if the windfall funds new recurring spending (civil service bonuses, expanded cash transfers), the structural deficit reasserts viciously once oil prices normalise. The golden rule: windfall goes to debt reduction and the Kumpulan Wang Amanah, not the operating budget.</p>
-        </div>
-        <div class="glass-blue rounded-xl p-6">
-            <h3 class="text-blue-400 font-bold mb-3">What BNM does</h3>
-            <p class="text-sm text-slate-300 leading-relaxed">BNM faces a classic impossible trinity moment. Inflation screams for rate hikes, but the economy is slowing and households are leveraged at 84%+ of GDP. The model assumes a restrained 50bps hike (OPR 3.0% → 3.5%) — enough to signal credibility without breaking the mortgage market. MGS10 rises to ~4.5% as foreign investors demand a war premium. The ringgit weakens 7-8% on REER but BNM deploys reserves to prevent a rout. If the war extends beyond 4 quarters, reserves (~USD115bn) start looking thinner and a larger depreciation becomes unavoidable.</p>
-        </div>
     </div>
 </section>
 

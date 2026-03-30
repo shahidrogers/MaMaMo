@@ -398,6 +398,15 @@
         <div class="roadmap-item"><span class="roadmap-num">09</span><div><strong style="color: var(--text); font-weight: 500;">Forward-looking expectations</strong> <span style="font-size: 13px; color: var(--text-muted);">— rational expectations for inflation and exchange rates</span></div></div>
         <div class="roadmap-item"><span class="roadmap-num">10</span><div><strong style="color: var(--text); font-weight: 500;">Digital economy</strong> <span style="font-size: 13px; color: var(--text-muted);">— capture the ~23% of GDP that's now digital</span></div></div>
     </div>
+    <div class="card" style="padding: 18px; margin-top: 16px; border-left: 3px solid rgba(240,138,56,0.55);">
+        <div class="mono" style="font-size: 10px; color: var(--amber); letter-spacing: 0.08em; margin-bottom: 8px;">ROOM FOR IMPROVEMENT</div>
+        <p style="font-size: 13px; color: var(--text-muted); line-height: 1.65; max-width: 700px;">
+            In practice, <a href="model/malaysia-quarterly-model.md" style="color: var(--text);">model/malaysia-quarterly-model.md</a> is now documented well enough to support a governed input pipeline. What it still lacks for true production quality is a preprocessing builder plus better treatment of the big external wedges, especially <span class="mono" style="color: var(--text);">CREDIT</span>, <span class="mono" style="color: var(--text);">MCCI</span>, <span class="mono" style="color: var(--text);">GOVDEBTADJ</span>, and <span class="mono" style="color: var(--text);">HARAREA</span>.
+        </p>
+        <p style="font-size: 13px; color: var(--text-muted); line-height: 1.65; max-width: 700px; margin-top: 12px;">
+            The next highest-value step is to build that preprocessing layer and satellite-rule set so the model can be run from raw source data instead of hand-assembled quarterly inputs.
+        </p>
+    </div>
 </section>
 
 <div class="divider container"></div>

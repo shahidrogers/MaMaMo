@@ -102,6 +102,10 @@ The biggest wins, roughly in priority order:
 9. **Forward-looking expectations** — rational expectations for inflation and exchange rates
 10. **Digital economy** — capture the ~23% of GDP that's now digital
 
+In practice, [model/malaysia-quarterly-model.md](/Users/shahidrogers/Desktop/stagflation/model/malaysia-quarterly-model.md) is now documented well enough to support a governed input pipeline. What it still lacks for true production quality is a preprocessing builder plus better treatment of the big external wedges, especially `CREDIT`, `MCCI`, `GOVDEBTADJ`, and `HARAREA`.
+
+The next highest-value step is to build that preprocessing layer and satellite-rule set so the model can be run from raw source data instead of hand-assembled quarterly inputs.
+
 ---
 
 ## Files
@@ -109,7 +113,8 @@ The biggest wins, roughly in priority order:
 ```
 model/
   malaysia-quarterly-model.md          # The model (~200 equations, EViews syntax)
-  uk-obr-reference.md                 # Original UK OBR model (reference)
+  reference/
+    uk-obr-reference.md               # Original UK OBR model (reference)
 studies/
   simulations/
     oil-200-iran-war/

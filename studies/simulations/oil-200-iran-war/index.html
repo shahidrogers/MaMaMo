@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; color: #e2e8f0; }
@@ -30,6 +31,33 @@
         .budget-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
         .budget-row:last-child { border-bottom: none; }
         .budget-change { font-size: 11px; padding: 2px 8px; border-radius: 999px; }
+
+        /* Scroll animations */
+        .scroll-reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+        .scroll-reveal:nth-child(2) { transition-delay: 0.1s; }
+        .scroll-reveal:nth-child(3) { transition-delay: 0.2s; }
+
+        /* Timeline */
+        .tl-step { opacity: 0.25; transform: scale(0.97); transition: all 0.5s ease; }
+        .tl-step.active { opacity: 1; transform: scale(1); }
+        .tl-line { position: absolute; left: 15px; top: 0; bottom: 0; width: 2px; background: rgba(255,255,255,0.05); }
+        .tl-progress { position: absolute; left: 15px; top: 0; width: 2px; background: linear-gradient(180deg, #fb923c, #ef4444); transition: height 0.3s ease; }
+        .tl-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.15); background: #0a0a0f; transition: all 0.3s ease; z-index: 1; position: relative; flex-shrink: 0; }
+        .tl-step.active .tl-dot { border-color: #fb923c; background: #fb923c; box-shadow: 0 0 12px rgba(251,146,60,0.4); }
+
+        /* Share card */
+        .share-btn { opacity: 0; transition: opacity 0.2s ease; cursor: pointer; }
+        .shareable:hover .share-btn { opacity: 1; }
+        .share-toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); opacity: 0; background: rgba(251,146,60,0.9); color: white; padding: 10px 24px; border-radius: 12px; font-size: 13px; font-weight: 600; z-index: 100; transition: all 0.3s ease; pointer-events: none; backdrop-filter: blur(8px); }
+        .share-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* Historical comparison bars */
+        .crisis-bar { height: 6px; border-radius: 3px; transition: width 0.8s ease; }
+
+        /* Counter animation */
+        .count-up { display: inline-block; }
+
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #0a0a0f; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
@@ -91,17 +119,124 @@
 <section class="max-w-7xl mx-auto px-6 py-12">
     <h2 class="text-sm uppercase tracking-widest text-slate-500 mb-6 font-semibold">The 30-Second Version</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="glass-red rounded-xl p-6 border-l-2 border-red-500/50">
+        <div class="glass-red rounded-xl p-6 border-l-2 border-red-500/50 shareable relative" data-share-title="$200 Oil: Everything costs 25% more">
+            <div class="share-btn absolute top-3 right-3 text-xs text-slate-600 hover:text-red-400 px-2 py-1 rounded" onclick="shareCard(this.closest('.shareable'))">Share</div>
             <div class="text-2xl font-black text-red-400 mb-2">Everything costs 25% more.</div>
             <p class="text-sm text-slate-400">Your salary doesn't move. Groceries, eating out, electricity, cooking oil — all jump. Your ringgit buys 24% less than it did yesterday. This lasts 2 years.</p>
         </div>
-        <div class="glass-green rounded-xl p-6 border-l-2 border-green-500/50">
+        <div class="glass-green rounded-xl p-6 border-l-2 border-green-500/50 shareable relative" data-share-title="$200 Oil: The government gets rich">
+            <div class="share-btn absolute top-3 right-3 text-xs text-slate-600 hover:text-green-400 px-2 py-1 rounded" onclick="shareCard(this.closest('.shareable'))">Share</div>
             <div class="text-2xl font-black text-green-400 mb-2">The government gets rich.</div>
             <p class="text-sm text-slate-400">Petronas makes RM422 billion over 8 quarters. The budget flips from deficit to surplus. Government debt falls. Malaysia the country wins.</p>
         </div>
-        <div class="glass-warm rounded-xl p-6 border-l-2 border-orange-500/50">
+        <div class="glass-warm rounded-xl p-6 border-l-2 border-orange-500/50 shareable relative" data-share-title="$200 Oil: You don't see the money">
+            <div class="share-btn absolute top-3 right-3 text-xs text-slate-600 hover:text-orange-400 px-2 py-1 rounded" onclick="shareCard(this.closest('.shareable'))">Share</div>
             <div class="text-2xl font-black text-orange-400 mb-2">You don't see the money.</div>
             <p class="text-sm text-slate-400">The Petronas windfall goes to Putrajaya. Your petrol stays at RM2.05, but the government burns RM20.6 billion holding that line. What's left for you?</p>
+        </div>
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<!-- ============================================================ -->
+<!-- SCROLL TIMELINE — Quarter by Quarter -->
+<!-- ============================================================ -->
+<section class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="text-sm uppercase tracking-widest text-slate-500 mb-2 font-semibold">How It Unfolds</h2>
+    <p class="text-slate-500 text-sm mb-10">Quarter by quarter, from the first shock to the new normal. Scroll to watch the crisis develop.</p>
+
+    <div class="relative max-w-2xl mx-auto" id="timeline">
+        <div class="tl-line"></div>
+        <div class="tl-progress" id="tlProgress" style="height: 0%"></div>
+
+        <div class="tl-step active flex items-start gap-5 pb-12" data-q="0">
+            <div class="tl-dot mt-1"></div>
+            <div>
+                <div class="text-xs mono text-orange-400 font-semibold mb-1">Q1 2026 — BASELINE</div>
+                <div class="text-lg font-bold text-slate-200 mb-2">Life is normal.</div>
+                <p class="text-sm text-slate-400">Oil at $82. Inflation at 2.3%. GDP growing 4.2%. Your RM100 at the grocery store buys RM100 worth of food. The Middle East is tense, but markets shrug it off.</p>
+                <div class="flex gap-3 mt-3">
+                    <span class="text-xs mono glass rounded px-2 py-1">Brent <span class="text-slate-200">$82</span></span>
+                    <span class="text-xs mono glass rounded px-2 py-1">CPI <span class="text-slate-200">2.3%</span></span>
+                    <span class="text-xs mono glass rounded px-2 py-1">MYR <span class="text-slate-200">4.35</span></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tl-step flex items-start gap-5 pb-12" data-q="1">
+            <div class="tl-dot mt-1"></div>
+            <div>
+                <div class="text-xs mono text-red-400 font-semibold mb-1">Q2 2026 — THE SHOCK</div>
+                <div class="text-lg font-bold text-red-400 mb-2">War breaks out. Oil doubles overnight.</div>
+                <p class="text-sm text-slate-400">US/Israel strikes on Iran escalate to ground operations. Strait of Hormuz under threat. Brent rockets to $200. Petronas shares spike. Within weeks, cooking oil prices jump. Mamak stalls start raising nasi lemak to RM8.</p>
+                <div class="flex flex-wrap gap-3 mt-3">
+                    <span class="text-xs mono glass-red rounded px-2 py-1">Brent <span class="text-red-400">$200</span></span>
+                    <span class="text-xs mono glass-red rounded px-2 py-1">CPI <span class="text-red-400">25.5%</span></span>
+                    <span class="text-xs mono glass-red rounded px-2 py-1">Real wages <span class="text-red-400">-24%</span></span>
+                    <span class="text-xs mono glass-green rounded px-2 py-1">Petronas <span class="text-green-400">RM67B</span></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tl-step flex items-start gap-5 pb-12" data-q="2">
+            <div class="tl-dot mt-1"></div>
+            <div>
+                <div class="text-xs mono text-red-400 font-semibold mb-1">Q3 2026 — THE SQUEEZE</div>
+                <div class="text-lg font-bold text-orange-400 mb-2">The second-round effects hit.</div>
+                <p class="text-sm text-slate-400">Oil eases to $180 but prices don't come back. Restaurants, landlords, and shops have repriced. BNM hikes OPR to 3.5%. Your home loan goes up. Consumption drops -12%. Shopping malls feel emptier.</p>
+                <div class="flex flex-wrap gap-3 mt-3">
+                    <span class="text-xs mono glass rounded px-2 py-1">Brent <span class="text-slate-200">$180</span></span>
+                    <span class="text-xs mono glass-red rounded px-2 py-1">CPI <span class="text-red-400">22.5%</span></span>
+                    <span class="text-xs mono glass-red rounded px-2 py-1">Consumption <span class="text-red-400">-12.2%</span></span>
+                    <span class="text-xs mono glass-warm rounded px-2 py-1">OPR <span class="text-orange-400">3.50%</span></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tl-step flex items-start gap-5 pb-12" data-q="3">
+            <div class="tl-dot mt-1"></div>
+            <div>
+                <div class="text-xs mono text-orange-400 font-semibold mb-1">Q4 2026 — THE TROUGH</div>
+                <div class="text-lg font-bold text-orange-400 mb-2">GDP growth hits rock bottom: 2.5%.</div>
+                <p class="text-sm text-slate-400">The economy's worst quarter. E&E exports down -5%. Tourism gutted. But Petronas keeps minting money, and government debt is falling. The paradox sharpens: Malaysia's balance sheet has never looked better; your household budget has never looked worse.</p>
+                <div class="flex flex-wrap gap-3 mt-3">
+                    <span class="text-xs mono glass-warm rounded px-2 py-1">GDP <span class="text-orange-400">2.5%</span></span>
+                    <span class="text-xs mono glass-red rounded px-2 py-1">E&E <span class="text-red-400">-5.0%</span></span>
+                    <span class="text-xs mono glass-green rounded px-2 py-1">Debt/GDP <span class="text-green-400">60.2%</span></span>
+                    <span class="text-xs mono glass-red rounded px-2 py-1">MYR <span class="text-red-400">4.79</span></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tl-step flex items-start gap-5 pb-12" data-q="4">
+            <div class="tl-dot mt-1"></div>
+            <div>
+                <div class="text-xs mono text-slate-400 font-semibold mb-1">Q1-Q2 2027 — SLOW RECOVERY</div>
+                <div class="text-lg font-bold text-slate-300 mb-2">Oil settles. The damage lingers.</div>
+                <p class="text-sm text-slate-400">Brent drifts to $145. GDP rebounds to 3.6%. But CPI is still 17-18%. Core inflation actually <em>rises</em> to 5.9% as second-round effects entrench. Real wages still down -16%. Household debt peaks at 88.6% of GDP. BNM starts easing OPR back to 3.25%.</p>
+                <div class="flex flex-wrap gap-3 mt-3">
+                    <span class="text-xs mono glass rounded px-2 py-1">Brent <span class="text-slate-200">$145</span></span>
+                    <span class="text-xs mono glass-red rounded px-2 py-1">Core CPI <span class="text-red-400">5.9%</span></span>
+                    <span class="text-xs mono glass-red rounded px-2 py-1">HH debt <span class="text-red-400">88.6%</span></span>
+                    <span class="text-xs mono glass-warm rounded px-2 py-1">GDP <span class="text-orange-400">3.6%</span></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tl-step flex items-start gap-5 pb-4" data-q="5">
+            <div class="tl-dot mt-1"></div>
+            <div>
+                <div class="text-xs mono text-slate-400 font-semibold mb-1">Q3 2027 - Q1 2028 — THE NEW NORMAL</div>
+                <div class="text-lg font-bold text-slate-300 mb-2">The shock fades. The scars don't.</div>
+                <p class="text-sm text-slate-400">Oil at $140. GDP recovering to 3.9%. But inflation is still 17% — prices never came back down. Real wages are -15.4% below where they started. The government's windfall is shrinking. If they spent it on recurring commitments, the fiscal trap is about to snap shut.</p>
+                <div class="flex flex-wrap gap-3 mt-3">
+                    <span class="text-xs mono glass rounded px-2 py-1">Brent <span class="text-slate-200">$140</span></span>
+                    <span class="text-xs mono glass-red rounded px-2 py-1">Real wages <span class="text-red-400">-15.4%</span></span>
+                    <span class="text-xs mono glass-warm rounded px-2 py-1">CPI <span class="text-orange-400">17.2%</span></span>
+                    <span class="text-xs mono glass rounded px-2 py-1">Fiscal <span class="text-slate-200">+0.4%</span></span>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -223,15 +358,18 @@
     <p class="text-slate-500 text-sm mb-10">Plain English. No jargon.</p>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="glass-red rounded-xl p-5">
+        <div class="glass-red rounded-xl p-5 shareable relative" data-share-title="$200 Oil: Your pay buys 24% less">
+            <div class="share-btn absolute top-2 right-2 text-xs text-slate-600 hover:text-red-400 px-2 py-1 rounded" onclick="shareCard(this.closest('.shareable'))">Share</div>
             <div class="text-lg font-bold text-red-400 mb-2">Your pay buys 24% less</div>
             <p class="text-xs text-slate-400 leading-relaxed">Nominal wages crawl at +1.5% while CPI explodes to 25.5%. The model says real wages drop -24% at peak. Even by Q1 2028, you're still down -15.3%. This doesn't heal fast.</p>
         </div>
-        <div class="glass-red rounded-xl p-5">
+        <div class="glass-red rounded-xl p-5 shareable relative" data-share-title="$200 Oil: Pasar malam sticker shock">
+            <div class="share-btn absolute top-2 right-2 text-xs text-slate-600 hover:text-red-400 px-2 py-1 rounded" onclick="shareCard(this.closest('.shareable'))">Share</div>
             <div class="text-lg font-bold text-red-400 mb-2">Pasar malam sticker shock</div>
             <p class="text-xs text-slate-400 leading-relaxed">Headline CPI hits 25.5% in Q2 2026. Administered price shock alone is 21.6pp — cooking oil, chicken, vegetables, anything that rides a truck or uses palm oil gets repriced.</p>
         </div>
-        <div class="glass-red rounded-xl p-5">
+        <div class="glass-red rounded-xl p-5 shareable relative" data-share-title="$200 Oil: Prices stay high forever">
+            <div class="share-btn absolute top-2 right-2 text-xs text-slate-600 hover:text-red-400 px-2 py-1 rounded" onclick="shareCard(this.closest('.shareable'))">Share</div>
             <div class="text-lg font-bold text-red-400 mb-2">Prices stay high even after oil drops</div>
             <p class="text-xs text-slate-400 leading-relaxed">Core inflation creeps from 3.9% to 6.3% by Q1 2028. Once restaurants, landlords, and shops raise prices, they don't bring them back down. The shock is temporary — the repricing is permanent.</p>
         </div>
@@ -443,9 +581,122 @@
     </div>
 
     <!-- Bottom line -->
-    <div class="glass rounded-xl p-6 mt-6 border-l-2 border-orange-400/50">
+    <div class="glass rounded-xl p-6 mt-6 border-l-2 border-orange-400/50 shareable relative" data-share-title="$200 Oil: The Bottom Line">
+        <div class="share-btn absolute top-3 right-3 text-xs text-slate-600 hover:text-orange-400 px-2 py-1 rounded" onclick="shareCard(this.closest('.shareable'))">Share</div>
         <div class="text-sm font-bold text-orange-400 mb-2">The bottom line</div>
         <p class="text-sm text-slate-300 leading-relaxed">The government collects RM160B in PITA revenue and RM78.5B in Petronas dividends over 8 quarters while households absorb 25.5% peak inflation and -24% real wage erosion. The policy question isn't whether the money comes in. It's whether it reaches the people who need it before the damage sets in.</p>
+    </div>
+</section>
+
+<div class="glow-line max-w-7xl mx-auto"></div>
+
+<!-- ============================================================ -->
+<!-- HISTORICAL COMPARISON -->
+<!-- ============================================================ -->
+<section class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="text-sm uppercase tracking-widest text-slate-500 mb-2 font-semibold">How Does This Compare?</h2>
+    <p class="text-slate-500 text-sm mb-8">Malaysia has been through crises before. Here's how a $200 oil shock stacks up.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="crisisCards">
+        <!-- 1997 AFC -->
+        <div class="glass rounded-xl p-5 shareable" data-share-title="1997 Asian Financial Crisis">
+            <div class="flex items-center justify-between mb-3">
+                <div class="text-xs mono text-slate-500 font-semibold">1997-98</div>
+                <div class="share-btn text-xs text-slate-600 hover:text-orange-400 px-2 py-1" onclick="shareCard(this.closest('.shareable'))">Share</div>
+            </div>
+            <div class="text-sm font-bold text-slate-200 mb-3">Asian Financial Crisis</div>
+            <div class="space-y-3">
+                <div>
+                    <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">GDP impact</span><span class="text-red-400 font-semibold">-7.4%</span></div>
+                    <div class="w-full bg-white/5 rounded-full overflow-hidden"><div class="crisis-bar bg-red-500" style="width: 100%"></div></div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">Peak inflation</span><span class="text-orange-400 font-semibold">5.3%</span></div>
+                    <div class="w-full bg-white/5 rounded-full overflow-hidden"><div class="crisis-bar bg-orange-500" style="width: 21%"></div></div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">MYR depreciation</span><span class="text-red-400 font-semibold">-35%</span></div>
+                    <div class="w-full bg-white/5 rounded-full overflow-hidden"><div class="crisis-bar bg-red-500" style="width: 100%"></div></div>
+                </div>
+            </div>
+            <p class="text-[11px] text-slate-600 mt-3">Capital flight, currency peg broke, IMF era. GDP collapsed. Inflation was moderate. Ringgit pegged at 3.80 after freefall.</p>
+        </div>
+
+        <!-- 2008 GFC -->
+        <div class="glass rounded-xl p-5 shareable" data-share-title="2008 Global Financial Crisis">
+            <div class="flex items-center justify-between mb-3">
+                <div class="text-xs mono text-slate-500 font-semibold">2008-09</div>
+                <div class="share-btn text-xs text-slate-600 hover:text-orange-400 px-2 py-1" onclick="shareCard(this.closest('.shareable'))">Share</div>
+            </div>
+            <div class="text-sm font-bold text-slate-200 mb-3">Global Financial Crisis</div>
+            <div class="space-y-3">
+                <div>
+                    <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">GDP impact</span><span class="text-red-400 font-semibold">-1.5%</span></div>
+                    <div class="w-full bg-white/5 rounded-full overflow-hidden"><div class="crisis-bar bg-red-500" style="width: 20%"></div></div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">Peak inflation</span><span class="text-orange-400 font-semibold">8.5%</span></div>
+                    <div class="w-full bg-white/5 rounded-full overflow-hidden"><div class="crisis-bar bg-orange-500" style="width: 33%"></div></div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">MYR depreciation</span><span class="text-orange-400 font-semibold">-8%</span></div>
+                    <div class="w-full bg-white/5 rounded-full overflow-hidden"><div class="crisis-bar bg-orange-500" style="width: 23%"></div></div>
+                </div>
+            </div>
+            <p class="text-[11px] text-slate-600 mt-3">External demand collapse. E&E exports cratered. Stimulus package cushioned the blow. V-shaped recovery by 2010.</p>
+        </div>
+
+        <!-- 2020 COVID -->
+        <div class="glass rounded-xl p-5 shareable" data-share-title="2020 COVID-19 Pandemic">
+            <div class="flex items-center justify-between mb-3">
+                <div class="text-xs mono text-slate-500 font-semibold">2020</div>
+                <div class="share-btn text-xs text-slate-600 hover:text-orange-400 px-2 py-1" onclick="shareCard(this.closest('.shareable'))">Share</div>
+            </div>
+            <div class="text-sm font-bold text-slate-200 mb-3">COVID-19 Pandemic</div>
+            <div class="space-y-3">
+                <div>
+                    <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">GDP impact</span><span class="text-red-400 font-semibold">-5.6%</span></div>
+                    <div class="w-full bg-white/5 rounded-full overflow-hidden"><div class="crisis-bar bg-red-500" style="width: 76%"></div></div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">Peak inflation</span><span class="text-green-400 font-semibold">-1.2%</span></div>
+                    <div class="w-full bg-white/5 rounded-full overflow-hidden"><div class="crisis-bar bg-green-500" style="width: 5%"></div></div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">MYR depreciation</span><span class="text-orange-400 font-semibold">-6%</span></div>
+                    <div class="w-full bg-white/5 rounded-full overflow-hidden"><div class="crisis-bar bg-orange-500" style="width: 17%"></div></div>
+                </div>
+            </div>
+            <p class="text-[11px] text-slate-600 mt-3">Demand shock + supply disruption. MCO devastated services. RM305B stimulus. EPF withdrawals. Recovery took 2 years.</p>
+        </div>
+
+        <!-- 2026 THIS SCENARIO -->
+        <div class="glass-warm rounded-xl p-5 shareable" data-share-title="$200 Oil Shock (2026 Scenario)">
+            <div class="flex items-center justify-between mb-3">
+                <div class="text-xs mono text-orange-400 font-semibold">2026</div>
+                <div class="share-btn text-xs text-slate-600 hover:text-orange-400 px-2 py-1" onclick="shareCard(this.closest('.shareable'))">Share</div>
+            </div>
+            <div class="text-sm font-bold text-orange-400 mb-3">$200 Oil Shock (This Scenario)</div>
+            <div class="space-y-3">
+                <div>
+                    <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">GDP impact</span><span class="text-orange-400 font-semibold">+2.5%*</span></div>
+                    <div class="w-full bg-white/5 rounded-full overflow-hidden"><div class="crisis-bar bg-orange-500" style="width: 10%"></div></div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">Peak inflation</span><span class="text-red-400 font-semibold">25.5%</span></div>
+                    <div class="w-full bg-white/5 rounded-full overflow-hidden"><div class="crisis-bar bg-red-500" style="width: 100%"></div></div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">MYR depreciation</span><span class="text-orange-400 font-semibold">-7.8%</span></div>
+                    <div class="w-full bg-white/5 rounded-full overflow-hidden"><div class="crisis-bar bg-orange-500" style="width: 22%"></div></div>
+                </div>
+            </div>
+            <p class="text-[11px] text-slate-600 mt-3">*GDP still positive — this is a supply/price shock, not a demand collapse. The pain is inflation, not recession. That makes it uniquely difficult for policy.</p>
+        </div>
+    </div>
+
+    <div class="glass rounded-xl p-4 mt-4 text-xs text-slate-500">
+        <strong class="text-slate-400">Key insight:</strong> The $200 oil shock is unlike any previous Malaysian crisis. GDP doesn't collapse (Malaysia is a net oil exporter), but inflation is 3-5x worse than any previous crisis. Past crises were demand shocks you could stimulate your way out of. This is a cost-of-living crisis with no easy policy lever.
     </div>
 </section>
 
@@ -714,6 +965,9 @@
         </table>
     </div>
 </section>
+
+<!-- Share Toast -->
+<div class="share-toast" id="shareToast">Saved to clipboard</div>
 
 <!-- Footer -->
 <footer class="max-w-7xl mx-auto px-6 py-8 border-t border-white/5 flex items-center justify-between text-xs text-slate-600">
@@ -989,6 +1243,215 @@ function showTab(name) {
     document.querySelector(`#chartTabs button[data-tab="${name}"]`).classList.remove('tab-inactive');
     document.querySelector(`#chartTabs button[data-tab="${name}"]`).classList.add('tab-active');
 }
+
+// ============================================================
+// FEATURE: Scroll-Driven Timeline
+// ============================================================
+(function() {
+    const timeline = document.getElementById('timeline');
+    if (!timeline) return;
+    const steps = timeline.querySelectorAll('.tl-step');
+    const progress = document.getElementById('tlProgress');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+        // Update progress bar
+        let lastActive = 0;
+        steps.forEach((step, i) => {
+            if (step.classList.contains('active')) lastActive = i;
+        });
+        const pct = steps.length > 1 ? (lastActive / (steps.length - 1)) * 100 : 0;
+        progress.style.height = pct + '%';
+    }, {
+        root: null,
+        rootMargin: '-20% 0px -30% 0px',
+        threshold: 0.3
+    });
+
+    steps.forEach(step => observer.observe(step));
+})();
+
+// ============================================================
+// FEATURE: Scroll Reveal Animations
+// ============================================================
+(function() {
+    // Add scroll-reveal class to all major content cards
+    const targets = document.querySelectorAll(
+        '.glass-red, .glass-green, .glass-warm, .glass-blue, .glass'
+    );
+    // Only apply to cards inside the main content sections (not header/deep dive)
+    const mainSections = document.querySelectorAll('section');
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        rootMargin: '0px 0px -60px 0px',
+        threshold: 0.1
+    });
+
+    // Apply to cards within the first ~8 sections (the people-facing content)
+    let sectionCount = 0;
+    mainSections.forEach(section => {
+        sectionCount++;
+        if (sectionCount > 10) return; // Skip deep dive charts
+        const cards = section.querySelectorAll('.glass-red, .glass-green, .glass-warm, .glass-blue');
+        cards.forEach(card => {
+            card.classList.add('scroll-reveal');
+            revealObserver.observe(card);
+        });
+    });
+})();
+
+// ============================================================
+// FEATURE: Number Counter Animation
+// ============================================================
+(function() {
+    const kpiCards = document.querySelectorAll('.glass-red .text-3xl, .glass-green .text-3xl, .glass-warm .text-3xl, .glass-blue .text-3xl');
+    const countObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const el = entry.target;
+            if (el.dataset.counted) return;
+            el.dataset.counted = 'true';
+
+            const text = el.textContent.trim();
+            const match = text.match(/^([+-]?)([RM]*)(\d+\.?\d*)(.*)/);
+            if (!match) return;
+
+            const prefix = match[1] + match[2];
+            const target = parseFloat(match[3]);
+            const suffix = match[4];
+            const decimals = match[3].includes('.') ? match[3].split('.')[1].length : 0;
+            const duration = 800;
+            const start = performance.now();
+
+            function tick(now) {
+                const elapsed = now - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+                const current = target * eased;
+                el.textContent = prefix + current.toFixed(decimals) + suffix;
+                if (progress < 1) requestAnimationFrame(tick);
+            }
+            el.textContent = prefix + '0' + suffix;
+            requestAnimationFrame(tick);
+        });
+    }, { threshold: 0.5 });
+
+    kpiCards.forEach(el => countObserver.observe(el));
+})();
+
+// ============================================================
+// FEATURE: Shareable Stat Cards
+// ============================================================
+function shareCard(el) {
+    if (!el) return;
+    const btn = el.querySelector('.share-btn');
+    const originalText = btn ? btn.textContent : '';
+
+    // Temporarily hide share button for screenshot
+    if (btn) btn.style.display = 'none';
+
+    // Add a watermark temporarily
+    const watermark = document.createElement('div');
+    watermark.style.cssText = 'position:absolute;bottom:8px;right:12px;font-size:10px;color:rgba(255,255,255,0.25);font-family:Inter,sans-serif;';
+    watermark.textContent = 'MaMaMo · mamamo.dev';
+    el.style.position = 'relative';
+    el.appendChild(watermark);
+
+    html2canvas(el, {
+        backgroundColor: '#0a0a0f',
+        scale: 2,
+        useCORS: true,
+        logging: false,
+    }).then(canvas => {
+        // Remove watermark
+        el.removeChild(watermark);
+        if (btn) btn.style.display = '';
+
+        canvas.toBlob(blob => {
+            if (!blob) return;
+
+            // Try clipboard API first
+            if (navigator.clipboard && navigator.clipboard.write) {
+                navigator.clipboard.write([
+                    new ClipboardItem({ 'image/png': blob })
+                ]).then(() => {
+                    showToast('Copied to clipboard — paste in WhatsApp, Twitter, etc.');
+                }).catch(() => {
+                    // Fallback: download
+                    downloadBlob(blob, el.dataset.shareTitle || 'mamamo-stat');
+                });
+            } else {
+                // Fallback: download
+                downloadBlob(blob, el.dataset.shareTitle || 'mamamo-stat');
+            }
+        }, 'image/png');
+    }).catch(() => {
+        el.removeChild(watermark);
+        if (btn) btn.style.display = '';
+    });
+}
+
+function downloadBlob(blob, name) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name.replace(/[^a-z0-9]/gi, '-').toLowerCase() + '.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Downloaded as image');
+}
+
+function showToast(msg) {
+    const toast = document.getElementById('shareToast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// ============================================================
+// FEATURE: Animate Crisis Comparison Bars on Scroll
+// ============================================================
+(function() {
+    const crisisCards = document.getElementById('crisisCards');
+    if (!crisisCards) return;
+    const bars = crisisCards.querySelectorAll('.crisis-bar');
+    // Start all bars at 0 width
+    bars.forEach(bar => {
+        bar.dataset.targetWidth = bar.style.width;
+        bar.style.width = '0%';
+    });
+
+    const barObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Animate bars in
+                const barsInCard = entry.target.querySelectorAll('.crisis-bar');
+                barsInCard.forEach((bar, i) => {
+                    setTimeout(() => {
+                        bar.style.width = bar.dataset.targetWidth;
+                    }, i * 150);
+                });
+                barObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.3 });
+
+    crisisCards.querySelectorAll('.glass, .glass-warm').forEach(card => {
+        barObserver.observe(card);
+    });
+})();
 </script>
 </body>
 </html>

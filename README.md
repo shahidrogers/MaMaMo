@@ -107,9 +107,15 @@ The biggest wins, roughly in priority order:
 ## Files
 
 ```
-malaysia_macroeconomic_model_code.md    # The model (~200 equations, EViews syntax)
-macroeconomic_model_code.md             # Original UK OBR model (reference)
-README.md                               # You are here
+model/
+  malaysia-quarterly-model.md          # The model (~200 equations, EViews syntax)
+  uk-obr-reference.md                 # Original UK OBR model (reference)
+studies/
+  simulations/
+    oil-200-iran-war/
+      index.html                       # Interactive simulation dashboard
+      scenario-data.json               # Full quarterly projections (JSON)
+README.md                              # You are here
 ```
 
 ## Studies

@@ -13,3 +13,9 @@ Thumbs.db
 *.wf1
 *.db
 *.log
+
+# Private project documents
+docs/private/*
+!docs/private/README.md
+docs/**/*.private.md
+docs/**/*.private.json

@@ -2,7 +2,7 @@
 
 **Malaysia's open-source macroeconomic model — ~200 equations, zero gatekeeping.**
 
-`v0.2.0` · A side project by [Shahid Rogers](mailto:shahidrogers+mamamo@gmail.com)
+`v0.2.0` · A curiosity project by [Shahid Rogers](mailto:shahidrogers+mamamo@gmail.com), built with [Claude](https://claude.ai)
 
 ---
 
@@ -28,7 +28,7 @@ MaMaMo (Malaysia Macro Model) is a structural quarterly macroeconomic model for 
 
 The idea is simple: Malaysia deserves a transparent, publicly available macro model. BNM and MOF have their own, but those are proprietary. Academic models tend to be partial. MaMaMo aims to be the thing you can actually open, read, run, break, fix, and learn from.
 
-It's not finished. It might never be. But it's a start.
+This is a curiosity project — built by [Shahid Rogers](mailto:shahidrogers+mamamo@gmail.com) with [Claude](https://claude.ai) to see what happens when you point an LLM at 200 equations and a country's economy. It's not finished. It might never be. But it's a start.
 
 ---
 
@@ -122,7 +122,7 @@ README.md                              # You are here
 
 | Scenario | What it models | Link |
 |----------|---------------|------|
-| **$200 Oil — Iran War** | Brent spikes to $200/bbl on a US–Iran ground war. Traces fiscal, trade, household, and Petronas impacts over 8 quarters. | [View simulation →](studies/simulations/oil-200-iran-war/index.html) |
+| **$200 Oil — Iran War** | Brent spikes to $200/bbl on a US–Iran ground war. Traces fiscal, trade, household, and Petronas impacts over 8 quarters. | [View simulation →](https://shahidrogers.github.io/MaMaMo/studies/simulations/oil-200-iran-war/) |
 
 ---
 

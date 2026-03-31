@@ -13,7 +13,7 @@
     "opr": 3.0,
     "brent_price": 82,
     "cpo_price": 4000,
-    "ringgit_rate": 4.35,
+    "ringgit_rate": 3.89,
     "neer": 108.5,
     "reer": 103.2,
     "unemployment": 3.4,
@@ -370,7 +370,8 @@
     "cumulative_fuel_subsidy_bln_rm": 20.6,
     "peak_quarterly_fuel_subsidy_bln_rm": 4.9,
     "average_fiscal_balance_pct_gdp": 2.16,
-    "ringgit_depreciation_total_pct": 2.11,
+    "ringgit_depreciation_total_pct": 14.19,
+    "ringgit_depreciation_peak_pct": 23.19,
     "reer_depreciation_total_pct": -7.85,
     "average_current_account_pct_gdp": 8.11
   },

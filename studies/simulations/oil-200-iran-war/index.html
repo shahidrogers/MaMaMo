@@ -494,7 +494,7 @@
         <div class="glass-red flash-card shareable" style="border-left-color: rgba(255,107,87,0.55);" data-share-title="$200 Oil: Everything costs 25% more">
             <div class="flash-kicker" style="color: var(--red);">Households</div>
             <div class="impact-headline text-[28px] mb-3" style="color: var(--red);">Everything costs 25% more.</div>
-            <p class="text-sm" style="color: var(--text-muted); line-height: 1.65;">Your salary doesn't move. Groceries, eating out, electricity, cooking oil all jump. Your ringgit buys 24% less than it did yesterday. This lasts 2 years.</p>
+            <p class="text-sm" style="color: var(--text-muted); line-height: 1.65;">Your salary doesn't move. Groceries, eating out, electricity, cooking oil all jump. Anything priced in USD costs about 21% more immediately. This lasts 2 years.</p>
             <div class="flash-foot">
                 <div>
                     <strong>Real wages</strong>
@@ -561,7 +561,7 @@
                 <div class="flex gap-3 mt-3">
                     <span class="text-xs mono glass rounded px-2 py-1">Brent <span class="text-slate-200">$82</span></span>
                     <span class="text-xs mono glass rounded px-2 py-1">CPI <span class="text-slate-200">2.3%</span></span>
-                    <span class="text-xs mono glass rounded px-2 py-1">MYR <span class="text-slate-200">4.35</span></span>
+                    <span class="text-xs mono glass rounded px-2 py-1">MYR <span class="text-slate-200">3.89</span></span>
                 </div>
             </div>
         </div>
@@ -889,7 +889,7 @@
         <div class="glass-warm rounded-xl p-5">
             <div class="flex items-center gap-3 mb-3">
                 <div class="text-center">
-                    <div class="mono text-lg" style="color: var(--text-muted);">4.35</div>
+                    <div class="mono text-lg" style="color: var(--text-muted);">3.89</div>
                     <div class="text-[9px]" style="color: var(--text-muted);">before</div>
                 </div>
                 <div class="flex-1 flex items-center">
@@ -901,7 +901,7 @@
                 </div>
             </div>
             <div class="impact-headline text-[15px] mb-1.5" style="color: var(--accent);">Imported stuff gets pricier</div>
-            <p class="text-xs leading-relaxed" style="color: var(--text-muted);">iPhone, Netflix, overseas holidays, kids' formula — anything in USD costs 8-10% more overnight.</p>
+            <p class="text-xs leading-relaxed" style="color: var(--text-muted);">iPhone, Netflix, overseas holidays, kids' formula — anything in USD costs about 21% more immediately.</p>
         </div>
 
         <!-- Unemployment -->
@@ -1056,8 +1056,8 @@
             <p class="text-xs text-slate-400 leading-relaxed">Global risk-off mode. MGS 10Y hits 4.5% — safe yields compete with equity. VC pulls back. Series A/B rounds near-impossible for 12-18 months.</p>
         </div>
         <div class="glass-warm rounded-xl p-5">
-            <div class="impact-headline text-lg mb-2" style="color: var(--accent);">Your burn rate jumps 10%</div>
-            <p class="text-xs text-slate-400 leading-relaxed">USD/MYR hits 4.79 by Q4 2026. AWS, Figma, Notion, Slack — anything priced in USD costs more. REER depreciates roughly 7.8% over the period.</p>
+            <div class="impact-headline text-lg mb-2" style="color: var(--accent);">Your USD software bill jumps 23%</div>
+            <p class="text-xs text-slate-400 leading-relaxed">USD/MYR hits 4.79 by Q4 2026. AWS, Figma, Notion, Slack — anything priced in USD costs roughly 23% more at the peak versus the 3.89 baseline. REER depreciates roughly 7.8% over the period.</p>
         </div>
         <div class="glass-warm rounded-xl p-5">
             <div class="impact-headline text-lg mb-2" style="color: var(--accent);">SMEs can't absorb the hit</div>
@@ -1254,8 +1254,8 @@
                     <div class="w-full bg-white/5 rounded-full overflow-hidden"><div class="crisis-bar bg-red-500" style="width: 100%"></div></div>
                 </div>
                 <div>
-                    <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">MYR depreciation</span><span class="text-orange-400 font-semibold">-7.8%</span></div>
-                    <div class="w-full bg-white/5 rounded-full overflow-hidden"><div class="crisis-bar bg-orange-500" style="width: 22%"></div></div>
+                    <div class="flex justify-between text-xs mb-1"><span class="text-slate-500">MYR depreciation</span><span class="text-orange-400 font-semibold">-23%</span></div>
+                    <div class="w-full bg-white/5 rounded-full overflow-hidden"><div class="crisis-bar bg-orange-500" style="width: 66%"></div></div>
                 </div>
             </div>
             <p class="text-[11px] text-slate-600 mt-3">*GDP still positive — this is a supply/price shock, not a demand collapse. The pain is inflation, not recession. That makes it uniquely difficult for policy.</p>
@@ -1557,7 +1557,7 @@ const D = {
     unemp:       [3.40, 3.31, 3.24, 3.21, 3.29, 3.33, 3.33, 3.37, 3.37],
     fiscal:      [-3.2, 4.3, 3.49, 2.83, 2.27, 1.77, 1.32, 0.86, 0.44],
     ca:          [2.1, 10.62, 9.54, 8.63, 7.97, 7.52, 7.17, 6.85, 6.59],
-    usdmyr:      [4.35, 4.698, 4.745, 4.792, 4.72, 4.649, 4.579, 4.51, 4.442],
+    usdmyr:      [3.89, 4.698, 4.745, 4.792, 4.72, 4.649, 4.579, 4.51, 4.442],
     opr:         [3.00, 3.50, 3.50, 3.50, 3.50, 3.25, 3.25, 3.25, 3.25],
     blr:         [5.25, 5.75, 5.75, 5.75, 5.75, 5.50, 5.50, 5.50, 5.50],
     mgs10:       [3.80, 3.50, 3.75, 4.00, 4.25, 4.50, 4.50, 4.50, 4.50],

@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scenario Playground | Malaysia Macro Model | MaMaMo</title>
+    <meta name="description" content="Interactive scenario playground for the MaMaMo Malaysia Quarterly Macroeconomic Model. Adjust oil prices, policy rates, and global conditions to explore macro outcomes.">
+    <meta name="robots" content="index,follow">
+    <meta name="author" content="Shahid Rogers">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="canonical" href="https://shahidrogers.github.io/MaMaMo/studies/playground/">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="MaMaMo">
+    <meta property="og:title" content="Scenario Playground | Malaysia Macro Model">
+    <meta property="og:description" content="Adjust macro inputs and watch Malaysia's economy respond in real time. Built on the MaMaMo structural quarterly model.">
+    <meta property="og:url" content="https://shahidrogers.github.io/MaMaMo/studies/playground/">
+    <meta property="og:locale" content="en_MY">
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "MaMaMo Scenario Playground",
+            "description": "Interactive scenario explorer for the Malaysia Quarterly Macroeconomic Model.",
+            "author": { "@type": "Person", "name": "Shahid Rogers" },
+            "url": "https://shahidrogers.github.io/MaMaMo/studies/playground/",
+            "applicationCategory": "FinanceApplication",
+            "isPartOf": { "@type": "WebSite", "name": "MaMaMo", "url": "https://shahidrogers.github.io/MaMaMo/" }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0a0a0a;
+            --bg-panel: #111111;
+            --bg-input: #181818;
+            --bg-hover: #1a1a1a;
+            --border: #222222;
+            --border-accent: #333333;
+            --text: #e8e8e8;
+            --text-secondary: #999999;
+            --text-dim: #666666;
+            --orange: #ff8800;
+            --orange-dim: rgba(255,136,0,0.12);
+            --orange-bright: #ffaa33;
+            --red: #ff4444;
+            --red-dim: rgba(255,68,68,0.1);
+            --green: #00cc66;
+            --green-dim: rgba(0,204,102,0.1);
+            --blue: #4488ff;
+            --blue-dim: rgba(68,136,255,0.1);
+            --yellow: #ffcc00;
+            --yellow-dim: rgba(255,204,0,0.1);
+            --mono: 'IBM Plex Mono', 'Consolas', 'Monaco', monospace;
+            --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            font-family: var(--mono);
+            background: var(--bg);
+            color: var(--text);
+            font-size: 12px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        ::selection { background: rgba(255,136,0,0.3); }
+
+        /* ---- TOP BAR ---- */
+        .top-bar {
+            background: #000000;
+            border-bottom: 1px solid var(--border);
+            padding: 6px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        .top-bar-left { display: flex; align-items: center; gap: 16px; }
+        .top-bar .logo {
+            color: var(--orange);
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.08em;
+        }
+        .top-bar .sep { color: var(--border-accent); }
+        .top-bar .page-title { color: var(--text-secondary); font-size: 11px; }
+        .top-bar .live-dot {
+            width: 6px; height: 6px; border-radius: 50%; background: var(--green);
+            display: inline-block; animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+        /* ---- TICKER ---- */
+        .ticker {
+            background: #050505;
+            border-bottom: 1px solid var(--border);
+            padding: 4px 16px;
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            white-space: nowrap;
+            font-size: 11px;
+            position: fixed;
+            top: 33px;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        .ticker-item { display: flex; gap: 6px; align-items: center; }
+        .ticker-label { color: var(--text-dim); }
+        .ticker-val { color: var(--text); font-weight: 500; }
+        .ticker-chg { font-size: 10px; padding: 1px 4px; border-radius: 2px; }
+        .ticker-up { color: var(--green); background: var(--green-dim); }
+        .ticker-down { color: var(--red); background: var(--red-dim); }
+        .ticker-flat { color: var(--text-dim); background: rgba(255,255,255,0.04); }
+
+        /* ---- LAYOUT ---- */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            min-height: calc(100vh - 60px);
+            margin-top: 60px;
+        }
+        @media (max-width: 960px) {
+            .main-grid { grid-template-columns: 1fr; }
+            .sidebar { border-right: none !important; border-bottom: 1px solid var(--border); }
+        }
+
+        /* ---- SIDEBAR ---- */
+        .sidebar {
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border);
+            padding: 0;
+            overflow-y: auto;
+            max-height: calc(100vh - 60px);
+            position: sticky;
+            top: 60px;
+        }
+        @media (max-width: 960px) {
+            .sidebar { max-height: none; position: static; }
+        }
+
+        .sb-section {
+            border-bottom: 1px solid var(--border);
+            padding: 12px 14px;
+        }
+        .sb-header {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--orange);
+            margin-bottom: 10px;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2px;
+        }
+        .input-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            cursor: help;
+            position: relative;
+        }
+        .input-label:hover { color: var(--text); }
+        .input-val {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--orange);
+            min-width: 64px;
+            text-align: right;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 3px;
+            background: var(--border);
+            border-radius: 0;
+            outline: none;
+            cursor: pointer;
+            margin: 4px 0 8px 0;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px; height: 12px;
+            background: var(--orange);
+            border-radius: 1px;
+            cursor: pointer;
+            border: none;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 12px; height: 12px;
+            background: var(--orange);
+            border-radius: 1px;
+            border: none;
+            cursor: pointer;
+        }
+        .range-bounds {
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            color: var(--text-dim);
+            margin-top: -4px;
+            margin-bottom: 6px;
+        }
+
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        .toggle-row input[type="checkbox"] {
+            accent-color: var(--orange);
+            width: 13px;
+            height: 13px;
+        }
+
+        /* Collapsible sidebar sections */
+        .sb-collapse-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+        }
+        .sb-collapse-header:hover { background: var(--bg-hover); }
+        .sb-collapse-header .sb-header { margin-bottom: 0; }
+        .sb-collapse-chevron {
+            color: var(--text-dim);
+            font-size: 9px;
+            transition: transform 0.2s;
+        }
+        .sb-collapse-body {
+            max-height: 2000px;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.2s ease;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+        }
+        .sb-collapse-body.collapsed {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .btn-reset {
+            width: 100%;
+            padding: 7px;
+            font-family: var(--mono);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            background: transparent;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-reset:hover { border-color: var(--orange); color: var(--orange); }
+
+        /* ---- CONTENT ---- */
+        .content { padding: 0; overflow-y: auto; }
+
+        /* KPI strip */
+        .kpi-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border-bottom: 1px solid var(--border);
+        }
+        @media (max-width: 700px) { .kpi-strip { grid-template-columns: repeat(2, 1fr); } }
+        .kpi-cell {
+            padding: 10px 14px;
+            border-right: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+        .kpi-cell:last-child { border-right: none; }
+        .kpi-cell:hover { background: var(--bg-hover); }
+        .kpi-name {
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 2px;
+        }
+        .kpi-value {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+        .kpi-delta {
+            font-size: 10px;
+            margin-top: 1px;
+        }
+
+        /* Narrative bar */
+        .narrative-bar {
+            background: var(--orange-dim);
+            border-bottom: 1px solid rgba(255,136,0,0.2);
+            padding: 10px 14px;
+            font-size: 11px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            font-family: var(--sans);
+        }
+        .narrative-bar strong { color: var(--orange); font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; }
+
+        /* Chart grid */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-bottom: 1px solid var(--border);
+        }
+        @media (max-width: 700px) { .chart-grid { grid-template-columns: 1fr; } }
+        .chart-cell {
+            padding: 12px 14px 8px 14px;
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .chart-cell:nth-child(2n) { border-right: none; }
+        .chart-title {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+        }
+        .chart-box { position: relative; height: 220px; }
+
+        /* Data table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+        .data-table th {
+            text-align: left;
+            font-weight: 600;
+            font-size: 9px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            padding: 6px 10px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-panel);
+            position: sticky;
+            top: 0;
+        }
+        .data-table td {
+            padding: 5px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            color: var(--text-secondary);
+        }
+        .data-table tr:hover td { background: var(--bg-hover); }
+        .data-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+        .data-table .positive { color: var(--green); }
+        .data-table .negative { color: var(--red); }
+
+        /* Guide sections */
+        .guide-section { border-bottom: 1px solid var(--border); }
+        .guide-header {
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+        .guide-header:hover { background: var(--bg-hover); }
+        .guide-header-title {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--orange);
+        }
+        .guide-chevron {
+            color: var(--text-dim);
+            transition: transform 0.2s;
+            font-size: 10px;
+        }
+        .guide-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease;
+        }
+        .guide-body.open { max-height: 3000px; }
+        .guide-body-inner {
+            padding: 0 14px 14px 14px;
+            font-family: var(--sans);
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        .guide-body-inner h4 {
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 12px 0 4px 0;
+        }
+        .guide-body-inner h4:first-child { margin-top: 0; }
+
+        .channel-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        @media (max-width: 700px) { .channel-grid { grid-template-columns: 1fr; } }
+        .channel-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+        }
+        .channel-card h5 {
+            font-family: var(--mono);
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--orange);
+            letter-spacing: 0.06em;
+            margin-bottom: 4px;
+        }
+        .channel-card p {
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 10px 14px;
+            font-size: 10px;
+            color: var(--text-dim);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .footer a { color: var(--orange); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+
+        /* Tooltip — renders below to avoid clipping under section headers */
+        .tt { position: relative; }
+        .tt .tt-text {
+            display: none;
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            background: #1a1a1a;
+            border: 1px solid var(--border-accent);
+            padding: 6px 10px;
+            font-size: 10px;
+            color: var(--text-secondary);
+            width: 220px;
+            z-index: 200;
+            line-height: 1.5;
+            font-weight: 400;
+            letter-spacing: 0;
+            text-transform: none;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+        }
+        .tt:hover .tt-text { display: block; }
+    </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+    <div class="top-bar-left">
+        <span class="logo">MAMAMO</span>
+        <span class="sep">|</span>
+        <span class="page-title">SCENARIO PLAYGROUND</span>
+        <span class="sep">|</span>
+        <span class="page-title">MALAYSIA QUARTERLY MODEL</span>
+    </div>
+    <div></div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker" id="ticker">
+    <div class="ticker-item">
+        <span class="ticker-label">BRENT</span>
+        <span class="ticker-val" id="tk-brent">$120.00</span>
+        <span class="ticker-chg ticker-up" id="tk-brent-chg">+46.3%</span>
+    </div>
+    <div class="ticker-item">
+        <span class="ticker-label">USD/MYR</span>
+        <span class="ticker-val" id="tk-fx">3.8900</span>
+        <span class="ticker-chg ticker-flat" id="tk-fx-chg">0.0%</span>
+    </div>
+    <div class="ticker-item">
+        <span class="ticker-label">OPR</span>
+        <span class="ticker-val" id="tk-opr">3.00%</span>
+        <span class="ticker-chg ticker-flat" id="tk-opr-chg">0bp</span>
+    </div>
+    <div class="ticker-item">
+        <span class="ticker-label">CPO</span>
+        <span class="ticker-val" id="tk-cpo">RM4,000</span>
+        <span class="ticker-chg ticker-flat" id="tk-cpo-chg">0.0%</span>
+    </div>
+    <div class="ticker-item">
+        <span class="ticker-label">E&amp;E IDX</span>
+        <span class="ticker-val" id="tk-semi">100</span>
+        <span class="ticker-chg ticker-flat" id="tk-semi-chg">0.0%</span>
+    </div>
+    <div class="ticker-item">
+        <span class="ticker-label">TOUR IDX</span>
+        <span class="ticker-val" id="tk-tour">100</span>
+        <span class="ticker-chg ticker-flat" id="tk-tour-chg">0.0%</span>
+    </div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="main-grid">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <!-- GLOBAL CONDITIONS -->
+        <div class="sb-collapse-header" onclick="toggleSb(this)">
+            <div class="sb-header">Global Conditions</div>
+            <span class="sb-collapse-chevron">&#9660;</span>
+        </div>
+        <div class="sb-collapse-body">
+            <div class="input-row">
+                <label class="input-label tt">BRENT CRUDE<span class="tt-text">Primary oil shock. Feeds energy costs, administered fuel prices, Petronas profits, and import inflation. Baseline: $82/bbl.</span></label>
+                <span class="input-val" id="val-brent">$120</span>
+            </div>
+            <input type="range" id="in-brent" min="40" max="250" value="120" step="5">
+            <div class="range-bounds"><span>$40</span><span>$250</span></div>
+
+            <div class="input-row">
+                <label class="input-label tt">CPO PRICE<span class="tt-text">Palm oil RM/tonne. Drives commodity exports, export duties, and plantation GVA. Baseline: RM4,000.</span></label>
+                <span class="input-val" id="val-cpo">RM4,000</span>
+            </div>
+            <input type="range" id="in-cpo" min="2000" max="7000" value="4000" step="100">
+            <div class="range-bounds"><span>RM2,000</span><span>RM7,000</span></div>
+
+            <div class="input-row">
+                <label class="input-label tt">E&amp;E DEMAND<span class="tt-text">Global semiconductor demand index (100=baseline). E&E is ~38% of Malaysia's goods exports. Elasticity: 1.05.</span></label>
+                <span class="input-val" id="val-semi">100</span>
+            </div>
+            <input type="range" id="in-semi" min="60" max="140" value="100" step="2">
+            <div class="range-bounds"><span>60</span><span>140</span></div>
+
+            <div class="input-row">
+                <label class="input-label tt">TOURISM<span class="tt-text">Global tourism demand index (100=baseline). Services exports ~6% of GDP. Elasticity: 0.85.</span></label>
+                <span class="input-val" id="val-tour">100</span>
+            </div>
+            <input type="range" id="in-tour" min="40" max="140" value="100" step="5">
+            <div class="range-bounds"><span>40</span><span>140</span></div>
+
+            <div class="input-row">
+                <label class="input-label tt">WORLD GOODS PRICES<span class="tt-text">External goods price index (100=baseline). Drives import price inflation and traded-goods pricing. Baseline: 100.</span></label>
+                <span class="input-val" id="val-wpg">100</span>
+            </div>
+            <input type="range" id="in-wpg" min="70" max="140" value="100" step="2">
+            <div class="range-bounds"><span>70</span><span>140</span></div>
+
+            <div class="input-row">
+                <label class="input-label tt">GLOBAL EQUITY INDEX<span class="tt-text">Global equity valuation (100=baseline). Affects household wealth via EPF and portfolio holdings, and external income. Baseline: 100.</span></label>
+                <span class="input-val" id="val-equity">100</span>
+            </div>
+            <input type="range" id="in-equity" min="50" max="150" value="100" step="5">
+            <div class="range-bounds"><span>50</span><span>150</span></div>
+
+            <div class="input-row">
+                <label class="input-label tt">US 10Y YIELD<span class="tt-text">US Treasury 10-year yield. Feeds Malaysian long-end rate formation (MGS10). Baseline: 4.25%.</span></label>
+                <span class="input-val" id="val-ust10">4.25%</span>
+            </div>
+            <input type="range" id="in-ust10" min="2.00" max="7.00" value="4.25" step="0.25">
+            <div class="range-bounds"><span>2.00%</span><span>7.00%</span></div>
+        </div>
+
+        <!-- MONETARY & FX -->
+        <div class="sb-collapse-header" onclick="toggleSb(this)">
+            <div class="sb-header">Monetary &amp; FX</div>
+            <span class="sb-collapse-chevron" style="transform:rotate(-90deg)">&#9660;</span>
+        </div>
+        <div class="sb-collapse-body collapsed">
+            <div class="input-row">
+                <label class="input-label tt">OPR<span class="tt-text">Overnight Policy Rate. BNM's primary instrument. Pass-through: 20-30bps per 25bps move. Mortgage = OPR + 175bps. Baseline: 3.00%.</span></label>
+                <span class="input-val" id="val-opr">3.00%</span>
+            </div>
+            <input type="range" id="in-opr" min="1.50" max="5.00" value="3.00" step="0.25">
+            <div class="range-bounds"><span>1.50%</span><span>5.00%</span></div>
+
+            <div class="input-row">
+                <label class="input-label tt">USD/MYR<span class="tt-text">Exchange rate. Weaker ringgit raises import costs and fuel subsidy burden but inflates Petronas RM profits. Baseline: 3.89.</span></label>
+                <span class="input-val" id="val-fx">3.89</span>
+            </div>
+            <input type="range" id="in-fx" min="3.20" max="5.50" value="3.89" step="0.01">
+            <div class="range-bounds"><span>3.20</span><span>5.50</span></div>
+        </div>
+
+        <!-- FISCAL POLICY -->
+        <div class="sb-collapse-header" onclick="toggleSb(this)">
+            <div class="sb-header">Fiscal Policy</div>
+            <span class="sb-collapse-chevron" style="transform:rotate(-90deg)">&#9660;</span>
+        </div>
+        <div class="sb-collapse-body collapsed">
+            <div class="input-row">
+                <label class="input-label tt">DEV SPENDING<span class="tt-text">Real development expenditure growth (QoQ). Government investment lever. Baseline: 2.0%.</span></label>
+                <span class="input-val" id="val-devgr">2.0%</span>
+            </div>
+            <input type="range" id="in-devgr" min="-5" max="10" value="2" step="0.5">
+            <div class="range-bounds"><span>-5.0%</span><span>+10.0%</span></div>
+
+            <div class="input-row">
+                <label class="input-label tt">SST RATE<span class="tt-text">Effective Sales &amp; Service Tax rate. Higher SST raises consumer prices and government revenue. Baseline: 6%.</span></label>
+                <span class="input-val" id="val-sst">6%</span>
+            </div>
+            <input type="range" id="in-sst" min="0" max="12" value="6" step="1">
+            <div class="range-bounds"><span>0%</span><span>12%</span></div>
+
+            <div class="input-row">
+                <label class="input-label tt">CPO EXPORT DUTY<span class="tt-text">Sliding-scale export duty on crude palm oil. Revenue tool that also affects planter margins. Baseline: 8%.</span></label>
+                <span class="input-val" id="val-cpoduty">8%</span>
+            </div>
+            <input type="range" id="in-cpoduty" min="0" max="20" value="8" step="1">
+            <div class="range-bounds"><span>0%</span><span>20%</span></div>
+        </div>
+
+        <!-- HOUSEHOLD POLICY -->
+        <div class="sb-collapse-header" onclick="toggleSb(this)">
+            <div class="sb-header">Household Policy</div>
+            <span class="sb-collapse-chevron" style="transform:rotate(-90deg)">&#9660;</span>
+        </div>
+        <div class="sb-collapse-body collapsed">
+            <div class="input-row">
+                <label class="input-label tt">EPF WITHDRAWAL<span class="tt-text">Special EPF withdrawal policy (RM billion). Like i-Sinar/i-Citra during COVID. Boosts consumption but reduces retirement savings. Baseline: 0.</span></label>
+                <span class="input-val" id="val-epf">RM0bn</span>
+            </div>
+            <input type="range" id="in-epf" min="0" max="50" value="0" step="5">
+            <div class="range-bounds"><span>RM0bn</span><span>RM50bn</span></div>
+        </div>
+
+        <!-- SHOCK SWITCHES -->
+        <div class="sb-collapse-header" onclick="toggleSb(this)">
+            <div class="sb-header">Shock Switches</div>
+            <span class="sb-collapse-chevron">&#9660;</span>
+        </div>
+        <div class="sb-collapse-body">
+            <label class="toggle-row">
+                <input type="checkbox" id="in-elnino">
+                <span class="tt">EL NINO EVENT<span class="tt-text">Reduces palm oil yields ~12%. Raises CPO prices +15% and adds ~0.8pp to food CPI.</span></span>
+            </label>
+            <label class="toggle-row">
+                <input type="checkbox" id="in-subsidy-reform">
+                <span class="tt">FUEL SUBSIDY REFORM<span class="tt-text">RON95 floated to market price. One-off CPI shock ~8pp. Saves ~RM10-15bn/yr for fiscal consolidation.</span></span>
+            </label>
+        </div>
+
+        <!-- RESET + INFO -->
+        <div class="sb-section">
+            <button class="btn-reset" onclick="resetInputs()">RESET TO BASELINE</button>
+        </div>
+
+        <div class="sb-section" style="border-bottom:none;">
+            <div class="sb-header" style="color:var(--text-dim); margin-bottom:4px;">MODEL INFO</div>
+            <div style="font-size:10px; color:var(--text-dim); line-height:1.7;">
+                Baseline: Q1 2026<br>
+                Horizon: 8 quarters<br>
+                Equations: ~200 (simplified for playground)<br>
+                Calibration: BNM, DOSM, IMF Art. IV<br>
+                <span style="color:var(--red);">Research prototype &mdash; not production forecasts</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <!-- KPI STRIP 1 -->
+        <div class="kpi-strip">
+            <div class="kpi-cell">
+                <div class="kpi-name">GDP GROWTH</div>
+                <div class="kpi-value" id="kpi-gdp" style="color:var(--green);">4.2%</div>
+                <div class="kpi-delta" id="kpi-gdp-d" style="color:var(--text-dim);">baseline</div>
+            </div>
+            <div class="kpi-cell">
+                <div class="kpi-name">CPI INFLATION</div>
+                <div class="kpi-value" id="kpi-cpi" style="color:var(--text);">2.3%</div>
+                <div class="kpi-delta" id="kpi-cpi-d" style="color:var(--text-dim);">baseline</div>
+            </div>
+            <div class="kpi-cell">
+                <div class="kpi-name">UNEMPLOYMENT</div>
+                <div class="kpi-value" id="kpi-unemp" style="color:var(--text);">3.4%</div>
+                <div class="kpi-delta" id="kpi-unemp-d" style="color:var(--text-dim);">baseline</div>
+            </div>
+            <div class="kpi-cell">
+                <div class="kpi-name">FISCAL BAL. (% GDP)</div>
+                <div class="kpi-value" id="kpi-fiscal" style="color:var(--red);">-3.2%</div>
+                <div class="kpi-delta" id="kpi-fiscal-d" style="color:var(--text-dim);">baseline</div>
+            </div>
+        </div>
+
+        <!-- KPI STRIP 2 -->
+        <div class="kpi-strip">
+            <div class="kpi-cell">
+                <div class="kpi-name">PETRONAS PROFIT</div>
+                <div class="kpi-value" id="kpi-pet" style="color:var(--orange);">RM95bn</div>
+                <div class="kpi-delta" id="kpi-pet-d" style="color:var(--text-dim);">annual est.</div>
+            </div>
+            <div class="kpi-cell">
+                <div class="kpi-name">FUEL SUBSIDY</div>
+                <div class="kpi-value" id="kpi-sub" style="color:var(--text);">RM12bn</div>
+                <div class="kpi-delta" id="kpi-sub-d" style="color:var(--text-dim);">annual est.</div>
+            </div>
+            <div class="kpi-cell">
+                <div class="kpi-name">CURRENT ACCT (% GDP)</div>
+                <div class="kpi-value" id="kpi-ca" style="color:var(--green);">2.1%</div>
+                <div class="kpi-delta" id="kpi-ca-d" style="color:var(--text-dim);">baseline</div>
+            </div>
+            <div class="kpi-cell">
+                <div class="kpi-name">REAL WAGES</div>
+                <div class="kpi-value" id="kpi-rw" style="color:var(--green);">+1.9%</div>
+                <div class="kpi-delta" id="kpi-rw-d" style="color:var(--text-dim);">yoy growth</div>
+            </div>
+        </div>
+
+        <!-- NARRATIVE -->
+        <div class="narrative-bar">
+            <strong>TRANSMISSION &nbsp;</strong>
+            <span id="narrative">At baseline settings, the economy grows at trend with moderate inflation. Adjust inputs to trace shock transmission.</span>
+        </div>
+
+        <!-- CHARTS -->
+        <div class="chart-grid">
+            <div class="chart-cell">
+                <div class="chart-title">GDP GROWTH &amp; INFLATION (%)</div>
+                <div class="chart-box"><canvas id="c-gdp"></canvas></div>
+            </div>
+            <div class="chart-cell">
+                <div class="chart-title">FISCAL BALANCE</div>
+                <div class="chart-box"><canvas id="c-fiscal"></canvas></div>
+            </div>
+            <div class="chart-cell">
+                <div class="chart-title">PETRONAS &amp; SUBSIDIES (RM BN)</div>
+                <div class="chart-box"><canvas id="c-pet"></canvas></div>
+            </div>
+            <div class="chart-cell">
+                <div class="chart-title">EXTERNAL SECTOR</div>
+                <div class="chart-box"><canvas id="c-ext"></canvas></div>
+            </div>
+            <div class="chart-cell">
+                <div class="chart-title">HOUSEHOLD SECTOR</div>
+                <div class="chart-box"><canvas id="c-hh"></canvas></div>
+            </div>
+            <div class="chart-cell">
+                <div class="chart-title">LABOUR MARKET</div>
+                <div class="chart-box"><canvas id="c-lab"></canvas></div>
+            </div>
+        </div>
+
+        <!-- DATA TABLE -->
+        <div class="guide-section">
+            <div class="guide-header" onclick="toggleGuide(this)">
+                <span class="guide-header-title">QUARTERLY DATA TABLE</span>
+                <span class="guide-chevron">&#9660;</span>
+            </div>
+            <div class="guide-body">
+                <div style="overflow-x:auto; padding: 0 0 8px 0;">
+                    <table class="data-table" id="data-table">
+                        <thead>
+                            <tr>
+                                <th>Quarter</th>
+                                <th class="num">Brent</th>
+                                <th class="num">GDP %</th>
+                                <th class="num">CPI %</th>
+                                <th class="num">Core %</th>
+                                <th class="num">Unemp %</th>
+                                <th class="num">Fiscal %GDP</th>
+                                <th class="num">Petronas</th>
+                                <th class="num">Subsidy</th>
+                                <th class="num">CA %GDP</th>
+                                <th class="num">Real Wage</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- GUIDE: HOW TO INTERPRET -->
+        <div class="guide-section">
+            <div class="guide-header" onclick="toggleGuide(this)">
+                <span class="guide-header-title">HOW TO INTERPRET THIS MODEL</span>
+                <span class="guide-chevron">&#9660;</span>
+            </div>
+            <div class="guide-body">
+                <div class="guide-body-inner">
+                    <h4>Start with the right mental model</h4>
+                    <p>Read MaMaMo as a structural research model, not a black-box forecasting engine. It makes assumptions explicit, links Malaysian institutions into a coherent macro system, and forces scenarios to move through named channels rather than narrative handwaving. It does not yet eliminate judgment.</p>
+
+                    <h4>What a scenario output means</h4>
+                    <p>An output here is the <em>implied path of the system</em> given the specified external conditions, policy paths, and calibration settings &mdash; not an objective truth about what Malaysia will do next quarter. If two people run the same model with different paths for CREDIT, MCCI, or GOVDEBTADJ, they can get materially different results.</p>
+
+                    <h4>Three kinds of relationships</h4>
+                    <p><strong style="color:var(--orange);">Behavioral equations</strong> (consumption, investment, exports, wages) say something about transmission. <strong style="color:var(--blue);">Accounting identities</strong> (GDP, fiscal balance, debt) say something about consistency. <strong style="color:var(--text-dim);">Calibration rules</strong> (deflators, wedges, exogenous paths) say something about closure assumptions. Don't treat all three as equal evidence.</p>
+
+                    <h4>Best for comparative scenarios</h4>
+                    <p>The model is especially useful when the question is: "If these external conditions and policy settings hold, what does the rest of the system have to do?" It is <em>not</em> best for point-forecast precision or official projections.</p>
+
+                    <h4>Caution areas</h4>
+                    <p>Be careful with: point forecast precision, medium-run debt paths, household demand sensitivity when credit or confidence paths are judgmental, and commodity scenarios when supply-side wedges are loosely specified.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- GUIDE: TRANSMISSION CHANNELS -->
+        <div class="guide-section">
+            <div class="guide-header" onclick="toggleGuide(this)">
+                <span class="guide-header-title">TRANSMISSION CHANNELS</span>
+                <span class="guide-chevron">&#9660;</span>
+            </div>
+            <div class="guide-body">
+                <div class="guide-body-inner">
+                    <div class="channel-grid">
+                        <div class="channel-card">
+                            <h5>OIL &rarr; INFLATION</h5>
+                            <p>Brent feeds administered fuel prices (15% pass-through to PADMIN), import costs, and utility prices. Administered items are ~22% of the CPI basket. Second-round effects via wages add persistence.</p>
+                        </div>
+                        <div class="channel-card">
+                            <h5>OIL &rarr; FISCAL</h5>
+                            <p>Higher oil raises Petronas profits &rarr; PITA revenue (38% tax) + dividends (30% payout). But also raises fuel subsidy cost. Net fiscal effect depends on price level and production volume.</p>
+                        </div>
+                        <div class="channel-card">
+                            <h5>FX &rarr; PRICES</h5>
+                            <p>Weaker ringgit raises RM import costs (pass-through ~0.4 short-run). Inflates Petronas RM profits but increases subsidy burden and consumer prices.</p>
+                        </div>
+                        <div class="channel-card">
+                            <h5>OPR &rarr; DEMAND</h5>
+                            <p>Rate hikes slow consumption (MPC ~0.55) and investment via cost of capital. Mortgage rate = OPR + 175bps. Housing investment particularly sensitive.</p>
+                        </div>
+                        <div class="channel-card">
+                            <h5>E&amp;E &rarr; EXPORTS</h5>
+                            <p>Semiconductor demand drives ~38% of goods exports. High import content (~52%) means export boom also lifts imports. Net GDP effect smaller than gross.</p>
+                        </div>
+                        <div class="channel-card">
+                            <h5>GDP &rarr; LABOUR</h5>
+                            <p>Okun coefficient ~0.45. Structural unemployment ~3.3-3.5%. Foreign worker buffer dampens cyclical response vs. advanced economies.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GUIDE: WHAT'S MALAYSIA-SPECIFIC -->
+        <div class="guide-section">
+            <div class="guide-header" onclick="toggleGuide(this)">
+                <span class="guide-header-title">MALAYSIA-SPECIFIC FEATURES</span>
+                <span class="guide-chevron">&#9660;</span>
+            </div>
+            <div class="guide-body">
+                <div class="guide-body-inner">
+                    <p>The most important Malaysia-specific features in this model:</p>
+                    <ul style="margin: 8px 0; padding-left: 20px; list-style: none;">
+                        <li style="padding: 3px 0;"><span style="color:var(--orange);">&#9632;</span> Administered fuel &amp; utility price treatment inside CPI (RON95, diesel, electricity)</li>
+                        <li style="padding: 3px 0;"><span style="color:var(--orange);">&#9632;</span> Petronas profits, petroleum income tax (PITA), and dividend channel</li>
+                        <li style="padding: 3px 0;"><span style="color:var(--orange);">&#9632;</span> Palm oil production, CPO export duties, and El Nino weather sensitivity</li>
+                        <li style="padding: 3px 0;"><span style="color:var(--orange);">&#9632;</span> E&amp;E exports tied to the global semiconductor cycle</li>
+                        <li style="padding: 3px 0;"><span style="color:var(--orange);">&#9632;</span> Foreign worker (~2M) and remittance channels</li>
+                        <li style="padding: 3px 0;"><span style="color:var(--orange);">&#9632;</span> EPF as a distinct household wealth and savings mechanism</li>
+                        <li style="padding: 3px 0;"><span style="color:var(--orange);">&#9632;</span> GST-to-SST policy treatment in tax equations</li>
+                        <li style="padding: 3px 0;"><span style="color:var(--orange);">&#9632;</span> BNM operating vs. development expenditure structure</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <span>MaMaMo &mdash; Research prototype. Not production forecasts. Simplified transmission engine.</span>
+            <span>
+                <a href="../../">Home</a> &middot;
+                <a href="../../model/malaysia-quarterly-model.md">Full Model</a> &middot;
+                <a href="../simulations/oil-200-iran-war/">$200 Oil Study</a>
+            </span>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================================
+// SIMPLIFIED TRANSMISSION ENGINE
+// Calibrated from the full MaMaMo ~200-equation model
+// ============================================================================
+
+const B = {
+    gdp_millions_rm: 1850000,
+    gdp_growth: 4.2,
+    cpi_inflation: 2.3,
+    core_inflation: 1.8,
+    opr: 3.0,
+    brent: 82,
+    cpo: 4000,
+    fx: 3.89,
+    unemployment: 3.4,
+    fiscal_pct: -3.2,
+    gov_revenue_bln: 200,
+    gov_expenditure_bln: 260,
+    petronas_profit_bln: 95,
+    pita_revenue_bln: 36.1,
+    petronas_dividend_bln: 28.5,
+    fuel_subsidy_bln: 12,
+    exports_bln: 980,
+    imports_bln: 850,
+    current_account_pct: 2.1,
+    household_debt_ratio: 84.2,
+    real_wage_growth: 1.9,
+    nominal_wage_growth: 4.2,
+    consumption_growth: 5.5,
+    semi: 100,
+    tour: 100,
+    devgr: 2.0,
+    wpg: 100,
+    equity: 100,
+    ust10: 4.25,
+    sst: 6,
+    cpoduty: 8,
+    epf: 0,
+};
+
+const P = {
+    oil_admin_pt: 0.15,
+    w_admin: 0.22,
+    import_pt: 0.40,
+    mpc: 0.55,
+    inv_elast: 1.05,
+    okun: 0.45,
+    reer_exp_elast: -0.25,
+    ee_elast: 1.05,
+    tour_elast: 0.85,
+    pet_tax: 0.38,
+    pet_div: 0.30,
+    ee_share: 0.38,
+    oil_share: 0.08,
+    cpo_share: 0.05,
+    import_content_ee: 0.52,
+    fuel_litres_q: 3.5,
+    opr_cons: -0.0072,
+    opr_inv: -0.0015,
+    wage_price_pt: 0.52,
+};
+
+const QS = ['Q2 2026','Q3 2026','Q4 2026','Q1 2027','Q2 2027','Q3 2027','Q4 2027','Q1 2028'];
+
+function getIn() {
+    return {
+        brent: +document.getElementById('in-brent').value,
+        cpo: +document.getElementById('in-cpo').value,
+        semi: +document.getElementById('in-semi').value,
+        tour: +document.getElementById('in-tour').value,
+        opr: +document.getElementById('in-opr').value,
+        fx: +document.getElementById('in-fx').value,
+        devgr: +document.getElementById('in-devgr').value,
+        wpg: +document.getElementById('in-wpg').value,
+        equity: +document.getElementById('in-equity').value,
+        ust10: +document.getElementById('in-ust10').value,
+        sst: +document.getElementById('in-sst').value,
+        cpoduty: +document.getElementById('in-cpoduty').value,
+        epf: +document.getElementById('in-epf').value,
+        elnino: document.getElementById('in-elnino').checked,
+        subReform: document.getElementById('in-subsidy-reform').checked,
+    };
+}
+
+function sim(inp) {
+    const oilShk = (inp.brent - B.brent) / B.brent;
+    const cpoShk = (inp.cpo - B.cpo) / B.cpo;
+    const fxShk = (inp.fx - B.fx) / B.fx;
+    const oprD = inp.opr - B.opr;
+    const semiShk = (inp.semi - B.semi) / B.semi;
+    const tourShk = (inp.tour - B.tour) / B.tour;
+    const devD = inp.devgr - B.devgr;
+    const wpgShk = (inp.wpg - B.wpg) / B.wpg;
+    const eqShk = (inp.equity - B.equity) / B.equity;
+    const ust10D = inp.ust10 - B.ust10;
+    const sstD = inp.sst - B.sst;
+    const cpoDutyD = inp.cpoduty - B.cpoduty;
+    const epfBln = inp.epf;
+    const elM = inp.elnino ? 1 : 0;
+    const out = [];
+
+    for (let q = 0; q < 8; q++) {
+        const decay = Math.pow(0.88, q);
+        const persist = 1 - 0.08 * q;
+        const build = Math.min(1, 0.3 + 0.1 * q);
+
+        const effOilShk = oilShk > 0 ? oilShk * decay : oilShk * persist;
+        const effBrent = B.brent * (1 + effOilShk);
+
+        // MGS10 linked to UST10 + OPR spread
+        const mgs10 = inp.ust10 + 0.3 + oprD * 0.4;
+
+        // Administered price inflation: oil + fx pass-through
+        const adminInf = P.oil_admin_pt * (effOilShk + fxShk) * 100;
+
+        // Import inflation: fx + oil + world goods prices
+        const importInf = P.import_pt * (fxShk + 0.3 * effOilShk + 0.5 * wpgShk) * 100;
+
+        // SST effect on prices: ~0.3pp per 1pp SST change (partial pass-through)
+        const sstInf = sstD * 0.3;
+
+        // Core inflation
+        const coreInf = B.core_inflation + importInf * 0.3 * build + (oprD < 0 ? -oprD * 0.4 : -oprD * 0.2) + semiShk * 0.3 + sstInf * build + wpgShk * 2 * build;
+
+        const subShock = inp.subReform ? (q === 0 ? 8.0 : q === 1 ? 3.0 : 1.0 * Math.pow(0.5, q-2)) : 0;
+        const headCpi = (1 - P.w_admin) * coreInf + P.w_admin * (coreInf + adminInf) + subShock + elM * 0.8 * (q < 4 ? 1 : 0.5);
+
+        // Petronas & fiscal
+        const effCpo = B.cpo * (1 + cpoShk + elM * 0.15);
+        const brentRM = effBrent * inp.fx;
+        const baseBrentRM = B.brent * B.fx;
+        const petProfit = (B.petronas_profit_bln * (brentRM / baseBrentRM) * 0.85 + B.petronas_profit_bln * 0.15) * Math.pow(0.995, q);
+        const pitaRev = petProfit * P.pet_tax;
+        const petDiv = petProfit * P.pet_div;
+
+        const ron95Mkt = 2.05 + (effBrent - 82) * inp.fx / B.fx * 0.012;
+        const ron95Pump = inp.subReform ? ron95Mkt : 2.05;
+        const subLitre = Math.max(0, ron95Mkt - ron95Pump);
+        const annSub = subLitre * P.fuel_litres_q * 4;
+
+        // CPO export duty revenue (duty rate applied to CPO export value)
+        const cpoDutyRev = (inp.cpoduty / 100) * effCpo * 0.000045;
+        const baseCpoDutyRev = (B.cpoduty / 100) * B.cpo * 0.000045;
+
+        // SST revenue effect: ~RM2bn per 1pp change
+        const sstRevDelta = sstD * 2.0 / 4;
+
+        const govRev = B.gov_revenue_bln / 4
+            + (pitaRev - B.pita_revenue_bln) / 4
+            + (petDiv - B.petronas_dividend_bln) / 4
+            + (cpoDutyRev - baseCpoDutyRev)
+            + sstRevDelta
+            + devD * 0.1;
+
+        const govExp = B.gov_expenditure_bln / 4
+            + (subLitre * P.fuel_litres_q - B.fuel_subsidy_bln / 4)
+            + devD * 0.5
+            + headCpi * 0.15
+            + ust10D * 0.3; // higher global rates raise debt service
+
+        const fiscalPct = (govRev - govExp) * 4 / (B.gdp_millions_rm / 1000) * 100;
+
+        // External sector
+        const eeExpG = P.ee_elast * semiShk + P.reer_exp_elast * fxShk * 0.5;
+        const oilExpG = effOilShk * 0.6 + fxShk * 0.4;
+        // CPO export duty penalises export volumes slightly
+        const cpoExpG = cpoShk + elM * 0.03 - cpoDutyD * 0.005;
+        const tourExpG = P.tour_elast * tourShk;
+        const otherExpG = semiShk * 0.3 + fxShk * P.reer_exp_elast * -0.5 + wpgShk * 0.15;
+        const totExpG = P.ee_share * eeExpG + P.oil_share * oilExpG + P.cpo_share * cpoExpG + 0.06 * tourExpG + 0.43 * otherExpG;
+        const exports = B.exports_bln * (1 + totExpG);
+        const impG = 0.3 * totExpG * P.import_content_ee + 0.2 * effOilShk * (effOilShk > 0 ? 0.5 : 1) + fxShk * 0.15 + wpgShk * 0.2;
+        const imports = B.imports_bln * (1 + impG);
+        const caPct = (exports - imports - 20 + tourShk * 5) / (B.gdp_millions_rm / 1000) * 100;
+
+        // Household: equity wealth effect + EPF withdrawal boost
+        const wealthEffect = eqShk * 0.08; // wealth elasticity ~0.08 from consumption eq
+        const epfBoost = epfBln > 0 ? (epfBln / (B.gdp_millions_rm / 1000)) * 100 * P.mpc * (q < 4 ? 0.6 : 0.2) : 0;
+
+        const consG = B.consumption_growth
+            + oprD * P.opr_cons * 200
+            - Math.max(0, headCpi - B.cpi_inflation) * 0.6
+            + semiShk * 8
+            + tourShk * 3
+            + wealthEffect * 5
+            + epfBoost
+            - sstD * 0.3; // SST hike dampens consumption
+
+        // Investment: UST10 feeds MGS10 which affects long-end borrowing
+        const invG = B.gdp_growth * 1.2
+            + oprD * P.opr_inv * 300
+            + devD * 0.8
+            + semiShk * 15
+            - Math.max(0, headCpi - 5) * 0.5
+            - ust10D * 0.3 // higher global rates tighten financial conditions
+            + eqShk * 3; // equity market confidence
+
+        const gdpG = B.gdp_growth
+            + 0.55 * (consG - B.consumption_growth) / 10
+            + 0.23 * (invG - B.gdp_growth * 1.2) / 10
+            + 0.13 * (totExpG - impG * 0.9) * 5
+            + devD * 0.15
+            - Math.max(0, headCpi - 8) * 0.15;
+
+        const unempD = -P.okun * (gdpG - B.gdp_growth) / 100 * 5;
+        const unemp = Math.max(2.5, Math.min(6.0, B.unemployment + unempD));
+        const nomWG = B.nominal_wage_growth + P.wage_price_pt * (headCpi - B.cpi_inflation) * 0.3 + (gdpG - B.gdp_growth) * 0.4;
+        const realWG = nomWG - headCpi;
+
+        // Household debt: EPF withdrawal temporarily reduces savings, higher rates increase burden
+        const debtR = B.household_debt_ratio + oprD * 0.8 - (gdpG - B.gdp_growth) * 0.5 + q * 0.05 + (epfBln > 0 ? -epfBln * 0.02 : 0);
+
+        out.push({
+            q: QS[q], brent: r2(effBrent), gdp: r2(gdpG), cpi: r2(headCpi), core: r2(coreInf),
+            unemp: r2(unemp), fiscal: r2(fiscalPct), govRev: r1(govRev * 4), govExp: r1(govExp * 4),
+            pet: r1(petProfit), pita: r1(pitaRev), petDiv: r1(petDiv), sub: r1(annSub),
+            exp: r1(exports), imp: r1(imports), ca: r2(caPct), consG: r2(consG),
+            nomW: r2(nomWG), realW: r2(realWG), debt: r1(debtR), ron95: r2(ron95Mkt)
+        });
+    }
+    return out;
+}
+
+function r1(v) { return Math.round(v * 10) / 10; }
+function r2(v) { return Math.round(v * 100) / 100; }
+
+// ============================================================================
+// CHARTS
+// ============================================================================
+
+const CO = {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: { duration: 200 },
+    interaction: { intersect: false, mode: 'index' },
+    plugins: {
+        legend: {
+            position: 'bottom',
+            labels: { color: '#666', font: { family: "'IBM Plex Mono'", size: 9 }, boxWidth: 10, padding: 8 }
+        },
+        tooltip: {
+            backgroundColor: '#1a1a1a',
+            borderColor: '#333',
+            borderWidth: 1,
+            titleFont: { family: "'IBM Plex Mono'", size: 10 },
+            bodyFont: { family: "'IBM Plex Mono'", size: 10 },
+            padding: 8,
+            cornerRadius: 0,
+        }
+    },
+    scales: {
+        x: { ticks: { color: '#666', font: { family: "'IBM Plex Mono'", size: 9 } }, grid: { color: '#1a1a1a' } },
+        y: { ticks: { color: '#666', font: { family: "'IBM Plex Mono'", size: 9 } }, grid: { color: '#1a1a1a' } },
+    }
+};
+
+function mkS(y1, y2) {
+    const s = JSON.parse(JSON.stringify(CO.scales));
+    if (y1) s.y.title = { display: true, text: y1, color: '#666', font: { family: "'IBM Plex Mono'", size: 9 } };
+    if (y2) {
+        s.y1 = JSON.parse(JSON.stringify(s.y));
+        s.y1.position = 'right';
+        s.y1.grid = { drawOnChartArea: false };
+        s.y1.title = { display: true, text: y2, color: '#666', font: { family: "'IBM Plex Mono'", size: 9 } };
+    }
+    return s;
+}
+
+function ds(label, data, color, opts = {}) {
+    return {
+        label, data,
+        borderColor: color,
+        backgroundColor: opts.fill ? color.replace(')', ',0.08)').replace('rgb', 'rgba') : 'transparent',
+        borderWidth: opts.w || 1.5,
+        tension: 0.25,
+        fill: !!opts.fill,
+        pointRadius: 2,
+        pointHoverRadius: 4,
+        borderDash: opts.dash || [],
+        ...(opts.axis ? { yAxisID: opts.axis } : {}),
+        ...(opts.type ? { type: opts.type } : {}),
+        ...(opts.bar ? { backgroundColor: color, borderColor: color, borderWidth: 0, borderRadius: 1 } : {}),
+    };
+}
+
+let charts = {};
+
+function initCharts() {
+    const d = sim(getIn());
+    const L = d.map(r => r.q);
+
+    charts.gdp = new Chart(document.getElementById('c-gdp'), {
+        type: 'line', data: { labels: L, datasets: [
+            ds('GDP Growth', d.map(r=>r.gdp), '#00cc66', { fill: true }),
+            ds('CPI Inflation', d.map(r=>r.cpi), '#ff4444', { fill: true, axis: 'y1' }),
+            ds('Core Inflation', d.map(r=>r.core), '#ffcc00', { dash: [4,3], axis: 'y1', w: 1 }),
+        ]},
+        options: { ...CO, scales: mkS('GDP %', 'Inflation %'),
+            plugins: { ...CO.plugins, annotation: { annotations: {
+                baseline: { type: 'line', yMin: B.gdp_growth, yMax: B.gdp_growth, borderColor: 'rgba(0,204,102,0.2)', borderDash: [3,3], borderWidth: 1, label: { display: false } }
+            }}}
+        }
+    });
+
+    charts.fiscal = new Chart(document.getElementById('c-fiscal'), {
+        type: 'bar', data: { labels: L, datasets: [
+            ds('Revenue', d.map(r=>r.govRev), 'rgba(0,204,102,0.5)', { bar: true }),
+            ds('Expenditure', d.map(r=>r.govExp), 'rgba(255,68,68,0.5)', { bar: true }),
+            ds('Fiscal % GDP', d.map(r=>r.fiscal), '#4488ff', { axis: 'y1', type: 'line' }),
+        ]},
+        options: { ...CO, scales: mkS('RM bn', '% GDP') }
+    });
+
+    charts.pet = new Chart(document.getElementById('c-pet'), {
+        type: 'line', data: { labels: L, datasets: [
+            ds('Petronas Profit', d.map(r=>r.pet), '#ff8800', { fill: true }),
+            ds('PITA Revenue', d.map(r=>r.pita), '#4488ff'),
+            ds('Fuel Subsidy', d.map(r=>r.sub), '#ff4444', { fill: true, axis: 'y1' }),
+        ]},
+        options: { ...CO, scales: mkS('RM bn', 'RM bn/yr') }
+    });
+
+    charts.ext = new Chart(document.getElementById('c-ext'), {
+        type: 'line', data: { labels: L, datasets: [
+            ds('Exports', d.map(r=>r.exp), '#00cc66'),
+            ds('Imports', d.map(r=>r.imp), '#ff4444'),
+            ds('CA % GDP', d.map(r=>r.ca), '#ffcc00', { axis: 'y1' }),
+        ]},
+        options: { ...CO, scales: mkS('RM bn', '% GDP') }
+    });
+
+    charts.hh = new Chart(document.getElementById('c-hh'), {
+        type: 'line', data: { labels: L, datasets: [
+            ds('Consumption Growth', d.map(r=>r.consG), '#4488ff', { fill: true }),
+            ds('Real Wage Growth', d.map(r=>r.realW), '#00cc66'),
+            ds('HH Debt/GDP', d.map(r=>r.debt), '#ffcc00', { dash: [4,3], axis: 'y1', w: 1 }),
+        ]},
+        options: { ...CO, scales: mkS('Growth %', 'Debt/GDP %') }
+    });
+
+    charts.lab = new Chart(document.getElementById('c-lab'), {
+        type: 'line', data: { labels: L, datasets: [
+            ds('Unemployment', d.map(r=>r.unemp), '#ff4444', { fill: true }),
+            ds('Nominal Wage Growth', d.map(r=>r.nomW), '#4488ff', { axis: 'y1' }),
+        ]},
+        options: { ...CO, scales: mkS('Unemp %', 'Wage %') }
+    });
+}
+
+function updCharts() {
+    const d = sim(getIn());
+    const mp = {
+        gdp: [r=>r.gdp, r=>r.cpi, r=>r.core],
+        fiscal: [r=>r.govRev, r=>r.govExp, r=>r.fiscal],
+        pet: [r=>r.pet, r=>r.pita, r=>r.sub],
+        ext: [r=>r.exp, r=>r.imp, r=>r.ca],
+        hh: [r=>r.consG, r=>r.realW, r=>r.debt],
+        lab: [r=>r.unemp, r=>r.nomW],
+    };
+    for (const [k, fns] of Object.entries(mp)) {
+        fns.forEach((fn, i) => { charts[k].data.datasets[i].data = d.map(fn); });
+        charts[k].update('none');
+    }
+
+    // KPIs
+    const avg = fn => d.reduce((s, r) => s + fn(r), 0) / d.length;
+    setKPI('kpi-gdp', avg(r=>r.gdp).toFixed(1)+'%', avg(r=>r.gdp) - B.gdp_growth, false);
+    setKPI('kpi-cpi', avg(r=>r.cpi).toFixed(1)+'%', avg(r=>r.cpi) - B.cpi_inflation, true);
+    setKPI('kpi-unemp', avg(r=>r.unemp).toFixed(1)+'%', avg(r=>r.unemp) - B.unemployment, true);
+    setKPI('kpi-fiscal', avg(r=>r.fiscal).toFixed(1)+'%', avg(r=>r.fiscal) - B.fiscal_pct, false);
+    setKPI('kpi-pet', 'RM'+Math.round(avg(r=>r.pet))+'bn', avg(r=>r.pet) - B.petronas_profit_bln, false);
+    setKPI('kpi-sub', 'RM'+Math.round(avg(r=>r.sub))+'bn', avg(r=>r.sub) - B.fuel_subsidy_bln, true);
+    setKPI('kpi-ca', avg(r=>r.ca).toFixed(1)+'%', avg(r=>r.ca) - B.current_account_pct, false);
+    const rw = avg(r=>r.realW);
+    setKPI('kpi-rw', (rw>=0?'+':'')+rw.toFixed(1)+'%', rw - B.real_wage_growth, false);
+
+    // Ticker
+    updTicker(getIn());
+
+    // Table
+    updTable(d);
+
+    // Narrative
+    updNarrative(d, getIn());
+}
+
+function setKPI(id, val, delta, invert) {
+    const el = document.getElementById(id);
+    const dl = document.getElementById(id + '-d');
+    el.textContent = val;
+    if (Math.abs(delta) < 0.05) {
+        el.style.color = 'var(--text)';
+        dl.textContent = 'baseline'; dl.style.color = 'var(--text-dim)';
+    } else {
+        const pos = delta > 0;
+        const good = invert ? !pos : pos;
+        el.style.color = good ? 'var(--green)' : 'var(--red)';
+        dl.textContent = (pos ? '+' : '') + delta.toFixed(1) + 'pp';
+        dl.style.color = good ? 'var(--green)' : 'var(--red)';
+    }
+}
+
+function updTicker(inp) {
+    const set = (id, val, chg, fmt) => {
+        document.getElementById('tk-' + id).textContent = val;
+        const el = document.getElementById('tk-' + id + '-chg');
+        el.textContent = fmt;
+        el.className = 'ticker-chg ' + (chg > 0.5 ? 'ticker-up' : chg < -0.5 ? 'ticker-down' : 'ticker-flat');
+    };
+    set('brent', '$' + inp.brent.toFixed(2), (inp.brent-B.brent)/B.brent*100, ((inp.brent-B.brent)/B.brent*100>=0?'+':'') + ((inp.brent-B.brent)/B.brent*100).toFixed(1) + '%');
+    set('fx', inp.fx.toFixed(4), (inp.fx-B.fx)/B.fx*100, ((inp.fx-B.fx)/B.fx*100>=0?'+':'') + ((inp.fx-B.fx)/B.fx*100).toFixed(1) + '%');
+    set('opr', inp.opr.toFixed(2) + '%', (inp.opr-B.opr)*100, ((inp.opr-B.opr)*100>=0?'+':'') + Math.round((inp.opr-B.opr)*100) + 'bp');
+    set('cpo', 'RM' + inp.cpo.toLocaleString(), (inp.cpo-B.cpo)/B.cpo*100, ((inp.cpo-B.cpo)/B.cpo*100>=0?'+':'') + ((inp.cpo-B.cpo)/B.cpo*100).toFixed(1) + '%');
+    set('semi', inp.semi.toString(), inp.semi-B.semi, ((inp.semi-B.semi>=0?'+':'') + (inp.semi-B.semi).toFixed(0)));
+    set('tour', inp.tour.toString(), inp.tour-B.tour, ((inp.tour-B.tour>=0?'+':'') + (inp.tour-B.tour).toFixed(0)));
+}
+
+function updTable(d) {
+    const tb = document.getElementById('table-body');
+    tb.innerHTML = d.map(r => {
+        const cls = v => v > 0 ? 'positive' : v < 0 ? 'negative' : '';
+        return `<tr>
+            <td>${r.q}</td>
+            <td class="num">$${r.brent}</td>
+            <td class="num ${cls(r.gdp)}">${r.gdp.toFixed(1)}</td>
+            <td class="num ${r.cpi > 4 ? 'negative' : ''}">${r.cpi.toFixed(1)}</td>
+            <td class="num">${r.core.toFixed(1)}</td>
+            <td class="num">${r.unemp.toFixed(1)}</td>
+            <td class="num ${cls(r.fiscal)}">${r.fiscal.toFixed(1)}</td>
+            <td class="num">${r.pet.toFixed(0)}</td>
+            <td class="num">${r.sub.toFixed(0)}</td>
+            <td class="num ${cls(r.ca)}">${r.ca.toFixed(1)}</td>
+            <td class="num ${cls(r.realW)}">${r.realW.toFixed(1)}</td>
+        </tr>`;
+    }).join('');
+}
+
+function updNarrative(d, inp) {
+    const avg = fn => d.reduce((s, r) => s + fn(r), 0) / d.length;
+    const parts = [];
+    const aGdp = avg(r=>r.gdp), aCpi = avg(r=>r.cpi), pCpi = Math.max(...d.map(r=>r.cpi));
+
+    if (inp.brent > 100) parts.push(`Oil at $${inp.brent} creates cost-push pressure. Administered fuel prices rise ~${(P.oil_admin_pt * ((inp.brent-82)/82) * 100).toFixed(0)}% through the 15% pass-through channel.`);
+    else if (inp.brent < 60) parts.push(`Low oil at $${inp.brent} depresses Petronas profits and fiscal revenue but lowers energy costs.`);
+    if (pCpi > 6) parts.push(`Headline CPI peaks at ${pCpi.toFixed(1)}% — well above BNM's comfort zone. Second-round wage effects add persistence.`);
+    else if (aCpi > 3.5) parts.push(`Inflation averaging ${aCpi.toFixed(1)}% signals moderate price pressure.`);
+    if (inp.subReform) parts.push(`Subsidy reform creates a one-off CPI shock but saves ~RM${Math.round(avg(r=>r.sub)*0.7)}bn/yr for fiscal consolidation.`);
+    if (inp.fx > 4.2) parts.push(`Ringgit at ${inp.fx.toFixed(2)} amplifies import costs and subsidy burden but inflates Petronas RM profits.`);
+    if (aGdp < 2) parts.push(`Growth at ${aGdp.toFixed(1)}% — near-recessionary. Household real income squeeze is the main channel.`);
+    else if (aGdp > 5.5) parts.push(`Strong growth at ${aGdp.toFixed(1)}% on favourable external conditions.`);
+    if (inp.semi > 110) parts.push(`E&E boom lifts exports but high import content (52%) limits net GDP impact.`);
+    else if (inp.semi < 80) parts.push(`Semiconductor downcycle hits 38% of exports. Manufacturing employment responds with a lag.`);
+    if (!parts.length) parts.push(`Economy at ${aGdp.toFixed(1)}% growth, ${aCpi.toFixed(1)}% inflation — near baseline trend. Adjust inputs to trace shock transmission.`);
+    document.getElementById('narrative').textContent = parts.join(' ');
+}
+
+// ============================================================================
+// INPUT HANDLERS
+// ============================================================================
+
+const fmtMap = {
+    'in-brent': v => '$' + v,
+    'in-cpo': v => 'RM' + Number(v).toLocaleString(),
+    'in-semi': v => v,
+    'in-tour': v => v,
+    'in-opr': v => v + '%',
+    'in-fx': v => v,
+    'in-devgr': v => v + '%',
+    'in-wpg': v => v,
+    'in-equity': v => v,
+    'in-ust10': v => v + '%',
+    'in-sst': v => v + '%',
+    'in-cpoduty': v => v + '%',
+    'in-epf': v => 'RM' + v + 'bn',
+};
+const valMap = {
+    'in-brent':'val-brent','in-cpo':'val-cpo','in-semi':'val-semi','in-tour':'val-tour',
+    'in-opr':'val-opr','in-fx':'val-fx','in-devgr':'val-devgr',
+    'in-wpg':'val-wpg','in-equity':'val-equity','in-ust10':'val-ust10',
+    'in-sst':'val-sst','in-cpoduty':'val-cpoduty','in-epf':'val-epf',
+};
+
+let timer;
+function sched() { clearTimeout(timer); timer = setTimeout(updCharts, 50); }
+
+document.querySelectorAll('input[type="range"]').forEach(el => {
+    el.addEventListener('input', () => {
+        const v = document.getElementById(valMap[el.id]);
+        if (v) v.textContent = fmtMap[el.id](el.value);
+        sched();
+    });
+});
+document.querySelectorAll('input[type="checkbox"]').forEach(el => el.addEventListener('change', sched));
+
+function resetInputs() {
+    document.getElementById('in-brent').value = 82;
+    document.getElementById('in-cpo').value = 4000;
+    document.getElementById('in-semi').value = 100;
+    document.getElementById('in-tour').value = 100;
+    document.getElementById('in-opr').value = 3.00;
+    document.getElementById('in-fx').value = 3.89;
+    document.getElementById('in-devgr').value = 2;
+    document.getElementById('in-wpg').value = 100;
+    document.getElementById('in-equity').value = 100;
+    document.getElementById('in-ust10').value = 4.25;
+    document.getElementById('in-sst').value = 6;
+    document.getElementById('in-cpoduty').value = 8;
+    document.getElementById('in-epf').value = 0;
+    document.getElementById('in-elnino').checked = false;
+    document.getElementById('in-subsidy-reform').checked = false;
+    for (const [k, v] of Object.entries(valMap)) document.getElementById(v).textContent = fmtMap[k](document.getElementById(k).value);
+    updCharts();
+}
+
+function toggleGuide(el) {
+    const body = el.nextElementSibling;
+    body.classList.toggle('open');
+    const chev = el.querySelector('.guide-chevron');
+    chev.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : '';
+}
+
+function toggleSb(el) {
+    const body = el.nextElementSibling;
+    body.classList.toggle('collapsed');
+    const chev = el.querySelector('.sb-collapse-chevron');
+    chev.style.transform = body.classList.contains('collapsed') ? 'rotate(-90deg)' : '';
+}
+
+// ============================================================================
+// INIT
+// ============================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    for (const [k, v] of Object.entries(valMap)) document.getElementById(v).textContent = fmtMap[k](document.getElementById(k).value);
+    initCharts();
+    updCharts();
+});
+</script>
+
+</body>
+</html>

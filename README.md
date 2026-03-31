@@ -161,6 +161,8 @@ docs/
   model-architecture.md               # Clean architecture diagram
   how-to-interpret-this-model.md      # Reading guide and limitations
 studies/
+  playground/
+    index.html                         # Interactive scenario playground
   simulations/
     oil-200-iran-war/
       index.html                       # Interactive simulation dashboard
@@ -176,6 +178,7 @@ README.md                              # You are here
 
 | Scenario | What it models | Link |
 |----------|---------------|------|
+| **Scenario Playground** | Interactive sandbox. Adjust oil prices, policy rates, exchange rates, and global conditions with live sliders. Watch macro outputs respond in real time through all transmission channels. | [Open playground →](https://shahidrogers.github.io/MaMaMo/studies/playground/) |
 | **$200 Oil — Iran War** | Brent spikes to $200/bbl on a US–Iran ground war. Traces fiscal, trade, household, and Petronas impacts over 8 quarters. | [View simulation →](https://shahidrogers.github.io/MaMaMo/studies/simulations/oil-200-iran-war/) |
 | **When Oil Hits $200, Residential Projects Slip** | Satellite study inside the oil-war scenario. Maps the same macro shock into construction-cost inflation, launch deferrals, project delays, contractor stress, and LAD exposure for Malaysian residential development. | [View simulation →](https://shahidrogers.github.io/MaMaMo/studies/simulations/oil-200-iran-war/satellite/residential-projects-slip/) |
 

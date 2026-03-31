@@ -2,7 +2,7 @@
 
 **An open structural quarterly macro model prototype for Malaysia.**
 
-`v0.3.0` · A curiosity project by [Shahid Rogers](mailto:shahidrogers+mamamo@gmail.com), built with [Claude](https://claude.ai)
+`v0.3.0` · An exploration by [Shahid Rogers](mailto:shahidrogers+mamamo@gmail.com), built with [Claude](https://claude.ai) + [Codex](https://openai.com/codex/)
 
 ---
 
@@ -28,7 +28,7 @@ MaMaMo (Malaysia Macro Model) is a structural quarterly macroeconomic model prot
 
 The idea is simple: Malaysia deserves a transparent, publicly inspectable macro model. BNM and MOF have their own, but those are proprietary. Academic models tend to be partial. MaMaMo aims to be something you can open, read, inspect, critique, extend, and learn from.
 
-This is a curiosity project — built by [Shahid Rogers](mailto:shahidrogers+mamamo@gmail.com) with [Claude](https://claude.ai) to see what happens when you point an LLM at a government-style macro framework and a country's economy. It is not a validated production forecasting system. It is a documented research build with enough structure to support serious iteration.
+This is an exploration — built by [Shahid Rogers](mailto:shahidrogers+mamamo@gmail.com) with [Claude](https://claude.ai) and [Codex](https://openai.com/codex/) to see what happens when you point LLM tools at a government-style macro framework and a country's economy. It is not a validated production forecasting system. It is a documented research build with enough structure to support serious iteration.
 
 If you are new to the repo, start here:
 

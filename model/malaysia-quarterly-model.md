@@ -277,6 +277,10 @@ IMPPS  = MNOG  * (PMNOG  / 100)  + MS  * (PMS  / 100)  + MOIL  * (PMOIL  / 100)
 ' Group 7: Prices and Wages
 '
 ' Malaysia: administered price regime for RON95 petrol, diesel, cooking oil, flour, sugar
+' Current baseline: BUDI95 targeted RON95 subsidy. Eligible households/farmers receive subsidised
+' petrol up to quota, while non-eligible consumption pays the floating market price. In reduced-form
+' implementation this means administered fuel prices should be treated as a weighted consumer price,
+' not a universal blanket pump price.
 ' CPI basket has large food weight (~30%) and transport (~14.5%)
 ' Core inflation typically 1.5-2.5%
 ' Import price pass-through: 0.3-0.5 in short run
@@ -459,7 +463,13 @@ AVGBR  = 0.70  * MGS10  + 0.30  * (OPR  + 0.50)
 ' Fuel subsidies vary with oil price: higher when Brent > administered price
 GOVSUB  = GOVSUB_BASE  + FUELSUB  + BSHTRF
 
-' Fuel subsidy (RON95/diesel gap to market price * volume)
+' Fuel subsidy (RON95/diesel gap to market price * subsidised volume)
+' Under the current baseline, PADMINPRICE should be interpreted as the BUDI95 subsidised RON95 price
+' and FUELCONS as quota/eligibility-adjusted subsidised fuel consumption rather than total national use.
+' A fuller implementation can split total fuel demand into:
+'   FUELCONS_ELIG  = eligible BUDI95 consumption within quota
+'   FUELCONS_FLOAT = non-eligible or above-quota consumption
+'   PADMINCONSUMER = weighted average of subsidised and floating prices used for CPI/administered inflation
 FUELSUB  = MAX(0  , (PBRENT  / NEER  - PADMINPRICE)  * FUELCONS  * 0.001)
 
 ' BSH/STR cash transfers (indexed to CPI, population)

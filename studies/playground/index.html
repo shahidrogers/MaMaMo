@@ -86,6 +86,7 @@
             z-index: 100;
         }
         .top-bar-left { display: flex; align-items: center; gap: 16px; }
+        .top-bar-right { display: flex; align-items: center; gap: 10px; }
         .top-bar .logo {
             color: var(--orange);
             font-weight: 700;
@@ -94,6 +95,22 @@
         }
         .top-bar .sep { color: var(--border-accent); }
         .top-bar .page-title { color: var(--text-secondary); font-size: 11px; }
+        .top-bar .control-copy {
+            color: var(--text-dim);
+            font-size: 9px;
+            line-height: 1.4;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-family: var(--mono);
+            white-space: nowrap;
+        }
+        .top-bar .toggle-pill {
+            gap: 8px;
+            padding: 5px 9px;
+            background: rgba(255,255,255,0.03);
+        }
+        .top-bar .toggle-pill-label { font-size: 8px; }
+        .top-bar .toggle-pill-meta { font-size: 8px; }
         .top-bar .live-dot {
             width: 6px; height: 6px; border-radius: 50%; background: var(--green);
             display: inline-block; animation: pulse 2s infinite;
@@ -251,13 +268,16 @@
         }
         .sb-collapse-body {
             max-height: 2000px;
-            overflow: hidden;
+            overflow: visible;
             transition: max-height 0.35s ease, padding 0.2s ease;
             padding: 10px 14px;
             border-bottom: 1px solid var(--border);
+            position: relative;
+            z-index: 5;
         }
         .sb-collapse-body.collapsed {
             max-height: 0;
+            overflow: hidden;
             padding-top: 0;
             padding-bottom: 0;
         }
@@ -277,6 +297,143 @@
             transition: all 0.15s;
         }
         .btn-reset:hover { border-color: var(--orange); color: var(--orange); }
+        .btn-secondary {
+            width: 100%;
+            padding: 7px;
+            font-family: var(--mono);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-secondary:hover {
+            border-color: var(--orange);
+            color: var(--orange);
+        }
+        .preset-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+        .preset-btn {
+            padding: 9px 10px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-family: var(--mono);
+            font-size: 10px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .preset-btn:hover {
+            border-color: var(--orange);
+            color: var(--orange);
+            background: rgba(255,136,0,0.05);
+        }
+        .preset-btn.active {
+            border-color: var(--orange);
+            background: rgba(255,136,0,0.10);
+            box-shadow: inset 0 0 0 1px rgba(255,136,0,0.22);
+        }
+        .preset-name {
+            display: block;
+            color: var(--text);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+        .preset-btn.active .preset-name,
+        .preset-btn.active .preset-copy {
+            color: var(--orange-bright);
+        }
+        .preset-copy {
+            display: block;
+            color: var(--text-dim);
+            font-family: var(--sans);
+            font-size: 11px;
+            line-height: 1.45;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+        .preset-help {
+            color: var(--text-dim);
+            font-family: var(--sans);
+            font-size: 11px;
+            line-height: 1.55;
+            margin-bottom: 10px;
+        }
+        .scenario-slot {
+            border: 1px solid var(--border);
+            background: var(--bg-input);
+            padding: 8px;
+            margin-bottom: 8px;
+        }
+        .scenario-slot.active-compare {
+            border-color: var(--blue);
+            box-shadow: inset 0 0 0 1px rgba(68,136,255,0.25);
+        }
+        .scenario-slot-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .scenario-slot-name {
+            color: var(--text);
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .scenario-slot-meta {
+            color: var(--text-dim);
+            font-size: 10px;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+        .scenario-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+        .scenario-btn {
+            padding: 6px 4px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: var(--mono);
+            font-size: 9px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        .scenario-btn:hover {
+            border-color: var(--orange);
+            color: var(--orange);
+        }
+        .compare-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            color: var(--text-secondary);
+            background: rgba(68,136,255,0.08);
+            border: 1px solid rgba(68,136,255,0.18);
+            padding: 4px 8px;
+            margin-top: 8px;
+        }
+        .compare-swatch {
+            width: 10px;
+            height: 2px;
+            background: var(--blue);
+            border-top: 1px dashed var(--blue);
+        }
 
         /* ---- CONTENT ---- */
         .content { padding: 0; overflow-y: auto; }
@@ -325,12 +482,181 @@
             font-family: var(--sans);
         }
         .narrative-bar strong { color: var(--orange); font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; }
+        .toggle-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-panel);
+            color: var(--text-secondary);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-family: var(--mono);
+            border-radius: 999px;
+            cursor: pointer;
+            user-select: none;
+            transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+        }
+        .toggle-pill:hover {
+            border-color: rgba(255,136,0,0.35);
+        }
+        .toggle-pill.active {
+            border-color: rgba(255,136,0,0.45);
+            background: rgba(255,136,0,0.08);
+            box-shadow: inset 0 0 0 1px rgba(255,136,0,0.12);
+            color: var(--text);
+        }
+        .toggle-pill input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .toggle-switch {
+            position: relative;
+            width: 34px;
+            height: 18px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: background 0.18s ease, border-color 0.18s ease;
+            flex: 0 0 auto;
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #d8d8d8;
+            transition: transform 0.18s ease, background 0.18s ease;
+        }
+        .toggle-pill.active .toggle-switch {
+            background: rgba(255,136,0,0.22);
+            border-color: rgba(255,136,0,0.38);
+        }
+        .toggle-pill.active .toggle-switch::after {
+            transform: translateX(16px);
+            background: #ffb366;
+        }
+        .toggle-pill-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+        .toggle-pill-label {
+            font-size: 9px;
+            line-height: 1.2;
+        }
+        .toggle-pill-meta {
+            font-size: 8px;
+            letter-spacing: 0.02em;
+            text-transform: none;
+            font-family: var(--sans);
+            color: var(--text-dim);
+        }
+        .toggle-pill.active .toggle-pill-meta {
+            color: rgba(255,214,179,0.88);
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--border);
+        }
+        @media (max-width: 900px) { .summary-grid { grid-template-columns: repeat(2, 1fr); } }
+        .summary-card {
+            background: var(--bg-panel);
+            padding: 12px 14px;
+        }
+        .summary-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+            margin-bottom: 4px;
+        }
+        .summary-value {
+            font-size: 16px;
+            color: var(--text);
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        .summary-meta {
+            font-size: 10px;
+            color: var(--text-dim);
+            margin-top: 2px;
+            line-height: 1.5;
+        }
+        .diagnostics-list {
+            display: grid;
+            gap: 8px;
+        }
+        .diagnostic-row {
+            display: grid;
+            grid-template-columns: 140px 90px 1fr;
+            gap: 12px;
+            align-items: center;
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.015);
+        }
+        @media (max-width: 700px) { .diagnostic-row { grid-template-columns: 1fr; } }
+        .diagnostic-name {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-dim);
+        }
+        .diagnostic-status {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-family: var(--mono);
+        }
+        .diagnostic-status.ok { color: var(--green); }
+        .diagnostic-status.warn { color: var(--orange); }
+        .diagnostic-status.bad { color: var(--red); }
+        .diagnostic-copy {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Chart sections */
+        .chart-section {
+            border-bottom: 1px solid var(--border);
+        }
+        .chart-section-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+        }
+        .chart-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--orange);
+        }
+        .chart-section-note {
+            color: var(--text-dim);
+            font-size: 11px;
+            line-height: 1.6;
+            font-family: var(--sans);
+        }
 
         /* Chart grid */
         .chart-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            border-bottom: 1px solid var(--border);
         }
         @media (max-width: 700px) { .chart-grid { grid-template-columns: 1fr; } }
         .chart-cell {
@@ -339,6 +665,7 @@
             border-bottom: 1px solid var(--border);
         }
         .chart-cell:nth-child(2n) { border-right: none; }
+        @media (max-width: 700px) { .chart-cell:nth-child(2n) { border-right: none; } }
         .chart-title {
             font-size: 10px;
             font-weight: 600;
@@ -475,7 +802,7 @@
             font-size: 10px;
             color: var(--text-secondary);
             width: 220px;
-            z-index: 200;
+            z-index: 1000;
             line-height: 1.5;
             font-weight: 400;
             letter-spacing: 0;
@@ -496,15 +823,25 @@
         <span class="sep">|</span>
         <span class="page-title">MALAYSIA QUARTERLY MODEL</span>
     </div>
-    <div></div>
+    <div class="top-bar-right">
+        <div class="control-copy">Chart Mode</div>
+        <label class="toggle-pill" id="delta-toggle-pill">
+            <input type="checkbox" id="in-delta-mode" onchange="toggleDeltaMode(this.checked)">
+            <span class="toggle-switch" aria-hidden="true"></span>
+            <span class="toggle-pill-copy">
+                <span class="toggle-pill-label">Delta Vs Baseline</span>
+                <span class="toggle-pill-meta" id="delta-toggle-meta">Showing raw levels</span>
+            </span>
+        </label>
+    </div>
 </div>
 
 <!-- TICKER -->
 <div class="ticker" id="ticker">
     <div class="ticker-item">
         <span class="ticker-label">BRENT</span>
-        <span class="ticker-val" id="tk-brent">$120.00</span>
-        <span class="ticker-chg ticker-up" id="tk-brent-chg">+46.3%</span>
+        <span class="ticker-val" id="tk-brent">$82.00</span>
+        <span class="ticker-chg ticker-flat" id="tk-brent-chg">+0.0%</span>
     </div>
     <div class="ticker-item">
         <span class="ticker-label">USD/MYR</span>
@@ -522,7 +859,7 @@
         <span class="ticker-chg ticker-flat" id="tk-cpo-chg">0.0%</span>
     </div>
     <div class="ticker-item">
-        <span class="ticker-label">E&amp;E IDX</span>
+        <span class="ticker-label">ELEC &amp; ELEC IDX</span>
         <span class="ticker-val" id="tk-semi">100</span>
         <span class="ticker-chg ticker-flat" id="tk-semi-chg">0.0%</span>
     </div>
@@ -542,14 +879,14 @@
         <!-- GLOBAL CONDITIONS -->
         <div class="sb-collapse-header" onclick="toggleSb(this)">
             <div class="sb-header">Global Conditions</div>
-            <span class="sb-collapse-chevron">&#9660;</span>
+            <span class="sb-collapse-chevron" style="transform:rotate(-90deg)">&#9660;</span>
         </div>
-        <div class="sb-collapse-body">
+        <div class="sb-collapse-body collapsed">
             <div class="input-row">
                 <label class="input-label tt">BRENT CRUDE<span class="tt-text">Primary oil shock. Feeds energy costs, administered fuel prices, Petronas profits, and import inflation. Baseline: $82/bbl.</span></label>
-                <span class="input-val" id="val-brent">$120</span>
+                <span class="input-val" id="val-brent">$82</span>
             </div>
-            <input type="range" id="in-brent" min="40" max="250" value="120" step="5">
+            <input type="range" id="in-brent" min="40" max="250" value="82" step="1">
             <div class="range-bounds"><span>$40</span><span>$250</span></div>
 
             <div class="input-row">
@@ -560,7 +897,7 @@
             <div class="range-bounds"><span>RM2,000</span><span>RM7,000</span></div>
 
             <div class="input-row">
-                <label class="input-label tt">E&amp;E DEMAND<span class="tt-text">Global semiconductor demand index (100=baseline). E&E is ~38% of Malaysia's goods exports. Elasticity: 1.05.</span></label>
+                <label class="input-label tt">ELECTRICAL &amp; ELECTRONICS DEMAND<span class="tt-text">Global demand index for Malaysia's electrical &amp; electronics export sector (100=baseline), especially semiconductors, chips, and electronics components. This sector is ~38% of goods exports. Elasticity: 1.05.</span></label>
                 <span class="input-val" id="val-semi">100</span>
             </div>
             <input type="range" id="in-semi" min="60" max="140" value="100" step="2">
@@ -660,18 +997,65 @@
 
         <!-- SHOCK SWITCHES -->
         <div class="sb-collapse-header" onclick="toggleSb(this)">
-            <div class="sb-header">Shock Switches</div>
-            <span class="sb-collapse-chevron">&#9660;</span>
+            <div class="sb-header">Structural Switches</div>
+            <span class="sb-collapse-chevron" style="transform:rotate(-90deg)">&#9660;</span>
         </div>
-        <div class="sb-collapse-body">
+        <div class="sb-collapse-body collapsed">
             <label class="toggle-row">
                 <input type="checkbox" id="in-elnino">
                 <span class="tt">EL NINO EVENT<span class="tt-text">Reduces palm oil yields ~12%. Raises CPO prices +15% and adds ~0.8pp to food CPI.</span></span>
             </label>
             <label class="toggle-row">
-                <input type="checkbox" id="in-subsidy-reform">
-                <span class="tt">FUEL SUBSIDY REFORM<span class="tt-text">RON95 floated to market price. One-off CPI shock ~8pp. Saves ~RM10-15bn/yr for fiscal consolidation.</span></span>
+                <input type="checkbox" id="in-budi95" checked>
+                <span class="tt">BUDI95 TARGETED SUBSIDY<span class="tt-text">Current baseline policy. Eligible Malaysians get subsidised RON95 at RM1.99/litre, with a standard quota of 300 litres/month. Unsubsidised RON95 floats with the market.</span></span>
             </label>
+        </div>
+
+        <div class="sb-collapse-header" onclick="toggleSb(this)">
+            <div class="sb-header">Scenario Presets</div>
+            <span class="sb-collapse-chevron">&#9660;</span>
+        </div>
+        <div class="sb-collapse-body">
+            <div class="preset-help">Each preset resets the simulator to baseline first, then applies a coherent scenario bundle. Use them as starting points, not forecasts.</div>
+            <div class="preset-grid" id="preset-grid">
+                <button class="preset-btn" type="button" data-preset-key="oilSpike" onclick="applyPreset('oilSpike')">
+                    <span class="preset-name">Oil Spike</span>
+                    <span class="preset-copy">Higher Brent, weaker ringgit, and pricier imported goods. Good for testing inflation and subsidy stress.</span>
+                </button>
+                <button class="preset-btn" type="button" data-preset-key="ringgitStress" onclick="applyPreset('ringgitStress')">
+                    <span class="preset-name">Ringgit Stress</span>
+                    <span class="preset-copy">A weaker currency with tighter global conditions. Highlights import inflation and fiscal pressure.</span>
+                </button>
+                <button class="preset-btn" type="button" data-preset-key="bnmCuts" onclick="applyPreset('bnmCuts')">
+                    <span class="preset-name">BNM Cuts</span>
+                    <span class="preset-copy">Lower policy rates with some financial relief. Useful for testing demand support and investment response.</span>
+                </button>
+                <button class="preset-btn" type="button" data-preset-key="subsidyReform" onclick="applyPreset('subsidyReform')">
+                    <span class="preset-name">Disable BUDI95</span>
+                    <span class="preset-copy">Switch off the targeted RON95 subsidy and float users to market fuel prices. Shows the inflation-fiscal tradeoff.</span>
+                </button>
+                <button class="preset-btn" type="button" data-preset-key="eeBoom" onclick="applyPreset('eeBoom')">
+                    <span class="preset-name">Electronics Boom</span>
+                    <span class="preset-copy">Stronger global electrical and electronics demand, especially semiconductors. Best for export-led upside scenarios.</span>
+                </button>
+                <button class="preset-btn" type="button" data-preset-key="elninoFood" onclick="applyPreset('elninoFood')">
+                    <span class="preset-name">El Nino Food</span>
+                    <span class="preset-copy">Weather shock that lifts palm oil prices and food inflation. Useful for supply-side inflation scenarios.</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="sb-collapse-header" onclick="toggleSb(this)">
+            <div class="sb-header">Scenario Compare</div>
+            <span class="sb-collapse-chevron" style="transform:rotate(-90deg)">&#9660;</span>
+        </div>
+        <div class="sb-collapse-body collapsed">
+            <button class="btn-secondary" type="button" onclick="saveScenarioToSlot(0)">SAVE CURRENT TO NEXT EMPTY SLOT</button>
+            <div id="compare-chip" class="compare-chip" style="display:none;">
+                <span class="compare-swatch"></span>
+                <span id="compare-chip-label"></span>
+            </div>
+            <div style="margin-top:10px;" id="scenario-slots"></div>
         </div>
 
         <!-- RESET + INFO -->
@@ -748,33 +1132,140 @@
             <span id="narrative">At baseline settings, the economy grows at trend with moderate inflation. Adjust inputs to trace shock transmission.</span>
         </div>
 
-        <!-- CHARTS -->
-        <div class="chart-grid">
-            <div class="chart-cell">
-                <div class="chart-title">GDP GROWTH &amp; INFLATION (%)</div>
-                <div class="chart-box"><canvas id="c-gdp"></canvas></div>
+        <div class="guide-section">
+            <div class="guide-header" onclick="toggleGuide(this)">
+                <span class="guide-header-title">SCENARIO SUMMARY</span>
+                <span class="guide-chevron">&#9660;</span>
             </div>
-            <div class="chart-cell">
-                <div class="chart-title">FISCAL BALANCE</div>
-                <div class="chart-box"><canvas id="c-fiscal"></canvas></div>
-            </div>
-            <div class="chart-cell">
-                <div class="chart-title">PETRONAS &amp; SUBSIDIES (RM BN)</div>
-                <div class="chart-box"><canvas id="c-pet"></canvas></div>
-            </div>
-            <div class="chart-cell">
-                <div class="chart-title">EXTERNAL SECTOR</div>
-                <div class="chart-box"><canvas id="c-ext"></canvas></div>
-            </div>
-            <div class="chart-cell">
-                <div class="chart-title">HOUSEHOLD SECTOR</div>
-                <div class="chart-box"><canvas id="c-hh"></canvas></div>
-            </div>
-            <div class="chart-cell">
-                <div class="chart-title">LABOUR MARKET</div>
-                <div class="chart-box"><canvas id="c-lab"></canvas></div>
+            <div class="guide-body open">
+                <div class="summary-grid" id="summary-grid">
+                    <div class="summary-card">
+                        <div class="summary-label">Peak CPI</div>
+                        <div class="summary-value" id="summary-cpi-value">2.3%</div>
+                        <div class="summary-meta" id="summary-cpi-meta">Baseline path</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Weakest Growth</div>
+                        <div class="summary-value" id="summary-gdp-value">4.2%</div>
+                        <div class="summary-meta" id="summary-gdp-meta">Baseline path</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Worst Fiscal Quarter</div>
+                        <div class="summary-value" id="summary-fiscal-value">-3.2%</div>
+                        <div class="summary-meta" id="summary-fiscal-meta">Baseline path</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Largest Real Wage Squeeze</div>
+                        <div class="summary-value" id="summary-rw-value">+1.9%</div>
+                        <div class="summary-meta" id="summary-rw-meta">Baseline path</div>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <!-- CHARTS -->
+        <section class="chart-section">
+            <div class="chart-section-header">
+                <div class="chart-section-title">Macro Snapshot</div>
+                <div class="chart-section-note">Growth, prices, jobs, household demand, and the core rates channel.</div>
+            </div>
+            <div class="chart-grid">
+                <div class="chart-cell">
+                    <div class="chart-title">GDP GROWTH &amp; INFLATION (%)</div>
+                    <div class="chart-box"><canvas id="c-gdp"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">LABOUR MARKET</div>
+                    <div class="chart-box"><canvas id="c-lab"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">LABOUR &amp; OUTPUT</div>
+                    <div class="chart-box"><canvas id="c-labout"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">HOUSEHOLD SECTOR</div>
+                    <div class="chart-box"><canvas id="c-hh"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">INCOME SQUEEZE</div>
+                    <div class="chart-box"><canvas id="c-income"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">RATES TRANSMISSION</div>
+                    <div class="chart-box"><canvas id="c-rates"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">PRICE PRESSURE DECOMPOSITION</div>
+                    <div class="chart-box"><canvas id="c-price"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">WAGE &amp; PRICE STACK</div>
+                    <div class="chart-box"><canvas id="c-wageprice"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">GDP CONTRIBUTIONS</div>
+                    <div class="chart-box"><canvas id="c-gdpctr"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">INVESTMENT STACK</div>
+                    <div class="chart-box"><canvas id="c-invest"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="chart-section">
+            <div class="chart-section-header">
+                <div class="chart-section-title">Public Sector</div>
+                <div class="chart-section-note">Budget arithmetic, oil-linked fiscal channels, and subsidy mechanics.</div>
+            </div>
+            <div class="chart-grid">
+                <div class="chart-cell">
+                    <div class="chart-title">FISCAL BALANCE</div>
+                    <div class="chart-box"><canvas id="c-fiscal"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">PETRONAS &amp; SUBSIDIES (RM BN)</div>
+                    <div class="chart-box"><canvas id="c-pet"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">FISCAL DECOMPOSITION</div>
+                    <div class="chart-box"><canvas id="c-fiscald"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">SUBSIDY MECHANICS</div>
+                    <div class="chart-box"><canvas id="c-subsidy"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">GOVERNMENT BUDGET BREAKDOWN</div>
+                    <div class="chart-box"><canvas id="c-budget"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="chart-section">
+            <div class="chart-section-header">
+                <div class="chart-section-title">External &amp; Commodity Channels</div>
+                <div class="chart-section-note">Trade balance, commodity sensitivity, and oil pass-through into domestic prices.</div>
+            </div>
+            <div class="chart-grid">
+                <div class="chart-cell">
+                    <div class="chart-title">EXTERNAL SECTOR</div>
+                    <div class="chart-box"><canvas id="c-ext"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">OIL PASS-THROUGH</div>
+                    <div class="chart-box"><canvas id="c-oil"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">TRADE COMPOSITION</div>
+                    <div class="chart-box"><canvas id="c-trade"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">CURRENT ACCOUNT DECOMPOSITION</div>
+                    <div class="chart-box"><canvas id="c-cadecomp"></canvas></div>
+                </div>
+            </div>
+        </section>
 
         <!-- DATA TABLE -->
         <div class="guide-section">
@@ -858,8 +1349,8 @@
                             <p>Rate hikes slow consumption (MPC ~0.55) and investment via cost of capital. Mortgage rate = OPR + 175bps. Housing investment particularly sensitive.</p>
                         </div>
                         <div class="channel-card">
-                            <h5>E&amp;E &rarr; EXPORTS</h5>
-                            <p>Semiconductor demand drives ~38% of goods exports. High import content (~52%) means export boom also lifts imports. Net GDP effect smaller than gross.</p>
+                            <h5>ELECTRICAL &amp; ELECTRONICS &rarr; EXPORTS</h5>
+                            <p>Malaysia's electrical &amp; electronics sector, especially semiconductors and components, drives ~38% of goods exports. High import content (~52%) means an export boom also lifts imports, so the net GDP effect is smaller than gross exports suggest.</p>
                         </div>
                         <div class="channel-card">
                             <h5>GDP &rarr; LABOUR</h5>
@@ -883,12 +1374,24 @@
                         <li style="padding: 3px 0;"><span style="color:var(--orange);">&#9632;</span> Administered fuel &amp; utility price treatment inside CPI (RON95, diesel, electricity)</li>
                         <li style="padding: 3px 0;"><span style="color:var(--orange);">&#9632;</span> Petronas profits, petroleum income tax (PITA), and dividend channel</li>
                         <li style="padding: 3px 0;"><span style="color:var(--orange);">&#9632;</span> Palm oil production, CPO export duties, and El Nino weather sensitivity</li>
-                        <li style="padding: 3px 0;"><span style="color:var(--orange);">&#9632;</span> E&amp;E exports tied to the global semiconductor cycle</li>
+                        <li style="padding: 3px 0;"><span style="color:var(--orange);">&#9632;</span> Electrical &amp; electronics exports are tied to the global semiconductor cycle</li>
                         <li style="padding: 3px 0;"><span style="color:var(--orange);">&#9632;</span> Foreign worker (~2M) and remittance channels</li>
                         <li style="padding: 3px 0;"><span style="color:var(--orange);">&#9632;</span> EPF as a distinct household wealth and savings mechanism</li>
                         <li style="padding: 3px 0;"><span style="color:var(--orange);">&#9632;</span> GST-to-SST policy treatment in tax equations</li>
                         <li style="padding: 3px 0;"><span style="color:var(--orange);">&#9632;</span> BNM operating vs. development expenditure structure</li>
                     </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <div class="guide-header" onclick="toggleGuide(this)">
+                <span class="guide-header-title">MODEL DIAGNOSTICS</span>
+                <span class="guide-chevron">&#9660;</span>
+            </div>
+            <div class="guide-body">
+                <div class="guide-body-inner">
+                    <div class="diagnostics-list" id="diagnostics-list"></div>
                 </div>
             </div>
         </div>
@@ -927,14 +1430,25 @@ const B = {
     petronas_profit_bln: 95,
     pita_revenue_bln: 36.1,
     petronas_dividend_bln: 28.5,
-    fuel_subsidy_bln: 12,
+    fuel_subsidy_bln: 8.4,
+    ron95_budi_price: 1.99,
+    ron95_market_price: 2.54,
     exports_bln: 980,
     imports_bln: 850,
     current_account_pct: 2.1,
+    gfcf_bln: 425,
+    business_investment_bln: 230,
+    public_investment_bln: 120,
+    housing_investment_bln: 75,
     household_debt_ratio: 84.2,
     real_wage_growth: 1.9,
     nominal_wage_growth: 4.2,
     consumption_growth: 5.5,
+    credit_growth: 5.2,
+    property_price_growth: 3.8,
+    trade_balance_pct: 7.0,
+    primary_income_pct: -4.2,
+    transfers_pct: -0.7,
     semi: 100,
     tour: 100,
     devgr: 2.0,
@@ -963,6 +1477,7 @@ const P = {
     cpo_share: 0.05,
     import_content_ee: 0.52,
     fuel_litres_q: 3.5,
+    budi95_coverage: 0.92,
     opr_cons: -0.0072,
     opr_inv: -0.0015,
     wage_price_pt: 0.52,
@@ -986,11 +1501,300 @@ function getIn() {
         cpoduty: +document.getElementById('in-cpoduty').value,
         epf: +document.getElementById('in-epf').value,
         elnino: document.getElementById('in-elnino').checked,
-        subReform: document.getElementById('in-subsidy-reform').checked,
+        budi95: document.getElementById('in-budi95').checked,
+    };
+}
+
+function getBaselineIn() {
+    return {
+        brent: B.brent,
+        cpo: B.cpo,
+        semi: B.semi,
+        tour: B.tour,
+        opr: B.opr,
+        fx: B.fx,
+        devgr: B.devgr,
+        wpg: B.wpg,
+        equity: B.equity,
+        ust10: B.ust10,
+        sst: B.sst,
+        cpoduty: B.cpoduty,
+        epf: B.epf,
+        elnino: false,
+        budi95: true,
+    };
+}
+
+function getDefaultInputState() {
+    return {
+        ...getBaselineIn(),
+        elnino: false,
+        budi95: true,
+    };
+}
+
+const STORAGE_KEY = 'mamamo-playground-scenarios-v1';
+const PRESETS = {
+    oilSpike: {
+        name: 'Oil Spike',
+        values: { brent: 140, fx: 4.15, wpg: 108 }
+    },
+    ringgitStress: {
+        name: 'Ringgit Stress',
+        values: { fx: 4.65, wpg: 106, ust10: 4.75 }
+    },
+    bnmCuts: {
+        name: 'BNM Cuts',
+        values: { opr: 2.25, fx: 4.05, equity: 108 }
+    },
+    subsidyReform: {
+        name: 'Disable BUDI95',
+        values: { brent: 95, fx: 4.0 },
+        toggles: { budi95: false }
+    },
+    eeBoom: {
+        name: 'Electrical & Electronics Boom',
+        values: { semi: 122, equity: 112, tour: 104 }
+    },
+    elninoFood: {
+        name: 'El Nino Food',
+        values: { cpo: 4700, brent: 92 },
+        toggles: { elnino: true }
+    },
+};
+
+const scenarioState = {
+    slots: [],
+    compareSlot: null,
+    activePreset: null,
+};
+
+const uiState = {
+    deltaMode: false,
+};
+
+function syncDeltaToggleUI() {
+    const pill = document.getElementById('delta-toggle-pill');
+    const meta = document.getElementById('delta-toggle-meta');
+    const input = document.getElementById('in-delta-mode');
+    if (!pill || !meta || !input) return;
+    input.checked = !!uiState.deltaMode;
+    pill.classList.toggle('active', !!uiState.deltaMode);
+    meta.textContent = uiState.deltaMode ? 'Showing deviation from baseline' : 'Showing raw levels';
+}
+
+function toggleDeltaMode(next) {
+    uiState.deltaMode = !!next;
+    syncDeltaToggleUI();
+    updCharts();
+}
+
+function getScenarioLabel(slot) {
+    if (!slot) return 'Empty slot';
+    return slot.name || 'Saved scenario';
+}
+
+function readScenarioStore() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed.slice(0, 3) : [];
+    } catch {
+        return [];
+    }
+}
+
+function writeScenarioStore() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(scenarioState.slots));
+    } catch {}
+}
+
+function summarizeScenario(inp) {
+    return `Brent $${inp.brent}, OPR ${inp.opr.toFixed(2)}%, USD/MYR ${inp.fx.toFixed(2)}`;
+}
+
+function refreshScenarioUI() {
+    const wrap = document.getElementById('scenario-slots');
+    if (!wrap) return;
+    wrap.innerHTML = Array.from({ length: 3 }, (_, i) => {
+        const slot = scenarioState.slots[i];
+        const active = scenarioState.compareSlot === i ? ' active-compare' : '';
+        if (!slot) {
+            return `<div class="scenario-slot${active}">
+                <div class="scenario-slot-head">
+                    <div class="scenario-slot-name">Slot ${i + 1}</div>
+                    <div class="scenario-slot-meta">Empty</div>
+                </div>
+                <div class="scenario-actions">
+                    <button class="scenario-btn" type="button" onclick="saveScenarioToSlot(${i})">Save</button>
+                    <button class="scenario-btn" type="button" disabled>Load</button>
+                    <button class="scenario-btn" type="button" disabled>Compare</button>
+                </div>
+            </div>`;
+        }
+        return `<div class="scenario-slot${active}">
+            <div class="scenario-slot-head">
+                <div class="scenario-slot-name">${slot.name}</div>
+                <div class="scenario-slot-meta">${slot.savedAt}</div>
+            </div>
+            <div class="scenario-slot-meta">${summarizeScenario(slot.inputs)}</div>
+            <div class="scenario-actions">
+                <button class="scenario-btn" type="button" onclick="loadScenario(${i})">Load</button>
+                <button class="scenario-btn" type="button" onclick="toggleCompareScenario(${i})">${scenarioState.compareSlot === i ? 'Hide' : 'Compare'}</button>
+                <button class="scenario-btn" type="button" onclick="clearScenario(${i})">Clear</button>
+            </div>
+        </div>`;
+    }).join('');
+
+    const chip = document.getElementById('compare-chip');
+    const chipLabel = document.getElementById('compare-chip-label');
+    if (scenarioState.compareSlot == null || !scenarioState.slots[scenarioState.compareSlot]) {
+        chip.style.display = 'none';
+    } else {
+        chip.style.display = 'inline-flex';
+        chipLabel.textContent = `Compare: ${scenarioState.slots[scenarioState.compareSlot].name}`;
+    }
+}
+
+function refreshPresetUI() {
+    document.querySelectorAll('[data-preset-key]').forEach(el => {
+        el.classList.toggle('active', el.dataset.presetKey === scenarioState.activePreset);
+    });
+}
+
+function applyInputs(inp) {
+    const setRange = (id, value) => { document.getElementById(id).value = value; };
+    setRange('in-brent', inp.brent);
+    setRange('in-cpo', inp.cpo);
+    setRange('in-semi', inp.semi);
+    setRange('in-tour', inp.tour);
+    setRange('in-opr', inp.opr);
+    setRange('in-fx', inp.fx);
+    setRange('in-devgr', inp.devgr);
+    setRange('in-wpg', inp.wpg);
+    setRange('in-equity', inp.equity);
+    setRange('in-ust10', inp.ust10);
+    setRange('in-sst', inp.sst);
+    setRange('in-cpoduty', inp.cpoduty);
+    setRange('in-epf', inp.epf);
+    document.getElementById('in-elnino').checked = !!inp.elnino;
+    document.getElementById('in-budi95').checked = inp.budi95 !== false;
+    for (const [k, v] of Object.entries(valMap)) {
+        document.getElementById(v).textContent = fmtMap[k](document.getElementById(k).value);
+    }
+    updCharts();
+}
+
+function applyPreset(key) {
+    const preset = PRESETS[key];
+    if (!preset) return;
+    if (scenarioState.activePreset === key) {
+        resetInputs();
+        return;
+    }
+    const next = { ...getDefaultInputState(), ...(preset.values || {}), ...(preset.toggles || {}) };
+    scenarioState.activePreset = key;
+    refreshPresetUI();
+    applyInputs(next);
+}
+
+function saveScenarioToSlot(preferredIndex) {
+    const current = getIn();
+    let index = preferredIndex;
+    if (!scenarioState.slots[index]) {
+        const emptyIndex = scenarioState.slots.findIndex(slot => !slot);
+        if (preferredIndex === 0 && emptyIndex !== -1) index = emptyIndex;
+    }
+    if (index == null || index < 0 || index > 2) index = 0;
+    const stamp = new Date().toLocaleString('en-MY', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+    const name = `Scenario ${index + 1}`;
+    scenarioState.slots[index] = { name, savedAt: stamp, inputs: current };
+    writeScenarioStore();
+    refreshScenarioUI();
+}
+
+function loadScenario(index) {
+    const slot = scenarioState.slots[index];
+    if (!slot) return;
+    applyInputs(slot.inputs);
+}
+
+function toggleCompareScenario(index) {
+    scenarioState.compareSlot = scenarioState.compareSlot === index ? null : index;
+    refreshScenarioUI();
+    rebuildCharts();
+    updCharts();
+}
+
+function clearScenario(index) {
+    const needsRebuild = scenarioState.compareSlot === index;
+    if (scenarioState.compareSlot === index) scenarioState.compareSlot = null;
+    scenarioState.slots[index] = null;
+    writeScenarioStore();
+    refreshScenarioUI();
+    if (needsRebuild) rebuildCharts();
+    updCharts();
+}
+
+function getCompareScenarioInput() {
+    if (scenarioState.compareSlot == null) return null;
+    return scenarioState.slots[scenarioState.compareSlot]?.inputs || null;
+}
+
+function lerp(start, end, t) {
+    return start + (end - start) * t;
+}
+
+function baselineQuarter(q) {
+    const t = q / (QS.length - 1);
+    const nominalWageGrowth = lerp(B.nominal_wage_growth, 4.35, t);
+    const cpiInflation = lerp(B.cpi_inflation, 2.35, t);
+    const baselineOpr = lerp(B.opr, B.opr, t);
+    const baselineUst10 = lerp(B.ust10, B.ust10, t);
+    const baselineMgs10 = 0.85 * baselineOpr + 0.15 * baselineUst10 + 1.85;
+
+    return {
+        gdp_growth: lerp(B.gdp_growth, 4.15, t),
+        cpi_inflation: cpiInflation,
+        core_inflation: lerp(B.core_inflation, 1.95, t),
+        unemployment: lerp(B.unemployment, 3.45, t),
+        fiscal_pct: lerp(B.fiscal_pct, -3.1, t),
+        gov_revenue_bln: lerp(B.gov_revenue_bln, 204, t),
+        gov_expenditure_bln: lerp(B.gov_expenditure_bln, 261.5, t),
+        petronas_profit_bln: lerp(B.petronas_profit_bln, 95, t),
+        pita_revenue_bln: lerp(B.pita_revenue_bln, 36.1, t),
+        petronas_dividend_bln: lerp(B.petronas_dividend_bln, 28.5, t),
+        fuel_subsidy_bln: lerp(B.fuel_subsidy_bln, 8.4, t),
+        exports_bln: lerp(B.exports_bln, 1000, t),
+        imports_bln: lerp(B.imports_bln, 872, t),
+        current_account_pct: lerp(B.current_account_pct, 2.0, t),
+        household_debt_ratio: lerp(B.household_debt_ratio, 84.5, t),
+        real_wage_growth: nominalWageGrowth - cpiInflation,
+        nominal_wage_growth: nominalWageGrowth,
+        consumption_growth: lerp(B.consumption_growth, 5.3, t),
+        credit_growth: lerp(B.credit_growth, 4.9, t),
+        property_price_growth: lerp(B.property_price_growth, 4.1, t),
+        trade_balance_pct: lerp(B.trade_balance_pct, 6.65, t),
+        primary_income_pct: lerp(B.primary_income_pct, -4.0, t),
+        transfers_pct: lerp(B.transfers_pct, -0.65, t),
+        business_investment_bln: lerp(B.business_investment_bln, 236, t),
+        public_investment_bln: lerp(B.public_investment_bln, 122, t),
+        housing_investment_bln: lerp(B.housing_investment_bln, 77, t),
+        ron95_market_price: lerp(B.ron95_market_price, 2.54, t),
+        mgs10: baselineMgs10,
+        rmort: baselineOpr + 1.75,
     };
 }
 
 function sim(inp) {
+    if (window.MaMaMoStructural?.runStructuralPlaygroundModel) {
+        return window.MaMaMoStructural.runStructuralPlaygroundModel(inp);
+    }
+    if (window.MaMaMoStructural?.runPlaygroundModel) {
+        return window.MaMaMoStructural.runPlaygroundModel(inp);
+    }
     const oilShk = (inp.brent - B.brent) / B.brent;
     const cpoShk = (inp.cpo - B.cpo) / B.cpo;
     const fxShk = (inp.fx - B.fx) / B.fx;
@@ -1006,8 +1810,11 @@ function sim(inp) {
     const epfBln = inp.epf;
     const elM = inp.elnino ? 1 : 0;
     const out = [];
+    let prevPetProfit = B.petronas_profit_bln;
+    let prevPetDiv = B.petronas_dividend_bln;
 
     for (let q = 0; q < 8; q++) {
+        const T = baselineQuarter(q);
         const decay = Math.pow(0.88, q);
         const persist = 1 - 0.08 * q;
         const build = Math.min(1, 0.3 + 0.1 * q);
@@ -1015,11 +1822,14 @@ function sim(inp) {
         const effOilShk = oilShk > 0 ? oilShk * decay : oilShk * persist;
         const effBrent = B.brent * (1 + effOilShk);
 
-        // MGS10 linked to UST10 + OPR spread
-        const mgs10 = inp.ust10 + 0.3 + oprD * 0.4;
+        // Simplified reduced-form version of the model's MGS10 equation:
+        // d(MGS10) ~= 0.72*d(OPR) + 0.12*d(UST10), anchored to the baseline path.
+        const mgs10 = T.mgs10 + 0.72 * oprD + 0.12 * ust10D;
 
-        // Administered price inflation: oil + fx pass-through
-        const adminInf = P.oil_admin_pt * (effOilShk + fxShk) * 100;
+        const budi95On = inp.budi95 !== false;
+        const baseConsumerRon95 = B.ron95_budi_price * P.budi95_coverage + T.ron95_market_price * (1 - P.budi95_coverage);
+        const gdpDenom = B.gdp_millions_rm / 1000;
+        const baseSubLitre = Math.max(0, T.ron95_market_price - B.ron95_budi_price);
 
         // Import inflation: fx + oil + world goods prices
         const importInf = P.import_pt * (fxShk + 0.3 * effOilShk + 0.5 * wpgShk) * 100;
@@ -1028,23 +1838,36 @@ function sim(inp) {
         const sstInf = sstD * 0.3;
 
         // Core inflation
-        const coreInf = B.core_inflation + importInf * 0.3 * build + (oprD < 0 ? -oprD * 0.4 : -oprD * 0.2) + semiShk * 0.3 + sstInf * build + wpgShk * 2 * build;
+        const coreInf = T.core_inflation + importInf * 0.3 * build + (oprD < 0 ? -oprD * 0.4 : -oprD * 0.2) + semiShk * 0.3 + sstInf * build + wpgShk * 2 * build;
 
-        const subShock = inp.subReform ? (q === 0 ? 8.0 : q === 1 ? 3.0 : 1.0 * Math.pow(0.5, q-2)) : 0;
-        const headCpi = (1 - P.w_admin) * coreInf + P.w_admin * (coreInf + adminInf) + subShock + elM * 0.8 * (q < 4 ? 1 : 0.5);
+        const ron95Mkt = T.ron95_market_price + (effBrent - B.brent) * inp.fx / B.fx * 0.012;
+        const ron95Pump = budi95On ? B.ron95_budi_price : ron95Mkt;
+        const ron95Consumer = budi95On ? (B.ron95_budi_price * P.budi95_coverage + ron95Mkt * (1 - P.budi95_coverage)) : ron95Mkt;
+        const fuelPriceShockPct = ((ron95Consumer / baseConsumerRon95) - 1) * 100;
+        // Administered inflation is damped under BUDI95 because most eligible household fuel use remains at RM1.99.
+        const adminInf = P.oil_admin_pt * fuelPriceShockPct;
+        const subShock = !budi95On ? Math.max(0, fuelPriceShockPct) * (q === 0 ? 0.08 : q === 1 ? 0.03 : 0.01 * Math.pow(0.5, q - 2)) : 0;
+        const headCpi = T.cpi_inflation
+            + (coreInf - T.core_inflation)
+            + P.w_admin * adminInf
+            + subShock
+            + elM * 0.8 * (q < 4 ? 1 : 0.5);
 
         // Petronas & fiscal
         const effCpo = B.cpo * (1 + cpoShk + elM * 0.15);
         const brentRM = effBrent * inp.fx;
         const baseBrentRM = B.brent * B.fx;
-        const petProfit = (B.petronas_profit_bln * (brentRM / baseBrentRM) * 0.85 + B.petronas_profit_bln * 0.15) * Math.pow(0.995, q);
+        const petProfit = T.petronas_profit_bln * (brentRM / baseBrentRM);
         const pitaRev = petProfit * P.pet_tax;
-        const petDiv = petProfit * P.pet_div;
+        const petDiv = q === 0
+            ? T.petronas_dividend_bln * (0.5 + 0.5 * (petProfit / prevPetProfit))
+            : prevPetDiv * (0.5 + 0.5 * (petProfit / prevPetProfit));
 
-        const ron95Mkt = 2.05 + (effBrent - 82) * inp.fx / B.fx * 0.012;
-        const ron95Pump = inp.subReform ? ron95Mkt : 2.05;
-        const subLitre = Math.max(0, ron95Mkt - ron95Pump);
-        const annSub = subLitre * P.fuel_litres_q * 4;
+        const subsidisedLitresQ = budi95On ? P.fuel_litres_q * P.budi95_coverage : 0;
+        const subLitre = budi95On ? Math.max(0, ron95Mkt - B.ron95_budi_price) : 0;
+        const annSub = budi95On
+            ? T.fuel_subsidy_bln + (subLitre - baseSubLitre) * subsidisedLitresQ * 4
+            : 0;
 
         // CPO export duty revenue (duty rate applied to CPO export value)
         const cpoDutyRev = (inp.cpoduty / 100) * effCpo * 0.000045;
@@ -1053,20 +1876,21 @@ function sim(inp) {
         // SST revenue effect: ~RM2bn per 1pp change
         const sstRevDelta = sstD * 2.0 / 4;
 
-        const govRev = B.gov_revenue_bln / 4
-            + (pitaRev - B.pita_revenue_bln) / 4
-            + (petDiv - B.petronas_dividend_bln) / 4
+        const govRev = T.gov_revenue_bln / 4
+            + (pitaRev - T.pita_revenue_bln) / 4
+            + (petDiv - T.petronas_dividend_bln) / 4
             + (cpoDutyRev - baseCpoDutyRev)
             + sstRevDelta
             + devD * 0.1;
 
-        const govExp = B.gov_expenditure_bln / 4
-            + (subLitre * P.fuel_litres_q - B.fuel_subsidy_bln / 4)
+        const govExp = T.gov_expenditure_bln / 4
+            + (annSub - T.fuel_subsidy_bln) / 4
             + devD * 0.5
             + headCpi * 0.15
-            + ust10D * 0.3; // higher global rates raise debt service
+            + (0.7 * (mgs10 - T.mgs10) + 0.3 * oprD) * 0.3; // debt service follows the weighted borrowing-rate rule
 
-        const fiscalPct = (govRev - govExp) * 4 / (B.gdp_millions_rm / 1000) * 100;
+        const fiscalPct = T.fiscal_pct
+            + ((govRev - T.gov_revenue_bln / 4) - (govExp - T.gov_expenditure_bln / 4)) * 4 / gdpDenom * 100;
 
         // External sector
         const eeExpG = P.ee_elast * semiShk + P.reer_exp_elast * fxShk * 0.5;
@@ -1076,26 +1900,45 @@ function sim(inp) {
         const tourExpG = P.tour_elast * tourShk;
         const otherExpG = semiShk * 0.3 + fxShk * P.reer_exp_elast * -0.5 + wpgShk * 0.15;
         const totExpG = P.ee_share * eeExpG + P.oil_share * oilExpG + P.cpo_share * cpoExpG + 0.06 * tourExpG + 0.43 * otherExpG;
-        const exports = B.exports_bln * (1 + totExpG);
-        const impG = 0.3 * totExpG * P.import_content_ee + 0.2 * effOilShk * (effOilShk > 0 ? 0.5 : 1) + fxShk * 0.15 + wpgShk * 0.2;
-        const imports = B.imports_bln * (1 + impG);
-        const caPct = (exports - imports - 20 + tourShk * 5) / (B.gdp_millions_rm / 1000) * 100;
+        const eeExp = T.exports_bln * P.ee_share * (1 + eeExpG);
+        const oilExp = T.exports_bln * P.oil_share * (1 + oilExpG);
+        const cpoExp = T.exports_bln * P.cpo_share * (1 + cpoExpG);
+        const tourExp = T.exports_bln * 0.06 * (1 + tourExpG);
+        const otherExp = T.exports_bln * 0.43 * (1 + otherExpG);
+        const exports = T.exports_bln * (1 + totExpG);
 
-        // Household: equity wealth effect + EPF withdrawal boost
-        const wealthEffect = eqShk * 0.08; // wealth elasticity ~0.08 from consumption eq
+        // Household block: reduced-form version of the full model's disposable-income, credit, and wealth channels.
+        const rmort = inp.opr + 1.75;
+        const prelimNomWG = T.nominal_wage_growth
+            + P.wage_price_pt * (headCpi - T.cpi_inflation) * 0.2
+            + semiShk * 0.35
+            + tourShk * 0.15
+            - Math.max(0, oprD) * 0.1;
+        const propertyPriceG = T.property_price_growth
+            + 0.9 * (prelimNomWG - T.nominal_wage_growth)
+            - 0.35 * (rmort - T.rmort)
+            - 0.2 * (headCpi - T.cpi_inflation);
+        const creditG = T.credit_growth
+            + 0.45 * (propertyPriceG - T.property_price_growth)
+            + 0.35 * (prelimNomWG - T.nominal_wage_growth)
+            - 0.9 * oprD
+            - 0.25 * (headCpi - T.cpi_inflation)
+            + (epfBln > 0 ? 0.08 * epfBln : 0);
+        const realDispIncomeG = (prelimNomWG - headCpi)
+            + 0.18 * (creditG - T.credit_growth);
         const epfBoost = epfBln > 0 ? (epfBln / (B.gdp_millions_rm / 1000)) * 100 * P.mpc * (q < 4 ? 0.6 : 0.2) : 0;
-
-        const consG = B.consumption_growth
+        const consG0 = T.consumption_growth
+            + 0.55 * (realDispIncomeG - T.real_wage_growth)
+            + 0.084 * (creditG - T.credit_growth)
+            + eqShk * 0.6
             + oprD * P.opr_cons * 200
-            - Math.max(0, headCpi - B.cpi_inflation) * 0.6
-            + semiShk * 8
-            + tourShk * 3
-            + wealthEffect * 5
+            - Math.max(0, headCpi - T.cpi_inflation) * 0.25
             + epfBoost
-            - sstD * 0.3; // SST hike dampens consumption
+            - sstD * 0.3;
 
         // Investment: UST10 feeds MGS10 which affects long-end borrowing
-        const invG = B.gdp_growth * 1.2
+        const invBaseline = T.gdp_growth * 1.2;
+        const invG = invBaseline
             + oprD * P.opr_inv * 300
             + devD * 0.8
             + semiShk * 15
@@ -1103,28 +1946,93 @@ function sim(inp) {
             - ust10D * 0.3 // higher global rates tighten financial conditions
             + eqShk * 3; // equity market confidence
 
-        const gdpG = B.gdp_growth
-            + 0.55 * (consG - B.consumption_growth) / 10
-            + 0.23 * (invG - B.gdp_growth * 1.2) / 10
-            + 0.13 * (totExpG - impG * 0.9) * 5
-            + devD * 0.15
-            - Math.max(0, headCpi - 8) * 0.15;
+        const consImpG = 0.15 * (consG0 - T.consumption_growth) / 10;
+        const invImpG = 0.22 * (invG - invBaseline) / 10;
+        const exportImpG =
+            0.60 * P.ee_share * eeExpG +
+            0.45 * 0.43 * otherExpG +
+            0.08 * 0.06 * tourExpG +
+            0.52 * (P.oil_share * oilExpG + P.cpo_share * cpoExpG);
+        const impG = consImpG + invImpG + exportImpG + fxShk * 0.10 + wpgShk * 0.15;
+        const imports = T.imports_bln * (1 + impG);
 
-        const unempD = -P.okun * (gdpG - B.gdp_growth) / 100 * 5;
-        const unemp = Math.max(2.5, Math.min(6.0, B.unemployment + unempD));
-        const nomWG = B.nominal_wage_growth + P.wage_price_pt * (headCpi - B.cpi_inflation) * 0.3 + (gdpG - B.gdp_growth) * 0.4;
+        const gdpConsCtr0 = 0.55 * (consG0 - T.consumption_growth) / 10;
+        const gdpInvCtr = 0.23 * (invG - invBaseline) / 10;
+        const gdpNetExpCtr = 0.13 * (totExpG - impG * 0.9) * 5;
+        const gdpFiscalCtr = devD * 0.15;
+        const gdpInflationDrag = -Math.max(0, headCpi - 8) * 0.15;
+        const gdpG0 = T.gdp_growth
+            + gdpConsCtr0
+            + gdpInvCtr
+            + gdpNetExpCtr
+            + gdpFiscalCtr
+            + gdpInflationDrag;
+
+        const unempD0 = -P.okun * (gdpG0 - T.gdp_growth) / 100 * 5;
+        const unemp0 = Math.max(2.5, Math.min(6.0, T.unemployment + unempD0));
+        const consG = consG0 - 0.35 * (unemp0 - T.unemployment);
+        const gdpConsCtr = 0.55 * (consG - T.consumption_growth) / 10;
+        const gdpG = T.gdp_growth
+            + gdpConsCtr
+            + gdpInvCtr
+            + gdpNetExpCtr
+            + gdpFiscalCtr
+            + gdpInflationDrag;
+        const unempD = -P.okun * (gdpG - T.gdp_growth) / 100 * 5;
+        const unemp = Math.max(2.5, Math.min(6.0, T.unemployment + unempD));
+        const nomWG = T.nominal_wage_growth
+            + P.wage_price_pt * (headCpi - T.cpi_inflation) * 0.3
+            + (gdpG - T.gdp_growth) * 0.4
+            - 0.08 * (unemp - T.unemployment);
         const realWG = nomWG - headCpi;
+        const businessInv = T.business_investment_bln * (1 + (invG - invBaseline) / 100);
+        const publicInv = T.public_investment_bln * (1 + devD * 0.04);
+        const housingInv = T.housing_investment_bln * (
+            1
+            + 0.0095 * (consG - T.consumption_growth)
+            - 0.0082 * (propertyPriceG - T.property_price_growth)
+            - 0.03 * (rmort - T.rmort)
+        );
+        const totalInv = businessInv + publicInv + housingInv;
 
         // Household debt: EPF withdrawal temporarily reduces savings, higher rates increase burden
-        const debtR = B.household_debt_ratio + oprD * 0.8 - (gdpG - B.gdp_growth) * 0.5 + q * 0.05 + (epfBln > 0 ? -epfBln * 0.02 : 0);
+        const debtR = T.household_debt_ratio
+            + 0.25 * (creditG - T.credit_growth)
+            + 0.15 * (propertyPriceG - T.property_price_growth)
+            + oprD * 0.5
+            - (gdpG - T.gdp_growth) * 0.3
+            + (epfBln > 0 ? -epfBln * 0.02 : 0);
+
+        const tradeBalPct = T.trade_balance_pct
+            + ((exports - T.exports_bln) - (imports - T.imports_bln)) / gdpDenom * 100;
+        const primaryIncomePct = T.primary_income_pct
+            + eqShk * 0.6
+            - 0.18 * (gdpG - T.gdp_growth)
+            - 0.08 * (mgs10 - T.mgs10)
+            - 0.05 * oprD;
+        const transfersPct = T.transfers_pct
+            + fxShk * 0.4
+            - 0.06 * (nomWG - T.nominal_wage_growth);
+        const caPct = tradeBalPct + primaryIncomePct + transfersPct;
 
         out.push({
             q: QS[q], brent: r2(effBrent), gdp: r2(gdpG), cpi: r2(headCpi), core: r2(coreInf),
             unemp: r2(unemp), fiscal: r2(fiscalPct), govRev: r1(govRev * 4), govExp: r1(govExp * 4),
             pet: r1(petProfit), pita: r1(pitaRev), petDiv: r1(petDiv), sub: r1(annSub),
             exp: r1(exports), imp: r1(imports), ca: r2(caPct), consG: r2(consG),
-            nomW: r2(nomWG), realW: r2(realWG), debt: r1(debtR), ron95: r2(ron95Mkt)
+            nomW: r2(nomWG), realW: r2(realWG), debt: r1(debtR), inv: r2(invG), ron95: r2(ron95Mkt),
+            ron95Pump: r2(ron95Pump), subLitre: r2(subLitre), mgs10: r2(mgs10),
+            rmort: r2(rmort), prpG: r2(propertyPriceG), creditG: r2(creditG),
+            tradeBal: r2(tradeBalPct), primInc: r2(primaryIncomePct), transfers: r2(transfersPct),
+            adminInf: r2(adminInf), importInf: r2(importInf), sstInf: r2(sstInf), cpoDuty: r2(cpoDutyRev * 4),
+            sstRev: r2(sstRevDelta * 4), subCostDelta: r2(annSub - B.fuel_subsidy_bln),
+            eeExp: r1(eeExp), oilExp: r1(oilExp), cpoExp: r1(cpoExp), tourExp: r1(tourExp), otherExp: r1(otherExp),
+            busInv: r1(businessInv), pubInv: r1(publicInv), houseInv: r1(housingInv), totalInv: r1(totalInv),
+            gdpBase: B.gdp_growth, gdpConsCtr: r2(gdpConsCtr), gdpInvCtr: r2(gdpInvCtr), gdpNetExpCtr: r2(gdpNetExpCtr),
+            gdpFiscalCtr: r2(gdpFiscalCtr), gdpInflationDrag: r2(gdpInflationDrag)
         });
+        prevPetProfit = petProfit;
+        prevPetDiv = petDiv;
     }
     return out;
 }
@@ -1144,7 +2052,16 @@ const CO = {
     plugins: {
         legend: {
             position: 'bottom',
-            labels: { color: '#666', font: { family: "'IBM Plex Mono'", size: 9 }, boxWidth: 10, padding: 8 }
+            labels: {
+                color: '#666',
+                font: { family: "'IBM Plex Mono'", size: 9 },
+                boxWidth: 10,
+                padding: 8,
+                filter: (item, data) => {
+                    const ds = data.datasets[item.datasetIndex];
+                    return !ds?._isBaseline && !ds?._isCompare;
+                },
+            }
         },
         tooltip: {
             backgroundColor: '#1a1a1a',
@@ -1154,6 +2071,7 @@ const CO = {
             bodyFont: { family: "'IBM Plex Mono'", size: 10 },
             padding: 8,
             cornerRadius: 0,
+            filter: ctx => !ctx.dataset._isBaseline && !ctx.dataset._isCompare,
         }
     },
     scales: {
@@ -1174,11 +2092,46 @@ function mkS(y1, y2) {
     return s;
 }
 
+function mkStackedS(y1, y2) {
+    const s = mkS(y1, y2);
+    s.x.stacked = true;
+    s.y.stacked = true;
+    return s;
+}
+
+function withAlpha(color, alpha) {
+    if (typeof color !== 'string') return color;
+
+    if (color.startsWith('rgba(')) {
+        return color.replace(/rgba\(([^)]+),\s*[\d.]+\)$/, `rgba($1, ${alpha})`);
+    }
+
+    if (color.startsWith('rgb(')) {
+        return color.replace('rgb(', 'rgba(').replace(')', `, ${alpha})`);
+    }
+
+    if (color.startsWith('#')) {
+        let hex = color.slice(1);
+        if (hex.length === 3) {
+            hex = hex.split('').map(ch => ch + ch).join('');
+        }
+        if (hex.length === 6) {
+            const value = parseInt(hex, 16);
+            const r = (value >> 16) & 255;
+            const g = (value >> 8) & 255;
+            const b = value & 255;
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+    }
+
+    return color;
+}
+
 function ds(label, data, color, opts = {}) {
     return {
         label, data,
         borderColor: color,
-        backgroundColor: opts.fill ? color.replace(')', ',0.08)').replace('rgb', 'rgba') : 'transparent',
+        backgroundColor: opts.fill ? withAlpha(color, opts.fillAlpha ?? 0.25) : 'transparent',
         borderWidth: opts.w || 1.5,
         tension: 0.25,
         fill: !!opts.fill,
@@ -1191,18 +2144,68 @@ function ds(label, data, color, opts = {}) {
     };
 }
 
+function baselineDs(label, data, color, opts = {}) {
+    return {
+        ...ds(label, data, withAlpha(color, opts.borderAlpha ?? 0.45), { ...opts, fill: false, fillAlpha: 0 }),
+        pointRadius: 0,
+        pointHoverRadius: 0,
+        borderWidth: opts.w || 1,
+        borderDash: opts.dash || [5, 4],
+        _isBaseline: true,
+    };
+}
+
+function compareDs(label, data, color, opts = {}) {
+    return {
+        ...ds(label, data, withAlpha(color, opts.borderAlpha ?? 0.95), { ...opts, fill: false, fillAlpha: 0 }),
+        pointRadius: 0,
+        pointHoverRadius: 0,
+        borderWidth: opts.w || 1.2,
+        borderDash: opts.dash || [2, 3],
+        _isCompare: true,
+    };
+}
+
+function comboDatasets(series, baseline, compare = []) {
+    return [
+        ...series,
+        ...baseline.map(cfg => baselineDs(cfg.label, cfg.data, cfg.color, cfg.opts)),
+        ...compare.map(cfg => compareDs(cfg.label, cfg.data, cfg.color, cfg.opts)),
+    ];
+}
+
 let charts = {};
 
+function rebuildCharts() {
+    Object.values(charts).forEach(chart => {
+        if (chart && typeof chart.destroy === 'function') chart.destroy();
+    });
+    charts = {};
+    initCharts();
+}
+
 function initCharts() {
-    const d = sim(getIn());
+    const currentInp = getIn();
+    const d = sim(currentInp);
+    const b = sim(getBaselineIn());
+    const cmpInp = getCompareScenarioInput();
+    const c = cmpInp ? sim(cmpInp) : null;
     const L = d.map(r => r.q);
 
     charts.gdp = new Chart(document.getElementById('c-gdp'), {
-        type: 'line', data: { labels: L, datasets: [
+        type: 'line', data: { labels: L, datasets: comboDatasets([
             ds('GDP Growth', d.map(r=>r.gdp), '#00cc66', { fill: true }),
             ds('CPI Inflation', d.map(r=>r.cpi), '#ff4444', { fill: true, axis: 'y1' }),
             ds('Core Inflation', d.map(r=>r.core), '#ffcc00', { dash: [4,3], axis: 'y1', w: 1 }),
-        ]},
+        ], [
+            { label: 'GDP Growth Baseline', data: b.map(r=>r.gdp), color: '#00cc66' },
+            { label: 'CPI Inflation Baseline', data: b.map(r=>r.cpi), color: '#ff4444', opts: { axis: 'y1' } },
+            { label: 'Core Inflation Baseline', data: b.map(r=>r.core), color: '#ffcc00', opts: { axis: 'y1' } },
+        ], c ? [
+            { label: 'GDP Growth Compare', data: c.map(r=>r.gdp), color: '#66b3ff' },
+            { label: 'CPI Inflation Compare', data: c.map(r=>r.cpi), color: '#66b3ff', opts: { axis: 'y1' } },
+            { label: 'Core Inflation Compare', data: c.map(r=>r.core), color: '#66b3ff', opts: { axis: 'y1' } },
+        ] : [])},
         options: { ...CO, scales: mkS('GDP %', 'Inflation %'),
             plugins: { ...CO.plugins, annotation: { annotations: {
                 baseline: { type: 'line', yMin: B.gdp_growth, yMax: B.gdp_growth, borderColor: 'rgba(0,204,102,0.2)', borderDash: [3,3], borderWidth: 1, label: { display: false } }
@@ -1211,62 +2214,413 @@ function initCharts() {
     });
 
     charts.fiscal = new Chart(document.getElementById('c-fiscal'), {
-        type: 'bar', data: { labels: L, datasets: [
+        type: 'bar', data: { labels: L, datasets: comboDatasets([
             ds('Revenue', d.map(r=>r.govRev), 'rgba(0,204,102,0.5)', { bar: true }),
             ds('Expenditure', d.map(r=>r.govExp), 'rgba(255,68,68,0.5)', { bar: true }),
             ds('Fiscal % GDP', d.map(r=>r.fiscal), '#4488ff', { axis: 'y1', type: 'line' }),
-        ]},
+        ], [
+            { label: 'Revenue Baseline', data: b.map(r=>r.govRev), color: '#00cc66' },
+            { label: 'Expenditure Baseline', data: b.map(r=>r.govExp), color: '#ff4444' },
+            { label: 'Fiscal % GDP Baseline', data: b.map(r=>r.fiscal), color: '#4488ff', opts: { axis: 'y1' } },
+        ], c ? [
+            { label: 'Revenue Compare', data: c.map(r=>r.govRev), color: '#66b3ff' },
+            { label: 'Expenditure Compare', data: c.map(r=>r.govExp), color: '#66b3ff' },
+            { label: 'Fiscal % GDP Compare', data: c.map(r=>r.fiscal), color: '#66b3ff', opts: { axis: 'y1' } },
+        ] : [])},
         options: { ...CO, scales: mkS('RM bn', '% GDP') }
     });
 
     charts.pet = new Chart(document.getElementById('c-pet'), {
-        type: 'line', data: { labels: L, datasets: [
+        type: 'line', data: { labels: L, datasets: comboDatasets([
             ds('Petronas Profit', d.map(r=>r.pet), '#ff8800', { fill: true }),
             ds('PITA Revenue', d.map(r=>r.pita), '#4488ff'),
             ds('Fuel Subsidy', d.map(r=>r.sub), '#ff4444', { fill: true, axis: 'y1' }),
-        ]},
+        ], [
+            { label: 'Petronas Profit Baseline', data: b.map(r=>r.pet), color: '#ff8800' },
+            { label: 'PITA Revenue Baseline', data: b.map(r=>r.pita), color: '#4488ff' },
+            { label: 'Fuel Subsidy Baseline', data: b.map(r=>r.sub), color: '#ff4444', opts: { axis: 'y1' } },
+        ], c ? [
+            { label: 'Petronas Profit Compare', data: c.map(r=>r.pet), color: '#66b3ff' },
+            { label: 'PITA Revenue Compare', data: c.map(r=>r.pita), color: '#66b3ff' },
+            { label: 'Fuel Subsidy Compare', data: c.map(r=>r.sub), color: '#66b3ff', opts: { axis: 'y1' } },
+        ] : [])},
         options: { ...CO, scales: mkS('RM bn', 'RM bn/yr') }
     });
 
     charts.ext = new Chart(document.getElementById('c-ext'), {
-        type: 'line', data: { labels: L, datasets: [
+        type: 'line', data: { labels: L, datasets: comboDatasets([
             ds('Exports', d.map(r=>r.exp), '#00cc66'),
             ds('Imports', d.map(r=>r.imp), '#ff4444'),
             ds('CA % GDP', d.map(r=>r.ca), '#ffcc00', { axis: 'y1' }),
-        ]},
+        ], [
+            { label: 'Exports Baseline', data: b.map(r=>r.exp), color: '#00cc66' },
+            { label: 'Imports Baseline', data: b.map(r=>r.imp), color: '#ff4444' },
+            { label: 'CA % GDP Baseline', data: b.map(r=>r.ca), color: '#ffcc00', opts: { axis: 'y1' } },
+        ], c ? [
+            { label: 'Exports Compare', data: c.map(r=>r.exp), color: '#66b3ff' },
+            { label: 'Imports Compare', data: c.map(r=>r.imp), color: '#66b3ff' },
+            { label: 'CA % GDP Compare', data: c.map(r=>r.ca), color: '#66b3ff', opts: { axis: 'y1' } },
+        ] : [])},
         options: { ...CO, scales: mkS('RM bn', '% GDP') }
     });
 
     charts.hh = new Chart(document.getElementById('c-hh'), {
-        type: 'line', data: { labels: L, datasets: [
+        type: 'line', data: { labels: L, datasets: comboDatasets([
             ds('Consumption Growth', d.map(r=>r.consG), '#4488ff', { fill: true }),
             ds('Real Wage Growth', d.map(r=>r.realW), '#00cc66'),
             ds('HH Debt/GDP', d.map(r=>r.debt), '#ffcc00', { dash: [4,3], axis: 'y1', w: 1 }),
-        ]},
+        ], [
+            { label: 'Consumption Growth Baseline', data: b.map(r=>r.consG), color: '#4488ff' },
+            { label: 'Real Wage Growth Baseline', data: b.map(r=>r.realW), color: '#00cc66' },
+            { label: 'HH Debt/GDP Baseline', data: b.map(r=>r.debt), color: '#ffcc00', opts: { axis: 'y1' } },
+        ], c ? [
+            { label: 'Consumption Growth Compare', data: c.map(r=>r.consG), color: '#66b3ff' },
+            { label: 'Real Wage Growth Compare', data: c.map(r=>r.realW), color: '#66b3ff' },
+            { label: 'HH Debt/GDP Compare', data: c.map(r=>r.debt), color: '#66b3ff', opts: { axis: 'y1' } },
+        ] : [])},
         options: { ...CO, scales: mkS('Growth %', 'Debt/GDP %') }
     });
 
     charts.lab = new Chart(document.getElementById('c-lab'), {
-        type: 'line', data: { labels: L, datasets: [
+        type: 'line', data: { labels: L, datasets: comboDatasets([
             ds('Unemployment', d.map(r=>r.unemp), '#ff4444', { fill: true }),
             ds('Nominal Wage Growth', d.map(r=>r.nomW), '#4488ff', { axis: 'y1' }),
-        ]},
+        ], [
+            { label: 'Unemployment Baseline', data: b.map(r=>r.unemp), color: '#ff4444' },
+            { label: 'Nominal Wage Growth Baseline', data: b.map(r=>r.nomW), color: '#4488ff', opts: { axis: 'y1' } },
+        ], c ? [
+            { label: 'Unemployment Compare', data: c.map(r=>r.unemp), color: '#66b3ff' },
+            { label: 'Nominal Wage Growth Compare', data: c.map(r=>r.nomW), color: '#66b3ff', opts: { axis: 'y1' } },
+        ] : [])},
         options: { ...CO, scales: mkS('Unemp %', 'Wage %') }
+    });
+
+    charts.labout = new Chart(document.getElementById('c-labout'), {
+        type: 'line', data: { labels: L, datasets: comboDatasets([
+            ds('Employment', d.map(r=>r.EMS_LEVEL), '#00cc66'),
+            ds('Foreign Workers', d.map(r=>r.EFOR_LEVEL), '#ff8800'),
+            ds('Market GVA', d.map(r=>r.MSGVA_LEVEL / 1000), '#4488ff', { axis: 'y1' }),
+            ds('Unemployment', d.map(r=>r.unemp), '#ff4444', { axis: 'y1', dash: [4,3] }),
+        ], [
+            { label: 'Employment Baseline', data: b.map(r=>r.EMS_LEVEL), color: '#00cc66' },
+            { label: 'Foreign Workers Baseline', data: b.map(r=>r.EFOR_LEVEL), color: '#ff8800' },
+            { label: 'Market GVA Baseline', data: b.map(r=>r.MSGVA_LEVEL / 1000), color: '#4488ff', opts: { axis: 'y1' } },
+            { label: 'Unemployment Baseline', data: b.map(r=>r.unemp), color: '#ff4444', opts: { axis: 'y1' } },
+        ], c ? [
+            { label: 'Employment Compare', data: c.map(r=>r.EMS_LEVEL), color: '#66b3ff' },
+            { label: 'Foreign Workers Compare', data: c.map(r=>r.EFOR_LEVEL), color: '#66b3ff' },
+            { label: 'Market GVA Compare', data: c.map(r=>r.MSGVA_LEVEL / 1000), color: '#66b3ff', opts: { axis: 'y1' } },
+            { label: 'Unemployment Compare', data: c.map(r=>r.unemp), color: '#66b3ff', opts: { axis: 'y1' } },
+        ] : [])},
+        options: { ...CO, scales: mkS('Workers / Persons', 'RM bn / Unemp %') }
+    });
+
+    charts.income = new Chart(document.getElementById('c-income'), {
+        type: 'line', data: { labels: L, datasets: comboDatasets([
+            ds('Nominal Wage Growth', d.map(r=>r.nomW), '#4488ff'),
+            ds('Headline CPI', d.map(r=>r.cpi), '#ff4444'),
+            ds('Real Wage Growth', d.map(r=>r.realW), '#00cc66', { fill: true, fillAlpha: 0.14 }),
+            ds('Consumption Growth', d.map(r=>r.consG), '#ffcc00', { axis: 'y1' }),
+        ], [
+            { label: 'Nominal Wage Growth Baseline', data: b.map(r=>r.nomW), color: '#4488ff' },
+            { label: 'Headline CPI Baseline', data: b.map(r=>r.cpi), color: '#ff4444' },
+            { label: 'Real Wage Growth Baseline', data: b.map(r=>r.realW), color: '#00cc66' },
+            { label: 'Consumption Growth Baseline', data: b.map(r=>r.consG), color: '#ffcc00', opts: { axis: 'y1' } },
+        ], c ? [
+            { label: 'Nominal Wage Growth Compare', data: c.map(r=>r.nomW), color: '#66b3ff' },
+            { label: 'Headline CPI Compare', data: c.map(r=>r.cpi), color: '#66b3ff' },
+            { label: 'Real Wage Growth Compare', data: c.map(r=>r.realW), color: '#66b3ff' },
+            { label: 'Consumption Growth Compare', data: c.map(r=>r.consG), color: '#66b3ff', opts: { axis: 'y1' } },
+        ] : [])},
+        options: { ...CO, scales: mkS('Wage / CPI %', 'Consumption %') }
+    });
+
+    charts.rates = new Chart(document.getElementById('c-rates'), {
+        type: 'line', data: { labels: L, datasets: comboDatasets([
+            ds('OPR', d.map(() => currentInp.opr), '#ff8800'),
+            ds('MGS10', d.map(r=>r.mgs10), '#4488ff'),
+            ds('Investment Growth', d.map(r=>r.inv), '#00cc66', { axis: 'y1' }),
+            ds('GDP Growth', d.map(r=>r.gdp), '#ffcc00', { axis: 'y1' }),
+        ], [
+            { label: 'OPR Baseline', data: b.map(() => B.opr), color: '#ff8800' },
+            { label: 'MGS10 Baseline', data: b.map(r=>r.mgs10), color: '#4488ff' },
+            { label: 'Investment Growth Baseline', data: b.map(r=>r.inv), color: '#00cc66', opts: { axis: 'y1' } },
+            { label: 'GDP Growth Baseline', data: b.map(r=>r.gdp), color: '#ffcc00', opts: { axis: 'y1' } },
+        ], c ? [
+            { label: 'OPR Compare', data: c.map(() => cmpInp.opr), color: '#66b3ff' },
+            { label: 'MGS10 Compare', data: c.map(r=>r.mgs10), color: '#66b3ff' },
+            { label: 'Investment Growth Compare', data: c.map(r=>r.inv), color: '#66b3ff', opts: { axis: 'y1' } },
+            { label: 'GDP Growth Compare', data: c.map(r=>r.gdp), color: '#66b3ff', opts: { axis: 'y1' } },
+        ] : [])},
+        options: { ...CO, scales: mkS('Policy / Bond Yield %', 'Growth %') }
+    });
+
+    charts.price = new Chart(document.getElementById('c-price'), {
+        type: 'line', data: { labels: L, datasets: comboDatasets([
+            ds('Headline CPI', d.map(r=>r.cpi), '#ff4444'),
+            ds('Core Inflation', d.map(r=>r.core), '#ff8800'),
+            ds('Administered Price Pressure', d.map(r=>r.adminInf), '#4488ff'),
+            ds('Import Price Pressure', d.map(r=>r.importInf), '#00cc66'),
+            ds('SST Effect', d.map(r=>r.sstInf), '#ffcc00', { dash: [4, 3] }),
+        ], [
+            { label: 'Headline CPI Baseline', data: b.map(r=>r.cpi), color: '#ff4444' },
+            { label: 'Core Inflation Baseline', data: b.map(r=>r.core), color: '#ff8800' },
+            { label: 'Administered Price Pressure Baseline', data: b.map(r=>r.adminInf), color: '#4488ff' },
+            { label: 'Import Price Pressure Baseline', data: b.map(r=>r.importInf), color: '#00cc66' },
+            { label: 'SST Effect Baseline', data: b.map(r=>r.sstInf), color: '#ffcc00' },
+        ], c ? [
+            { label: 'Headline CPI Compare', data: c.map(r=>r.cpi), color: '#66b3ff' },
+            { label: 'Core Inflation Compare', data: c.map(r=>r.core), color: '#66b3ff' },
+            { label: 'Administered Price Pressure Compare', data: c.map(r=>r.adminInf), color: '#66b3ff' },
+            { label: 'Import Price Pressure Compare', data: c.map(r=>r.importInf), color: '#66b3ff' },
+            { label: 'SST Effect Compare', data: c.map(r=>r.sstInf), color: '#66b3ff' },
+        ] : [])},
+        options: { ...CO, scales: mkS('Inflation / Contribution %') }
+    });
+
+    charts.wageprice = new Chart(document.getElementById('c-wageprice'), {
+        type: 'line', data: { labels: L, datasets: comboDatasets([
+            ds('Nominal Wage Growth', d.map(r=>r.nomW), '#4488ff'),
+            ds('Real Wage Growth', d.map(r=>r.realW), '#00cc66'),
+            ds('Headline CPI', d.map(r=>r.cpi), '#ff4444'),
+            ds('Core Inflation', d.map(r=>r.core), '#ff8800'),
+            ds('Import Price Pressure', d.map(r=>r.importInf), '#ffcc00', { axis: 'y1', dash: [4,3] }),
+            ds('Administered Price Pressure', d.map(r=>r.adminInf), '#66ccff', { axis: 'y1', dash: [4,3] }),
+        ], [
+            { label: 'Nominal Wage Growth Baseline', data: b.map(r=>r.nomW), color: '#4488ff' },
+            { label: 'Real Wage Growth Baseline', data: b.map(r=>r.realW), color: '#00cc66' },
+            { label: 'Headline CPI Baseline', data: b.map(r=>r.cpi), color: '#ff4444' },
+            { label: 'Core Inflation Baseline', data: b.map(r=>r.core), color: '#ff8800' },
+            { label: 'Import Price Pressure Baseline', data: b.map(r=>r.importInf), color: '#ffcc00', opts: { axis: 'y1' } },
+            { label: 'Administered Price Pressure Baseline', data: b.map(r=>r.adminInf), color: '#66ccff', opts: { axis: 'y1' } },
+        ], c ? [
+            { label: 'Nominal Wage Growth Compare', data: c.map(r=>r.nomW), color: '#66b3ff' },
+            { label: 'Real Wage Growth Compare', data: c.map(r=>r.realW), color: '#66b3ff' },
+            { label: 'Headline CPI Compare', data: c.map(r=>r.cpi), color: '#66b3ff' },
+            { label: 'Core Inflation Compare', data: c.map(r=>r.core), color: '#66b3ff' },
+            { label: 'Import Price Pressure Compare', data: c.map(r=>r.importInf), color: '#66b3ff', opts: { axis: 'y1' } },
+            { label: 'Administered Price Pressure Compare', data: c.map(r=>r.adminInf), color: '#66b3ff', opts: { axis: 'y1' } },
+        ] : [])},
+        options: { ...CO, scales: mkS('Growth / Inflation %', 'Imported / Admin %') }
+    });
+
+    charts.gdpctr = new Chart(document.getElementById('c-gdpctr'), {
+        type: 'bar',
+        data: { labels: L, datasets: [
+            ds('Consumption', d.map(r=>r.gdpConsCtr), 'rgba(68,136,255,0.75)', { bar: true }),
+            ds('Investment', d.map(r=>r.gdpInvCtr), 'rgba(0,204,102,0.75)', { bar: true }),
+            ds('Net Exports', d.map(r=>r.gdpNetExpCtr), 'rgba(255,136,0,0.75)', { bar: true }),
+            ds('Fiscal', d.map(r=>r.gdpFiscalCtr), 'rgba(255,204,0,0.8)', { bar: true }),
+            ds('Inflation Drag', d.map(r=>r.gdpInflationDrag), 'rgba(255,68,68,0.7)', { bar: true }),
+            ds('GDP Growth', d.map(r=>r.gdp), '#f0f0f0', { axis: 'y1', type: 'line', w: 1.3 }),
+            baselineDs('GDP Baseline', b.map(r=>r.gdp), '#999999', { axis: 'y1' }),
+            ...(c ? [compareDs('GDP Compare', c.map(r=>r.gdp), '#66b3ff', { axis: 'y1' })] : []),
+        ]},
+        options: { ...CO, scales: mkStackedS('Contribution (pp)', 'GDP Growth %') }
+    });
+
+    charts.invest = new Chart(document.getElementById('c-invest'), {
+        type: 'line', data: { labels: L, datasets: comboDatasets([
+            ds('Business Investment', d.map(r=>r.busInv), '#00cc66'),
+            ds('Public Investment', d.map(r=>r.pubInv), '#4488ff'),
+            ds('Housing Investment', d.map(r=>r.houseInv), '#ff8800'),
+            ds('Total Investment', d.map(r=>r.totalInv), '#ffcc00', { axis: 'y1' }),
+        ], [
+            { label: 'Business Investment Baseline', data: b.map(r=>r.busInv), color: '#00cc66' },
+            { label: 'Public Investment Baseline', data: b.map(r=>r.pubInv), color: '#4488ff' },
+            { label: 'Housing Investment Baseline', data: b.map(r=>r.houseInv), color: '#ff8800' },
+            { label: 'Total Investment Baseline', data: b.map(r=>r.totalInv), color: '#ffcc00', opts: { axis: 'y1' } },
+        ], c ? [
+            { label: 'Business Investment Compare', data: c.map(r=>r.busInv), color: '#66b3ff' },
+            { label: 'Public Investment Compare', data: c.map(r=>r.pubInv), color: '#66b3ff' },
+            { label: 'Housing Investment Compare', data: c.map(r=>r.houseInv), color: '#66b3ff' },
+            { label: 'Total Investment Compare', data: c.map(r=>r.totalInv), color: '#66b3ff', opts: { axis: 'y1' } },
+        ] : [])},
+        options: { ...CO, scales: mkS('RM bn', 'Total RM bn') }
+    });
+
+    charts.fiscald = new Chart(document.getElementById('c-fiscald'), {
+        type: 'bar', data: { labels: L, datasets: comboDatasets([
+            ds('PITA Revenue', d.map(r=>r.pita), 'rgba(68,136,255,0.65)', { bar: true }),
+            ds('Petronas Dividend', d.map(r=>r.petDiv), 'rgba(255,136,0,0.7)', { bar: true }),
+            ds('CPO Duty Revenue', d.map(r=>r.cpoDuty), 'rgba(0,204,102,0.7)', { bar: true }),
+            ds('SST Revenue Effect', d.map(r=>r.sstRev), 'rgba(255,204,0,0.75)', { bar: true }),
+            ds('Fuel Subsidy Cost', d.map(r=>-r.sub), 'rgba(255,68,68,0.65)', { bar: true }),
+            ds('Fiscal % GDP', d.map(r=>r.fiscal), '#999999', { axis: 'y1', type: 'line', w: 1.2 }),
+        ], [
+            { label: 'PITA Revenue Baseline', data: b.map(r=>r.pita), color: '#4488ff' },
+            { label: 'Petronas Dividend Baseline', data: b.map(r=>r.petDiv), color: '#ff8800' },
+            { label: 'CPO Duty Revenue Baseline', data: b.map(r=>r.cpoDuty), color: '#00cc66' },
+            { label: 'SST Revenue Effect Baseline', data: b.map(r=>r.sstRev), color: '#ffcc00' },
+            { label: 'Fuel Subsidy Cost Baseline', data: b.map(r=>-r.sub), color: '#ff4444' },
+            { label: 'Fiscal % GDP Baseline', data: b.map(r=>r.fiscal), color: '#999999', opts: { axis: 'y1' } },
+        ], c ? [
+            { label: 'PITA Revenue Compare', data: c.map(r=>r.pita), color: '#66b3ff' },
+            { label: 'Petronas Dividend Compare', data: c.map(r=>r.petDiv), color: '#66b3ff' },
+            { label: 'CPO Duty Revenue Compare', data: c.map(r=>r.cpoDuty), color: '#66b3ff' },
+            { label: 'SST Revenue Effect Compare', data: c.map(r=>r.sstRev), color: '#66b3ff' },
+            { label: 'Fuel Subsidy Cost Compare', data: c.map(r=>-r.sub), color: '#66b3ff' },
+            { label: 'Fiscal % GDP Compare', data: c.map(r=>r.fiscal), color: '#66b3ff', opts: { axis: 'y1' } },
+        ] : [])},
+        options: { ...CO, scales: mkS('RM bn/yr', '% GDP') }
+    });
+
+    charts.subsidy = new Chart(document.getElementById('c-subsidy'), {
+        type: 'line', data: { labels: L, datasets: comboDatasets([
+            ds('RON95 Market Price', d.map(r=>r.ron95), '#4488ff'),
+            ds('BUDI95 Price', d.map(r=>r.ron95Pump), '#00cc66'),
+            ds('Subsidy Per Litre', d.map(r=>r.subLitre), '#ff8800'),
+            ds('Annual Subsidy', d.map(r=>r.sub), '#ff4444', { axis: 'y1', fill: true, fillAlpha: 0.14 }),
+        ], [
+            { label: 'RON95 Market Price Baseline', data: b.map(r=>r.ron95), color: '#4488ff' },
+            { label: 'BUDI95 Price Baseline', data: b.map(r=>r.ron95Pump), color: '#00cc66' },
+            { label: 'Subsidy Per Litre Baseline', data: b.map(r=>r.subLitre), color: '#ff8800' },
+            { label: 'Annual Subsidy Baseline', data: b.map(r=>r.sub), color: '#ff4444', opts: { axis: 'y1' } },
+        ], c ? [
+            { label: 'RON95 Market Price Compare', data: c.map(r=>r.ron95), color: '#66b3ff' },
+            { label: 'BUDI95 Price Compare', data: c.map(r=>r.ron95Pump), color: '#66b3ff' },
+            { label: 'Subsidy Per Litre Compare', data: c.map(r=>r.subLitre), color: '#66b3ff' },
+            { label: 'Annual Subsidy Compare', data: c.map(r=>r.sub), color: '#66b3ff', opts: { axis: 'y1' } },
+        ] : [])},
+        options: { ...CO, scales: mkS('Pump / Subsidy per Litre', 'Annual Subsidy RM bn') }
+    });
+
+    charts.budget = new Chart(document.getElementById('c-budget'), {
+        type: 'line', data: { labels: L, datasets: comboDatasets([
+            ds('Government Revenue', d.map(r=>r.govRev), '#00cc66'),
+            ds('Government Expenditure', d.map(r=>r.govExp), '#ff4444'),
+            ds('Debt Service', d.map(r=>r.GOVDSC), '#ff8800'),
+            ds('Fuel Subsidy', d.map(r=>r.sub), '#ffcc00'),
+            ds('Government Debt', d.map(r=>r.GOVDEBT), '#4488ff', { axis: 'y1' }),
+            ds('Average Borrowing Rate', d.map(r=>r.AVGBR), '#66ccff', { axis: 'y1', dash: [4,3] }),
+        ], [
+            { label: 'Government Revenue Baseline', data: b.map(r=>r.govRev), color: '#00cc66' },
+            { label: 'Government Expenditure Baseline', data: b.map(r=>r.govExp), color: '#ff4444' },
+            { label: 'Debt Service Baseline', data: b.map(r=>r.GOVDSC), color: '#ff8800' },
+            { label: 'Fuel Subsidy Baseline', data: b.map(r=>r.sub), color: '#ffcc00' },
+            { label: 'Government Debt Baseline', data: b.map(r=>r.GOVDEBT), color: '#4488ff', opts: { axis: 'y1' } },
+            { label: 'Average Borrowing Rate Baseline', data: b.map(r=>r.AVGBR), color: '#66ccff', opts: { axis: 'y1' } },
+        ], c ? [
+            { label: 'Government Revenue Compare', data: c.map(r=>r.govRev), color: '#66b3ff' },
+            { label: 'Government Expenditure Compare', data: c.map(r=>r.govExp), color: '#66b3ff' },
+            { label: 'Debt Service Compare', data: c.map(r=>r.GOVDSC), color: '#66b3ff' },
+            { label: 'Fuel Subsidy Compare', data: c.map(r=>r.sub), color: '#66b3ff' },
+            { label: 'Government Debt Compare', data: c.map(r=>r.GOVDEBT), color: '#66b3ff', opts: { axis: 'y1' } },
+            { label: 'Average Borrowing Rate Compare', data: c.map(r=>r.AVGBR), color: '#66b3ff', opts: { axis: 'y1' } },
+        ] : [])},
+        options: { ...CO, scales: mkS('RM bn', 'Debt RM bn / Avg Rate %') }
+    });
+
+    charts.oil = new Chart(document.getElementById('c-oil'), {
+        type: 'line', data: { labels: L, datasets: comboDatasets([
+            ds('Brent ($/bbl)', d.map(r=>r.brent), '#ff8800'),
+            ds('RON95 Market Price', d.map(r=>r.ron95), '#4488ff'),
+            ds('Fuel Subsidy (RM bn/yr)', d.map(r=>r.sub), '#ff4444', { axis: 'y1', fill: true, fillAlpha: 0.16 }),
+            ds('Headline CPI', d.map(r=>r.cpi), '#ffcc00', { axis: 'y1' }),
+        ], [
+            { label: 'Brent Baseline', data: b.map(r=>r.brent), color: '#ff8800' },
+            { label: 'RON95 Market Price Baseline', data: b.map(r=>r.ron95), color: '#4488ff' },
+            { label: 'Fuel Subsidy Baseline', data: b.map(r=>r.sub), color: '#ff4444', opts: { axis: 'y1' } },
+            { label: 'Headline CPI Baseline', data: b.map(r=>r.cpi), color: '#ffcc00', opts: { axis: 'y1' } },
+        ], c ? [
+            { label: 'Brent Compare', data: c.map(r=>r.brent), color: '#66b3ff' },
+            { label: 'RON95 Market Price Compare', data: c.map(r=>r.ron95), color: '#66b3ff' },
+            { label: 'Fuel Subsidy Compare', data: c.map(r=>r.sub), color: '#66b3ff', opts: { axis: 'y1' } },
+            { label: 'Headline CPI Compare', data: c.map(r=>r.cpi), color: '#66b3ff', opts: { axis: 'y1' } },
+        ] : [])},
+        options: { ...CO, scales: mkS('Oil / Pump Price', 'CPI % / Subsidy') }
+    });
+
+    charts.trade = new Chart(document.getElementById('c-trade'), {
+        type: 'line', data: { labels: L, datasets: comboDatasets([
+            ds('Electrical & Electronics Exports', d.map(r=>r.eeExp), '#00cc66'),
+            ds('Oil & Gas Exports', d.map(r=>r.oilExp), '#ff8800'),
+            ds('CPO Exports', d.map(r=>r.cpoExp), '#ffcc00'),
+            ds('Tourism & Services', d.map(r=>r.tourExp), '#4488ff'),
+            ds('Other Exports', d.map(r=>r.otherExp), '#ff4444'),
+        ], [
+            { label: 'Electrical & Electronics Exports Baseline', data: b.map(r=>r.eeExp), color: '#00cc66' },
+            { label: 'Oil & Gas Exports Baseline', data: b.map(r=>r.oilExp), color: '#ff8800' },
+            { label: 'CPO Exports Baseline', data: b.map(r=>r.cpoExp), color: '#ffcc00' },
+            { label: 'Tourism & Services Baseline', data: b.map(r=>r.tourExp), color: '#4488ff' },
+            { label: 'Other Exports Baseline', data: b.map(r=>r.otherExp), color: '#ff4444' },
+        ], c ? [
+            { label: 'Electrical & Electronics Exports Compare', data: c.map(r=>r.eeExp), color: '#66b3ff' },
+            { label: 'Oil & Gas Exports Compare', data: c.map(r=>r.oilExp), color: '#66b3ff' },
+            { label: 'CPO Exports Compare', data: c.map(r=>r.cpoExp), color: '#66b3ff' },
+            { label: 'Tourism & Services Compare', data: c.map(r=>r.tourExp), color: '#66b3ff' },
+            { label: 'Other Exports Compare', data: c.map(r=>r.otherExp), color: '#66b3ff' },
+        ] : [])},
+        options: { ...CO, scales: mkS('RM bn') }
+    });
+
+    charts.cadecomp = new Chart(document.getElementById('c-cadecomp'), {
+        type: 'bar', data: { labels: L, datasets: comboDatasets([
+            ds('Trade Balance', d.map(r=>r.tradeBal), 'rgba(0,204,102,0.72)', { bar: true }),
+            ds('Primary Income', d.map(r=>r.primInc), 'rgba(255,136,0,0.72)', { bar: true }),
+            ds('Transfers', d.map(r=>r.transfers), 'rgba(68,136,255,0.72)', { bar: true }),
+            ds('Current Account', d.map(r=>r.ca), '#f0f0f0', { axis: 'y1', type: 'line', w: 1.2 }),
+            ds('Remittances In', d.map(r=>r.REMITIN), '#ffcc00', { axis: 'y1', type: 'line', w: 1.1 }),
+            ds('Remittances Out', d.map(r=>r.REMITOUT), '#ff4444', { axis: 'y1', type: 'line', w: 1.1 }),
+        ], [
+            { label: 'Trade Balance Baseline', data: b.map(r=>r.tradeBal), color: '#00cc66' },
+            { label: 'Primary Income Baseline', data: b.map(r=>r.primInc), color: '#ff8800' },
+            { label: 'Transfers Baseline', data: b.map(r=>r.transfers), color: '#4488ff' },
+            { label: 'Current Account Baseline', data: b.map(r=>r.ca), color: '#f0f0f0', opts: { axis: 'y1' } },
+            { label: 'Remittances In Baseline', data: b.map(r=>r.REMITIN), color: '#ffcc00', opts: { axis: 'y1' } },
+            { label: 'Remittances Out Baseline', data: b.map(r=>r.REMITOUT), color: '#ff4444', opts: { axis: 'y1' } },
+        ], c ? [
+            { label: 'Trade Balance Compare', data: c.map(r=>r.tradeBal), color: '#66b3ff' },
+            { label: 'Primary Income Compare', data: c.map(r=>r.primInc), color: '#66b3ff' },
+            { label: 'Transfers Compare', data: c.map(r=>r.transfers), color: '#66b3ff' },
+            { label: 'Current Account Compare', data: c.map(r=>r.ca), color: '#66b3ff', opts: { axis: 'y1' } },
+            { label: 'Remittances In Compare', data: c.map(r=>r.REMITIN), color: '#66b3ff', opts: { axis: 'y1' } },
+            { label: 'Remittances Out Compare', data: c.map(r=>r.REMITOUT), color: '#66b3ff', opts: { axis: 'y1' } },
+        ] : [])},
+        options: { ...CO, scales: mkS('Current Account Components (% GDP)', 'Remittances RM bn') }
     });
 }
 
 function updCharts() {
     const d = sim(getIn());
+    const b = sim(getBaselineIn());
+    const currentInp = getIn();
+    const cmpInp = getCompareScenarioInput();
+    const c = cmpInp ? sim(cmpInp) : null;
     const mp = {
-        gdp: [r=>r.gdp, r=>r.cpi, r=>r.core],
-        fiscal: [r=>r.govRev, r=>r.govExp, r=>r.fiscal],
-        pet: [r=>r.pet, r=>r.pita, r=>r.sub],
-        ext: [r=>r.exp, r=>r.imp, r=>r.ca],
-        hh: [r=>r.consG, r=>r.realW, r=>r.debt],
-        lab: [r=>r.unemp, r=>r.nomW],
+        gdp: [[r=>r.gdp, r=>r.cpi, r=>r.core], [r=>r.gdp, r=>r.cpi, r=>r.core], c ? [r=>r.gdp, r=>r.cpi, r=>r.core] : []],
+        fiscal: [[r=>r.govRev, r=>r.govExp, r=>r.fiscal], [r=>r.govRev, r=>r.govExp, r=>r.fiscal], c ? [r=>r.govRev, r=>r.govExp, r=>r.fiscal] : []],
+        pet: [[r=>r.pet, r=>r.pita, r=>r.sub], [r=>r.pet, r=>r.pita, r=>r.sub], c ? [r=>r.pet, r=>r.pita, r=>r.sub] : []],
+        ext: [[r=>r.exp, r=>r.imp, r=>r.ca], [r=>r.exp, r=>r.imp, r=>r.ca], c ? [r=>r.exp, r=>r.imp, r=>r.ca] : []],
+        hh: [[r=>r.consG, r=>r.realW, r=>r.debt], [r=>r.consG, r=>r.realW, r=>r.debt], c ? [r=>r.consG, r=>r.realW, r=>r.debt] : []],
+        lab: [[r=>r.unemp, r=>r.nomW], [r=>r.unemp, r=>r.nomW], c ? [r=>r.unemp, r=>r.nomW] : []],
+        labout: [[r=>r.EMS_LEVEL, r=>r.EFOR_LEVEL, r=>r.MSGVA_LEVEL / 1000, r=>r.unemp], [r=>r.EMS_LEVEL, r=>r.EFOR_LEVEL, r=>r.MSGVA_LEVEL / 1000, r=>r.unemp], c ? [r=>r.EMS_LEVEL, r=>r.EFOR_LEVEL, r=>r.MSGVA_LEVEL / 1000, r=>r.unemp] : []],
+        income: [[r=>r.nomW, r=>r.cpi, r=>r.realW, r=>r.consG], [r=>r.nomW, r=>r.cpi, r=>r.realW, r=>r.consG], c ? [r=>r.nomW, r=>r.cpi, r=>r.realW, r=>r.consG] : []],
+        rates: [[() => currentInp.opr, r=>r.mgs10, r=>r.inv, r=>r.gdp], [() => B.opr, r=>r.mgs10, r=>r.inv, r=>r.gdp], c ? [() => cmpInp.opr, r=>r.mgs10, r=>r.inv, r=>r.gdp] : []],
+        price: [[r=>r.cpi, r=>r.core, r=>r.adminInf, r=>r.importInf, r=>r.sstInf], [r=>r.cpi, r=>r.core, r=>r.adminInf, r=>r.importInf, r=>r.sstInf], c ? [r=>r.cpi, r=>r.core, r=>r.adminInf, r=>r.importInf, r=>r.sstInf] : []],
+        wageprice: [[r=>r.nomW, r=>r.realW, r=>r.cpi, r=>r.core, r=>r.importInf, r=>r.adminInf], [r=>r.nomW, r=>r.realW, r=>r.cpi, r=>r.core, r=>r.importInf, r=>r.adminInf], c ? [r=>r.nomW, r=>r.realW, r=>r.cpi, r=>r.core, r=>r.importInf, r=>r.adminInf] : []],
+        gdpctr: [[r=>r.gdpConsCtr, r=>r.gdpInvCtr, r=>r.gdpNetExpCtr, r=>r.gdpFiscalCtr, r=>r.gdpInflationDrag, r=>r.gdp], [r=>r.gdp], c ? [r=>r.gdp] : []],
+        invest: [[r=>r.busInv, r=>r.pubInv, r=>r.houseInv, r=>r.totalInv], [r=>r.busInv, r=>r.pubInv, r=>r.houseInv, r=>r.totalInv], c ? [r=>r.busInv, r=>r.pubInv, r=>r.houseInv, r=>r.totalInv] : []],
+        fiscald: [[r=>r.pita, r=>r.petDiv, r=>r.cpoDuty, r=>r.sstRev, r=>-r.sub, r=>r.fiscal], [r=>r.pita, r=>r.petDiv, r=>r.cpoDuty, r=>r.sstRev, r=>-r.sub, r=>r.fiscal], c ? [r=>r.pita, r=>r.petDiv, r=>r.cpoDuty, r=>r.sstRev, r=>-r.sub, r=>r.fiscal] : []],
+        subsidy: [[r=>r.ron95, r=>r.ron95Pump, r=>r.subLitre, r=>r.sub], [r=>r.ron95, r=>r.ron95Pump, r=>r.subLitre, r=>r.sub], c ? [r=>r.ron95, r=>r.ron95Pump, r=>r.subLitre, r=>r.sub] : []],
+        budget: [[r=>r.govRev, r=>r.govExp, r=>r.GOVDSC, r=>r.sub, r=>r.GOVDEBT, r=>r.AVGBR], [r=>r.govRev, r=>r.govExp, r=>r.GOVDSC, r=>r.sub, r=>r.GOVDEBT, r=>r.AVGBR], c ? [r=>r.govRev, r=>r.govExp, r=>r.GOVDSC, r=>r.sub, r=>r.GOVDEBT, r=>r.AVGBR] : []],
+        oil: [[r=>r.brent, r=>r.ron95, r=>r.sub, r=>r.cpi], [r=>r.brent, r=>r.ron95, r=>r.sub, r=>r.cpi], c ? [r=>r.brent, r=>r.ron95, r=>r.sub, r=>r.cpi] : []],
+        trade: [[r=>r.eeExp, r=>r.oilExp, r=>r.cpoExp, r=>r.tourExp, r=>r.otherExp], [r=>r.eeExp, r=>r.oilExp, r=>r.cpoExp, r=>r.tourExp, r=>r.otherExp], c ? [r=>r.eeExp, r=>r.oilExp, r=>r.cpoExp, r=>r.tourExp, r=>r.otherExp] : []],
+        cadecomp: [[r=>r.tradeBal, r=>r.primInc, r=>r.transfers, r=>r.ca, r=>r.REMITIN, r=>r.REMITOUT], [r=>r.tradeBal, r=>r.primInc, r=>r.transfers, r=>r.ca, r=>r.REMITIN, r=>r.REMITOUT], c ? [r=>r.tradeBal, r=>r.primInc, r=>r.transfers, r=>r.ca, r=>r.REMITIN, r=>r.REMITOUT] : []],
     };
-    for (const [k, fns] of Object.entries(mp)) {
-        fns.forEach((fn, i) => { charts[k].data.datasets[i].data = d.map(fn); });
+    for (const [k, groups] of Object.entries(mp)) {
+        const [scenarioFns, baselineFns, compareFns] = groups;
+        scenarioFns.forEach((fn, i) => {
+            const baselineFn = baselineFns.length === scenarioFns.length ? baselineFns[i] : null;
+            charts[k].data.datasets[i].data = maybeDeltaSeries(fn, d, baselineFn, b);
+        });
+        baselineFns.forEach((fn, i) => {
+            charts[k].data.datasets[scenarioFns.length + i].data = uiState.deltaMode && baselineFns.length === scenarioFns.length ? zeroSeries(b) : b.map(fn);
+        });
+        compareFns.forEach((fn, i) => {
+            const baselineFn = baselineFns.length === scenarioFns.length ? baselineFns[i] : null;
+            charts[k].data.datasets[scenarioFns.length + baselineFns.length + i].data = maybeDeltaSeries(fn, c, baselineFn, b);
+        });
         charts[k].update('none');
     }
 
@@ -1286,7 +2640,9 @@ function updCharts() {
     updTicker(getIn());
 
     // Table
-    updTable(d);
+    updTable(d, b);
+    updSummary(d, b);
+    updDiagnostics(d, b, currentInp);
 
     // Narrative
     updNarrative(d, getIn());
@@ -1323,22 +2679,137 @@ function updTicker(inp) {
     set('tour', inp.tour.toString(), inp.tour-B.tour, ((inp.tour-B.tour>=0?'+':'') + (inp.tour-B.tour).toFixed(0)));
 }
 
-function updTable(d) {
+function computeSeries(fn, rows) {
+    return rows.map(fn);
+}
+
+function toDeltaSeries(series, baselineSeries) {
+    return series.map((value, index) => {
+        const base = baselineSeries[index] ?? 0;
+        return typeof value === 'number' && typeof base === 'number' ? value - base : value;
+    });
+}
+
+function maybeDeltaSeries(fn, rows, baselineFn, baselineRows) {
+    const series = computeSeries(fn, rows);
+    if (!uiState.deltaMode || !baselineFn) return series;
+    const baselineSeries = computeSeries(baselineFn, baselineRows);
+    return toDeltaSeries(series, baselineSeries);
+}
+
+function zeroSeries(rows) {
+    return rows.map(() => 0);
+}
+
+function fmtSigned(value, digits = 1, suffix = '') {
+    return `${value >= 0 ? '+' : ''}${value.toFixed(digits)}${suffix}`;
+}
+
+function setSummaryCard(key, value, meta) {
+    document.getElementById(`summary-${key}-value`).textContent = value;
+    document.getElementById(`summary-${key}-meta`).textContent = meta;
+}
+
+function updSummary(d, b) {
+    const peakCpi = d.reduce((best, row) => row.cpi > best.cpi ? row : best, d[0]);
+    const weakGdp = d.reduce((best, row) => row.gdp < best.gdp ? row : best, d[0]);
+    const worstFiscal = d.reduce((best, row) => row.fiscal < best.fiscal ? row : best, d[0]);
+    const worstRw = d.reduce((best, row) => row.realW < best.realW ? row : best, d[0]);
+    const basePeakCpi = Math.max(...b.map(r => r.cpi));
+    const baseWeakGdp = Math.min(...b.map(r => r.gdp));
+    const baseWorstFiscal = Math.min(...b.map(r => r.fiscal));
+    const baseWorstRw = Math.min(...b.map(r => r.realW));
+
+    setSummaryCard('cpi', `${peakCpi.cpi.toFixed(1)}%`, `${peakCpi.q} · ${fmtSigned(peakCpi.cpi - basePeakCpi, 1, 'pp')} vs baseline peak`);
+    setSummaryCard('gdp', `${weakGdp.gdp.toFixed(1)}%`, `${weakGdp.q} · ${fmtSigned(weakGdp.gdp - baseWeakGdp, 1, 'pp')} vs baseline trough`);
+    setSummaryCard('fiscal', `${worstFiscal.fiscal.toFixed(1)}%`, `${worstFiscal.q} · ${fmtSigned(worstFiscal.fiscal - baseWorstFiscal, 1, 'pp')} vs baseline worst`);
+    setSummaryCard('rw', `${worstRw.realW.toFixed(1)}%`, `${worstRw.q} · ${fmtSigned(worstRw.realW - baseWorstRw, 1, 'pp')} vs baseline squeeze`);
+}
+
+function diagnosticStatus(value, warnThreshold, badThreshold) {
+    if (value >= badThreshold) return 'bad';
+    if (value >= warnThreshold) return 'warn';
+    return 'ok';
+}
+
+function updDiagnostics(d, b, inp) {
+    const avgAbs = fn => d.reduce((sum, row, index) => sum + Math.abs(fn(row, b[index])), 0) / d.length;
+    const maxAbs = fn => Math.max(...d.map((row, index) => Math.abs(fn(row, b[index]))));
+    const gdpResidual = avgAbs((row) => row.gdp - (row.gdpBase + row.gdpConsCtr + row.gdpInvCtr + row.gdpNetExpCtr + row.gdpFiscalCtr + row.gdpInflationDrag));
+    const caResidual = maxAbs((row) => row.ca - (row.tradeBal + row.primInc + row.transfers));
+    const fiscalSpread = avgAbs((row) => {
+        const gdpBn = (row.GDPM_LEVEL || B.gdp_millions_rm) / 1000;
+        const impliedFiscal = ((row.govRev - row.govExp) / Math.max(1e-6, gdpBn)) * 100;
+        return row.fiscal - impliedFiscal;
+    });
+    const calibrationStress = Math.max(
+        Math.abs((inp.brent - B.brent) / B.brent),
+        Math.abs((inp.fx - B.fx) / B.fx),
+        Math.abs(inp.opr - B.opr) / 1.0,
+        Math.abs(inp.semi - B.semi) / B.semi,
+        Math.abs(inp.tour - B.tour) / B.tour
+    );
+    const list = [
+        {
+            name: 'GDP Closure',
+            value: gdpResidual,
+            status: diagnosticStatus(gdpResidual, 0.08, 0.2),
+            copy: `Average identity gap is ${gdpResidual.toFixed(2)}pp between reported GDP growth and summed contribution blocks.`
+        },
+        {
+            name: 'CA Closure',
+            value: caResidual,
+            status: diagnosticStatus(caResidual, 0.05, 0.15),
+            copy: `Max quarterly gap is ${caResidual.toFixed(2)}pp between current account and trade, primary income, and transfers.`
+        },
+        {
+            name: 'Fiscal Consistency',
+            value: fiscalSpread,
+            status: diagnosticStatus(fiscalSpread, 0.15, 0.35),
+            copy: `Average gap is ${fiscalSpread.toFixed(2)}pp between displayed fiscal balance and revenue-expenditure arithmetic.`
+        },
+        {
+            name: 'Calibration Range',
+            value: calibrationStress,
+            status: diagnosticStatus(calibrationStress, 0.35, 0.7),
+            copy: calibrationStress < 0.35
+                ? 'Scenario inputs remain close to the baseline calibration range.'
+                : calibrationStress < 0.7
+                    ? 'Scenario is moderately outside baseline calibration; treat medium-run paths as indicative.'
+                    : 'Scenario is far outside calibration range; use directional interpretation only.'
+        },
+    ];
+    const wrap = document.getElementById('diagnostics-list');
+    wrap.innerHTML = list.map(item => `<div class="diagnostic-row">
+        <div class="diagnostic-name">${item.name}</div>
+        <div class="diagnostic-status ${item.status}">${item.status === 'ok' ? 'OK' : item.status === 'warn' ? 'Warning' : 'High Risk'}</div>
+        <div class="diagnostic-copy">${item.copy}</div>
+    </div>`).join('');
+}
+
+function updTable(d, b) {
     const tb = document.getElementById('table-body');
-    tb.innerHTML = d.map(r => {
+    tb.innerHTML = d.map((r, index) => {
+        const base = b[index];
+        const value = (field, digits = 1, prefix = '', suffix = '') => {
+            if (!uiState.deltaMode) return `${prefix}${r[field].toFixed(digits)}${suffix}`;
+            const delta = r[field] - base[field];
+            return `${delta >= 0 ? '+' : ''}${delta.toFixed(digits)}${suffix}`;
+        };
         const cls = v => v > 0 ? 'positive' : v < 0 ? 'negative' : '';
+        const realWDisplay = uiState.deltaMode ? r.realW - base.realW : r.realW;
         return `<tr>
             <td>${r.q}</td>
-            <td class="num">$${r.brent}</td>
-            <td class="num ${cls(r.gdp)}">${r.gdp.toFixed(1)}</td>
-            <td class="num ${r.cpi > 4 ? 'negative' : ''}">${r.cpi.toFixed(1)}</td>
-            <td class="num">${r.core.toFixed(1)}</td>
-            <td class="num">${r.unemp.toFixed(1)}</td>
-            <td class="num ${cls(r.fiscal)}">${r.fiscal.toFixed(1)}</td>
-            <td class="num">${r.pet.toFixed(0)}</td>
-            <td class="num">${r.sub.toFixed(0)}</td>
-            <td class="num ${cls(r.ca)}">${r.ca.toFixed(1)}</td>
-            <td class="num ${cls(r.realW)}">${r.realW.toFixed(1)}</td>
+            <td class="num">${uiState.deltaMode ? fmtSigned(r.brent - base.brent, 2) : '$' + r.brent}</td>
+            <td class="num ${cls(uiState.deltaMode ? r.gdp - base.gdp : r.gdp)}">${value('gdp', 1)}</td>
+            <td class="num ${uiState.deltaMode ? cls(r.cpi - base.cpi) : (r.cpi > 4 ? 'negative' : '')}">${value('cpi', 1)}</td>
+            <td class="num">${value('core', 1)}</td>
+            <td class="num">${value('unemp', 1)}</td>
+            <td class="num ${cls(uiState.deltaMode ? r.fiscal - base.fiscal : r.fiscal)}">${value('fiscal', 1)}</td>
+            <td class="num">${uiState.deltaMode ? fmtSigned(r.pet - base.pet, 0) : r.pet.toFixed(0)}</td>
+            <td class="num">${uiState.deltaMode ? fmtSigned(r.sub - base.sub, 0) : r.sub.toFixed(0)}</td>
+            <td class="num ${cls(uiState.deltaMode ? r.ca - base.ca : r.ca)}">${value('ca', 1)}</td>
+            <td class="num ${cls(realWDisplay)}">${uiState.deltaMode ? fmtSigned(realWDisplay, 1) : r.realW.toFixed(1)}</td>
         </tr>`;
     }).join('');
 }
@@ -1352,11 +2823,11 @@ function updNarrative(d, inp) {
     else if (inp.brent < 60) parts.push(`Low oil at $${inp.brent} depresses Petronas profits and fiscal revenue but lowers energy costs.`);
     if (pCpi > 6) parts.push(`Headline CPI peaks at ${pCpi.toFixed(1)}% — well above BNM's comfort zone. Second-round wage effects add persistence.`);
     else if (aCpi > 3.5) parts.push(`Inflation averaging ${aCpi.toFixed(1)}% signals moderate price pressure.`);
-    if (inp.subReform) parts.push(`Subsidy reform creates a one-off CPI shock but saves ~RM${Math.round(avg(r=>r.sub)*0.7)}bn/yr for fiscal consolidation.`);
+    if (!inp.budi95) parts.push(`Disabling BUDI95 and fully floating RON95 creates a one-off CPI shock while eliminating the targeted fuel subsidy bill.`);
     if (inp.fx > 4.2) parts.push(`Ringgit at ${inp.fx.toFixed(2)} amplifies import costs and subsidy burden but inflates Petronas RM profits.`);
     if (aGdp < 2) parts.push(`Growth at ${aGdp.toFixed(1)}% — near-recessionary. Household real income squeeze is the main channel.`);
     else if (aGdp > 5.5) parts.push(`Strong growth at ${aGdp.toFixed(1)}% on favourable external conditions.`);
-    if (inp.semi > 110) parts.push(`E&E boom lifts exports but high import content (52%) limits net GDP impact.`);
+    if (inp.semi > 110) parts.push(`An electrical & electronics boom lifts exports, but high import content (52%) limits the net GDP impact.`);
     else if (inp.semi < 80) parts.push(`Semiconductor downcycle hits 38% of exports. Manufacturing employment responds with a lag.`);
     if (!parts.length) parts.push(`Economy at ${aGdp.toFixed(1)}% growth, ${aCpi.toFixed(1)}% inflation — near baseline trend. Adjust inputs to trace shock transmission.`);
     document.getElementById('narrative').textContent = parts.join(' ');
@@ -1393,14 +2864,26 @@ function sched() { clearTimeout(timer); timer = setTimeout(updCharts, 50); }
 
 document.querySelectorAll('input[type="range"]').forEach(el => {
     el.addEventListener('input', () => {
+        scenarioState.activePreset = null;
+        refreshPresetUI();
         const v = document.getElementById(valMap[el.id]);
         if (v) v.textContent = fmtMap[el.id](el.value);
         sched();
     });
 });
-document.querySelectorAll('input[type="checkbox"]').forEach(el => el.addEventListener('change', sched));
+document.querySelectorAll('input[type="checkbox"]').forEach(el => el.addEventListener('change', () => {
+    if (el.id === 'in-delta-mode') return;
+    scenarioState.activePreset = null;
+    refreshPresetUI();
+    sched();
+}));
 
 function resetInputs() {
+    scenarioState.activePreset = null;
+    scenarioState.compareSlot = null;
+    uiState.deltaMode = false;
+    refreshPresetUI();
+    refreshScenarioUI();
     document.getElementById('in-brent').value = 82;
     document.getElementById('in-cpo').value = 4000;
     document.getElementById('in-semi').value = 100;
@@ -1415,8 +2898,10 @@ function resetInputs() {
     document.getElementById('in-cpoduty').value = 8;
     document.getElementById('in-epf').value = 0;
     document.getElementById('in-elnino').checked = false;
-    document.getElementById('in-subsidy-reform').checked = false;
+    document.getElementById('in-budi95').checked = true;
+    syncDeltaToggleUI();
     for (const [k, v] of Object.entries(valMap)) document.getElementById(v).textContent = fmtMap[k](document.getElementById(k).value);
+    rebuildCharts();
     updCharts();
 }
 
@@ -1438,10 +2923,34 @@ function toggleSb(el) {
 // INIT
 // ============================================================================
 document.addEventListener('DOMContentLoaded', () => {
+    scenarioState.slots = readScenarioStore();
+    syncDeltaToggleUI();
     for (const [k, v] of Object.entries(valMap)) document.getElementById(v).textContent = fmtMap[k](document.getElementById(k).value);
+    document.querySelectorAll('.guide-body.open').forEach(body => {
+        const chev = body.previousElementSibling?.querySelector('.guide-chevron');
+        if (chev) chev.style.transform = 'rotate(180deg)';
+    });
+    refreshPresetUI();
+    refreshScenarioUI();
     initCharts();
     updCharts();
 });
+</script>
+<script type="module">
+import { StructuralModelEngine } from './structural-model-engine.js';
+import { createBaselineRunPack } from './baseline-run-pack.js';
+import { runPlaygroundModel, getPlaygroundBaselineInputs } from './playground-model-adapter.js';
+import { runStructuralPlaygroundModel, createPlaygroundRunPack, getStructuralBaselineInputs } from './browser-structural-model.js';
+
+window.MaMaMoStructural = {
+    StructuralModelEngine,
+    createBaselineRunPack,
+    runPlaygroundModel,
+    getPlaygroundBaselineInputs,
+    runStructuralPlaygroundModel,
+    createPlaygroundRunPack,
+    getStructuralBaselineInputs,
+};
 </script>
 
 </body>

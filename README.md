@@ -2,23 +2,99 @@
 
 **An open structural quarterly macro model prototype for Malaysia.**
 
-`v0.3.0` · An exploration by [Shahid Rogers](mailto:shahidrogers+mamamo@gmail.com), built with [Claude](https://claude.ai) + [Codex](https://openai.com/codex/)
+`v0.4.0` · An exploration by [Shahid Rogers](mailto:shahidrogers+mamamo@gmail.com), built with [Claude](https://claude.ai) + [Codex](https://openai.com/codex/)
 
 ---
 
 ## Index
 
-1. [What is this?](#what-is-this)
-2. [What's inside](#whats-inside)
-3. [What makes it Malaysian](#what-makes-it-malaysian)
-4. [Key assumptions](#key-assumptions)
-5. [Use cases](#use-cases)
-6. [What's next](#whats-next-contributions-welcome)
-7. [Files](#files)
-8. [Studies](#studies)
-9. [Changelog](#changelog)
-10. [License](#license)
-11. [References](#references)
+1. [Quick Start](#quick-start)
+2. [CLI Tools](#cli-tools)
+3. [What is this?](#what-is-this)
+4. [What's inside](#whats-inside)
+5. [What makes it Malaysian](#what-makes-it-malaysian)
+6. [Key assumptions](#key-assumptions)
+7. [Use cases](#use-cases)
+8. [What's next](#whats-next-contributions-welcome)
+9. [Files](#files)
+10. [Studies](#studies)
+11. [Changelog](#changelog)
+12. [License](#license)
+13. [References](#references)
+
+---
+
+## Quick Start
+
+### Try the Interactive Playground
+
+Open [studies/playground/index.html](studies/playground/index.html) in your browser, or [view online →](https://shahidrogers.github.io/MaMaMo/studies/playground/)
+
+### Run the Model from the Command Line
+
+Requires Node.js 18+. No dependencies to install.
+
+```bash
+# Baseline scenario (8 quarters, outputs JSON to stdout)
+node bin/run-model.mjs
+
+# Oil shock: Brent at $150, weaker ringgit
+node bin/run-model.mjs --brent 150 --fx 4.20 -o results/oil-shock.json
+
+# Full war scenario: $200 oil, tighter policy
+node bin/run-model.mjs --brent 200 --fx 4.50 --opr 4.0 --elnino
+
+# Custom horizon
+node bin/run-model.mjs --start 2027Q1 -n 12
+```
+
+### Fetch Real Data from OpenDOSM
+
+```bash
+# Download latest GDP, CPI, labour, and trade data
+node bin/fetch-opendosm.mjs
+
+# Fetch specific dataset only
+node bin/fetch-opendosm.mjs --dataset gdp
+
+# With date range
+node bin/fetch-opendosm.mjs --start 2015-01 --end 2025-12
+```
+
+### Build Input Packs
+
+```bash
+# Build a run pack from raw data + defaults
+node bin/build-inputs.mjs -o data/run-packs/my-scenario.json
+
+# Build with historical CSV overrides
+node bin/build-inputs.mjs --historical historical_inputs.csv --scenario shock_overrides.json
+```
+
+### Validate Model Inputs
+
+```bash
+node scripts/validate_model_inputs.mjs --historical <path> --scenario <path>
+```
+
+### Serve Locally
+
+```bash
+npx serve .
+```
+
+### Explore the Model
+
+1. Start with the [Research Prototype Summary](docs/research-prototype-summary.md)
+2. Read the [Model Architecture](docs/model-architecture.md) for the 17-block overview
+3. Study [How To Interpret This Model](docs/how-to-interpret-this-model.md) before using outputs
+4. Check the [Operationalization Checklist](docs/model_operationalization_checklist.md) for production readiness
+
+### Run a Scenario Study
+
+Browse the [studies/](studies/) directory for interactive scenario dashboards:
+- [Scenario Playground](https://shahidrogers.github.io/MaMaMo/studies/playground/) — adjust oil prices, OPR, exchange rates with live sliders
+- [$200 Oil — Iran War](https://shahidrogers.github.io/MaMaMo/studies/simulations/oil-200-iran-war/) — full shock simulation
 
 ---
 
@@ -114,7 +190,7 @@ This is the shortest honest description of the project today:
 | **Structure** | Strong — 17-block Malaysia-specific model architecture is in place |
 | **Documentation** | Strong — model file, glossary, and input docs are explicit |
 | **Calibration** | Provisional — many coefficients are informed calibrations, not final estimates |
-| **Data pipeline** | Partial — input contract exists, preprocessing builder is still needed |
+| **Data pipeline** | In progress — OpenDOSM fetcher and input pack builder in place |
 | **Scenario readiness** | Usable — especially for structured what-if exercises |
 | **Production readiness** | Not yet — too many important wedges remain external or loosely governed |
 
@@ -149,6 +225,29 @@ The next highest-value step is to build that preprocessing layer and satellite-r
 
 ---
 
+## CLI Tools
+
+Three command-line tools are available (Node.js 18+ required):
+
+| Tool | What it does |
+|------|-------------|
+| `node bin/run-model.mjs` | Run the 17-block model solver with scenario inputs, output JSON |
+| `node bin/fetch-opendosm.mjs` | Fetch quarterly data from Malaysia's OpenDOSM API |
+| `node bin/build-inputs.mjs` | Assemble a run pack from raw data, CSVs, and defaults |
+
+The solver (`src/model-solver.js`) is also importable as a library:
+
+```javascript
+import { runModel } from './src/model-solver.js';
+import { createBaselineRunPack } from './studies/playground/baseline-run-pack.js';
+
+const runPack = createBaselineRunPack();
+const results = runModel(runPack);
+console.log(results[0]); // First quarter output
+```
+
+---
+
 ## Files
 
 ```
@@ -156,6 +255,14 @@ model/
   malaysia-quarterly-model.md          # The model (~200 equations, EViews syntax)
   reference/
     uk-obr-reference.md               # Original UK OBR model (reference)
+src/
+  model-engine.js                     # Core solver engine (reusable library)
+  model-solver.js                     # Full 17-block equation implementations
+  data-pipeline/                      # Data ingestion modules
+bin/
+  run-model.mjs                       # CLI: run scenarios, output JSON
+  build-inputs.mjs                    # CLI: assemble run packs from data
+  fetch-opendosm.mjs                  # CLI: fetch from OpenDOSM API
 docs/
   research-prototype-summary.md       # One-page project summary
   model-architecture.md               # Clean architecture diagram
@@ -186,6 +293,8 @@ README.md                              # You are here
 
 ## Changelog
 
+**v0.4.0** — Executable model engine and data pipeline. Added a standalone Node.js solver (`src/model-solver.js`) implementing all 17 blocks, CLI tools for running scenarios (`bin/run-model.mjs`), fetching OpenDOSM data (`bin/fetch-opendosm.mjs`), and building input packs (`bin/build-inputs.mjs`). The model can now be run from the command line with JSON output.
+
 **v0.3.0** — Documentation and presentation pass. Repositioned the project as a publishable research prototype, added a one-page summary, architecture diagram, interpretation note, and updated the landing page with inline document modals and clearer visitor-facing status.
 
 **v0.2.0** — Audit pass. Fixed 3 critical undefined variables (PDINV, TYCADJ, PXEE), added 2008–09 GFC dummies, corrected E&E import content (0.65 → 0.52), defined ~20 previously missing variables, made administered price weight time-varying for GST/SST.
@@ -196,7 +305,7 @@ README.md                              # You are here
 
 ## License
 
-Research and educational use. The original UK OBR model structure is Crown Copyright under the Open Government Licence. The Malaysian adaptation is provided as-is.
+MIT License. See [LICENSE](LICENSE) for details. The original UK OBR model structure is Crown Copyright under the Open Government Licence. The Malaysian adaptation is provided as-is.
 
 ---
 

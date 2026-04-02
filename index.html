@@ -580,7 +580,7 @@
             </p>
 
             <div class="eyebrow-row fade-in">
-                <span class="terminal-pill">v0.3.0</span>
+                <span class="terminal-pill">v0.4.0</span>
                 <a href="https://github.com/shahidrogers/MaMaMo" target="_blank" rel="noopener noreferrer" aria-label="View the MaMaMo source code on GitHub" class="terminal-pill" style="display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted);">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                     View on GitHub
@@ -699,6 +699,38 @@
 
 <div class="divider"></div>
 
+<!-- CLI Tools -->
+<section class="container fade-in">
+    <h2 class="section-label">Command line</h2>
+    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Run the model, fetch data, and build input packs from the terminal. Node.js 18+, zero dependencies.</p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
+        <div class="card" style="padding: 20px;">
+            <div class="mono" style="font-size: 10px; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 8px;">MODEL SOLVER</div>
+            <div style="font-size: 16px; color: var(--text); font-weight: 600; margin-bottom: 8px;">Run scenarios</div>
+            <pre style="font-size: 11px; color: var(--text-muted); background: rgba(255,255,255,0.02); padding: 12px; overflow-x: auto; margin: 0;"><code>node bin/run-model.mjs \
+  --brent 150 --fx 4.20 \
+  -o results/oil-shock.json</code></pre>
+        </div>
+        <div class="card" style="padding: 20px;">
+            <div class="mono" style="font-size: 10px; color: var(--green); letter-spacing: 0.06em; margin-bottom: 8px;">DATA PIPELINE</div>
+            <div style="font-size: 16px; color: var(--text); font-weight: 600; margin-bottom: 8px;">Fetch OpenDOSM</div>
+            <pre style="font-size: 11px; color: var(--text-muted); background: rgba(255,255,255,0.02); padding: 12px; overflow-x: auto; margin: 0;"><code>node bin/fetch-opendosm.mjs \
+  --dataset gdp \
+  --start 2015-01</code></pre>
+        </div>
+        <div class="card" style="padding: 20px;">
+            <div class="mono" style="font-size: 10px; color: var(--blue); letter-spacing: 0.06em; margin-bottom: 8px;">INPUT BUILDER</div>
+            <div style="font-size: 16px; color: var(--text); font-weight: 600; margin-bottom: 8px;">Build run packs</div>
+            <pre style="font-size: 11px; color: var(--text-muted); background: rgba(255,255,255,0.02); padding: 12px; overflow-x: auto; margin: 0;"><code>node bin/build-inputs.mjs \
+  --historical data.csv \
+  -o data/run-packs/base.json</code></pre>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
 <!-- What's inside -->
 <section class="container fade-in">
     <h2 class="section-label">What's inside</h2>
@@ -802,21 +834,21 @@
             <div class="mono" style="font-size: 10px; color: var(--amber); letter-spacing: 0.08em; margin-bottom: 8px;">VISITOR SNAPSHOT</div>
             <h3 style="font-size: 24px; line-height: 1.3; color: var(--text); margin-bottom: 10px;">A serious research prototype, not a finished forecasting product.</h3>
             <p style="font-size: 14px; color: var(--text-muted); line-height: 1.75; max-width: 640px;">
-                The model structure is real, the Malaysia-specific institutional detail is real, and the scenario work is already useful. What is still missing is the last mile: a stronger preprocessing layer, tighter governance around external wedges, and full econometric estimation.
+                The model structure is real, the Malaysia-specific institutional detail is real, and the scenario work is already useful. v0.4.0 adds an executable model engine and OpenDOSM data pipeline — you can now run scenarios from the command line with real data. What is still missing is full econometric estimation and back-testing.
             </p>
         </div>
         <div class="status-summary">
             <div class="status-pill">
                 <div class="mono" style="font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em; margin-bottom: 6px;">BEST USE TODAY</div>
-                <div style="font-size: 14px; color: var(--text); font-weight: 600;">Scenario analysis</div>
+                <div style="font-size: 14px; color: var(--text); font-weight: 600;">CLI scenarios + web playground</div>
             </div>
             <div class="status-pill">
                 <div class="mono" style="font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em; margin-bottom: 6px;">PUBLIC CLAIM</div>
-                <div style="font-size: 14px; color: var(--text); font-weight: 600;">Publishable research build</div>
+                <div style="font-size: 14px; color: var(--text); font-weight: 600;">Runnable research prototype</div>
             </div>
             <div class="status-pill">
-                <div class="mono" style="font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em; margin-bottom: 6px;">NOT YET</div>
-                <div style="font-size: 14px; color: var(--text); font-weight: 600;">Production forecast engine</div>
+                <div class="mono" style="font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em; margin-bottom: 6px;">NEW IN v0.4</div>
+                <div style="font-size: 14px; color: var(--accent); font-weight: 600;">Executable model engine</div>
             </div>
         </div>
     </div>
@@ -833,13 +865,13 @@
         </div>
         <div class="status-card status-usable">
             <div class="status-label"><span class="status-dot"></span>Usable Now</div>
-            <div style="font-size: 16px; color: var(--text); font-weight: 600; margin-bottom: 6px;">Scenario work</div>
-            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.65;">Good for what-if analysis, transmission mapping, and public-facing studies where the assumptions are disclosed.</p>
-        </div>
-        <div class="status-card status-in-progress">
-            <div class="status-label"><span class="status-dot"></span>In Progress</div>
             <div style="font-size: 16px; color: var(--text); font-weight: 600; margin-bottom: 6px;">Data pipeline</div>
-            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.65;">The input contract exists, but the preprocessing builder and satellite rules still need to be made more repeatable.</p>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.65;">OpenDOSM fetcher pulls GDP, CPI, labour, and trade data. Input pack builder assembles run packs from raw data and defaults.</p>
+        </div>
+        <div class="status-card status-usable">
+            <div class="status-label"><span class="status-dot"></span>Usable Now</div>
+            <div style="font-size: 16px; color: var(--text); font-weight: 600; margin-bottom: 6px;">Model engine</div>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.65;">Standalone Node.js solver implements all 17 blocks. Run scenarios from the CLI with JSON output or import as a library.</p>
         </div>
         <div class="status-card status-in-progress">
             <div class="status-label"><span class="status-dot"></span>In Progress</div>
@@ -889,7 +921,7 @@
         <div class="roadmap-item"><span class="roadmap-num">04</span><div><strong style="color: var(--text); font-weight: 500;">Financial accelerator</strong> <span style="font-size: 13px; color: var(--text-muted);">— household debt (~84% of GDP) to NPLs, bank capital, credit supply</span></div></div>
         <div class="roadmap-item"><span class="roadmap-num">05</span><div><strong style="color: var(--text); font-weight: 500;">E&E/GVC granularity</strong> <span style="font-size: 13px; color: var(--text-muted);">— front-end vs back-end semicon, US-China decoupling scenarios</span></div></div>
         <div class="roadmap-item"><span class="roadmap-num">06</span><div><strong style="color: var(--text); font-weight: 500;">Stochastic simulation</strong> <span style="font-size: 13px; color: var(--text-muted);">— fan charts instead of point forecasts</span></div></div>
-        <div class="roadmap-item"><span class="roadmap-num">07</span><div><strong style="color: var(--text); font-weight: 500;">Data pipeline</strong> <span style="font-size: 13px; color: var(--text-muted);">— auto-ingest from BNM API + OpenDOSM</span></div></div>
+        <div class="roadmap-item"><span class="roadmap-num">07</span><div><strong style="color: var(--text); font-weight: 500;">BNM API integration</strong> <span style="font-size: 13px; color: var(--text-muted);">— interest rates, monetary aggregates, credit, BOP data</span></div></div>
         <div class="roadmap-item"><span class="roadmap-num">08</span><div><strong style="color: var(--text); font-weight: 500;">Back-testing</strong> <span style="font-size: 13px; color: var(--text-muted);">— validate against AFC, GFC, COVID outturns</span></div></div>
         <div class="roadmap-item"><span class="roadmap-num">09</span><div><strong style="color: var(--text); font-weight: 500;">Forward-looking expectations</strong> <span style="font-size: 13px; color: var(--text-muted);">— rational expectations for inflation and exchange rates</span></div></div>
         <div class="roadmap-item"><span class="roadmap-num">10</span><div><strong style="color: var(--text); font-weight: 500;">Digital economy</strong> <span style="font-size: 13px; color: var(--text-muted);">— capture the ~23% of GDP that's now digital</span></div></div>
@@ -897,10 +929,7 @@
     <div class="card" style="padding: 18px; margin-top: 16px; border-left: 3px solid rgba(240,138,56,0.55);">
         <div class="mono" style="font-size: 10px; color: var(--amber); letter-spacing: 0.08em; margin-bottom: 8px;">ROOM FOR IMPROVEMENT</div>
         <p style="font-size: 13px; color: var(--text-muted); line-height: 1.65; max-width: 700px;">
-            In practice, <a href="model/malaysia-quarterly-model.md" style="color: var(--text);">model/malaysia-quarterly-model.md</a> is now documented well enough to support a governed input pipeline. What it still lacks for true production quality is a preprocessing builder plus better treatment of the big external wedges, especially <span class="mono" style="color: var(--text);">CREDIT</span>, <span class="mono" style="color: var(--text);">MCCI</span>, <span class="mono" style="color: var(--text);">GOVDEBTADJ</span>, and <span class="mono" style="color: var(--text);">HARAREA</span>.
-        </p>
-        <p style="font-size: 13px; color: var(--text-muted); line-height: 1.65; max-width: 700px; margin-top: 12px;">
-            The next highest-value step is to build that preprocessing layer and satellite-rule set so the model can be run from raw source data instead of hand-assembled quarterly inputs.
+            The executable model engine and OpenDOSM data pipeline are now in place. What remains for production quality is full econometric estimation, BNM API integration, better treatment of the big external wedges (<span class="mono" style="color: var(--text);">CREDIT</span>, <span class="mono" style="color: var(--text);">MCCI</span>, <span class="mono" style="color: var(--text);">GOVDEBTADJ</span>, <span class="mono" style="color: var(--text);">HARAREA</span>), and back-testing against historical episodes.
         </p>
     </div>
 </section>
@@ -912,7 +941,11 @@
     <h2 class="section-label">Changelog</h2>
     <div style="display: flex; flex-direction: column; gap: 12px;">
         <div class="card" style="padding: 16px; display: flex; gap: 16px; align-items: flex-start;">
-            <span class="mono" style="font-size: 12px; font-weight: 600; color: var(--accent); flex-shrink: 0;">v0.3.0</span>
+            <span class="mono" style="font-size: 12px; font-weight: 600; color: var(--accent); flex-shrink: 0;">v0.4.0</span>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.55;">Executable model engine and data pipeline. Added a standalone Node.js solver implementing all 17 blocks, CLI tools for running scenarios, fetching OpenDOSM data, and building input packs. The playground now loads live OpenDOSM data for its baseline.</p>
+        </div>
+        <div class="card" style="padding: 16px; display: flex; gap: 16px; align-items: flex-start;">
+            <span class="mono" style="font-size: 12px; font-weight: 600; color: var(--text-muted); flex-shrink: 0;">v0.3.0</span>
             <p style="font-size: 13px; color: var(--text-muted); line-height: 1.55;">Documentation and presentation pass. Repositioned the project as a publishable research prototype, added a one-page summary, architecture diagram, interpretation note, and updated the landing page with inline document modals and clearer visitor-facing status.</p>
         </div>
         <div class="card" style="padding: 16px; display: flex; gap: 16px; align-items: flex-start;">

@@ -1,0 +1,29 @@
+name: Validate Model Inputs
+
+on:
+  push:
+    paths:
+      - 'docs/model_input_schema.json'
+      - 'historical_inputs.csv'
+      - 'scenario_inputs.csv'
+      - 'studies/**/*.json'
+  pull_request:
+    paths:
+      - 'docs/model_input_schema.json'
+      - 'historical_inputs.csv'
+      - 'scenario_inputs.csv'
+      - 'studies/**/*.json'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate model input schema
+        run: node scripts/validate_model_inputs.mjs --schema docs/model_input_schema.json

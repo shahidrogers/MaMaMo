@@ -1,0 +1,29 @@
+{
+  "name": "mamamo",
+  "version": "0.4.0",
+  "description": "Malaysia Macro Model — A structural quarterly macro model prototype for Malaysia",
+  "type": "module",
+  "bin": {
+    "mamamo": "./bin/run-model.mjs",
+    "mamamo-build": "./bin/build-inputs.mjs",
+    "mamamo-fetch": "./bin/fetch-opendosm.mjs"
+  },
+  "scripts": {
+    "run": "node bin/run-model.mjs",
+    "build-inputs": "node bin/build-inputs.mjs",
+    "fetch-data": "node bin/fetch-opendosm.mjs",
+    "validate": "node scripts/validate_model_inputs.mjs",
+    "baseline": "node bin/run-model.mjs",
+    "oil-shock": "node bin/run-model.mjs --brent 150 --fx 4.20",
+    "war-scenario": "node bin/run-model.mjs --brent 200 --fx 4.50 --opr 4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shahidrogers/MaMaMo.git"
+  },
+  "author": "Shahid Rogers <shahidrogers+mamamo@gmail.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

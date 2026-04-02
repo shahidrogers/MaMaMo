@@ -824,8 +824,7 @@
         <span class="page-title">MALAYSIA QUARTERLY MODEL</span>
     </div>
     <div class="top-bar-right">
-        <span id="data-status" style="font-size:9px; color:var(--text-dim); letter-spacing:0.04em;">Using built-in baselines</span>
-    </div>
+        <div class="control-copy">Chart Mode</div>
 </div>
 
 <!-- TICKER -->
@@ -1062,7 +1061,7 @@
                 Horizon: 8 quarters<br>
                 Equations: ~200 (simplified for playground)<br>
                 Calibration: BNM, DOSM, IMF Art. IV<br>
-                <span id="data-status-sidebar" style="color:var(--text-dim);">Data: built-in baselines</span><br>
+                <span style="color:var(--text-dim);">Data: built-in baselines</span><br>
                 <span style="color:var(--red);">Research prototype &mdash; not production forecasts</span>
             </div>
         </div>
@@ -1267,34 +1266,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- DATA TABLE -->
-        <div class="guide-section">
-            <div class="guide-header" onclick="toggleGuide(this)">
-                <span class="guide-header-title">OPENDOSM LIVE DATA</span>
-                <span class="guide-chevron">&#9660;</span>
-            </div>
-            <div class="guide-body">
-                <div class="chart-grid" style="padding: 12px 14px;">
-                    <div class="chart-cell">
-                        <div class="chart-title">GDP — OPEN DOSM HISTORICAL</div>
-                        <div class="chart-box"><canvas id="c-opendosm-gdp"></canvas></div>
-                    </div>
-                    <div class="chart-cell">
-                        <div class="chart-title">CPI — OPEN DOSM HISTORICAL</div>
-                        <div class="chart-box"><canvas id="c-opendosm-cpi"></canvas></div>
-                    </div>
-                    <div class="chart-cell">
-                        <div class="chart-title">EMPLOYMENT — OPEN DOSM HISTORICAL</div>
-                        <div class="chart-box"><canvas id="c-opendosm-emp"></canvas></div>
-                    </div>
-                    <div class="chart-cell">
-                        <div class="chart-title">TRADE BALANCE — OPEN DOSM HISTORICAL</div>
-                        <div class="chart-box"><canvas id="c-opendosm-trade"></canvas></div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- DATA TABLE -->
         <div class="guide-section">
@@ -2207,7 +2178,6 @@ function comboDatasets(series, baseline, compare = []) {
 }
 
 let charts = {};
-let opendosmData = null;
 
 function rebuildCharts() {
     Object.values(charts).forEach(chart => {
@@ -2614,84 +2584,6 @@ function initCharts() {
     });
 }
 
-function initOpenDOSMCharts() {
-    if (!opendosmData || opendosmData.source !== 'opendosm') return;
-
-    const gdpSeries = opendosmData.data.gdp?.gdp || {};
-    const cpiSeries = opendosmData.data.cpi?.cpi || {};
-    const empSeries = opendosmData.data.labour?.employment || {};
-    const tradeSeries = opendosmData.data.trade?.trade_balance || {};
-
-    const gdpLabels = Object.keys(gdpSeries).sort();
-    const cpiLabels = Object.keys(cpiSeries).sort();
-    const empLabels = Object.keys(empSeries).sort();
-    const tradeLabels = Object.keys(tradeSeries).sort();
-
-    charts.opendosmGdp = new Chart(document.getElementById('c-opendosm-gdp'), {
-        type: 'line',
-        data: {
-            labels: gdpLabels,
-            datasets: [{
-                label: 'GDP (RM million)',
-                data: gdpLabels.map(q => gdpSeries[q]),
-                borderColor: '#00cc66',
-                backgroundColor: 'rgba(0,204,102,0.1)',
-                fill: true,
-                tension: 0.3,
-                pointRadius: 2,
-            }]
-        },
-        options: { ...CO, scales: mkS('RM million') }
-    });
-
-    charts.opendosmCpi = new Chart(document.getElementById('c-opendosm-cpi'), {
-        type: 'line',
-        data: {
-            labels: cpiLabels,
-            datasets: [{
-                label: 'CPI Index',
-                data: cpiLabels.map(q => cpiSeries[q]),
-                borderColor: '#ff4444',
-                backgroundColor: 'rgba(255,68,68,0.1)',
-                fill: true,
-                tension: 0.3,
-                pointRadius: 2,
-            }]
-        },
-        options: { ...CO, scales: mkS('Index') }
-    });
-
-    charts.opendosmEmp = new Chart(document.getElementById('c-opendosm-emp'), {
-        type: 'line',
-        data: {
-            labels: empLabels,
-            datasets: [{
-                label: 'Employment (thousands)',
-                data: empLabels.map(q => empSeries[q]),
-                borderColor: '#4488ff',
-                backgroundColor: 'rgba(68,136,255,0.1)',
-                fill: true,
-                tension: 0.3,
-                pointRadius: 2,
-            }]
-        },
-        options: { ...CO, scales: mkS('Thousands') }
-    });
-
-    charts.opendosmTrade = new Chart(document.getElementById('c-opendosm-trade'), {
-        type: 'bar',
-        data: {
-            labels: tradeLabels,
-            datasets: [{
-                label: 'Trade Balance (RM million)',
-                data: tradeLabels.map(q => tradeSeries[q]),
-                backgroundColor: tradeLabels.map(q => tradeSeries[q] >= 0 ? 'rgba(0,204,102,0.6)' : 'rgba(255,68,68,0.6)'),
-            }]
-        },
-        options: { ...CO, scales: mkS('RM million') }
-    });
-}
-
 function updCharts() {
     const d = sim(getIn());
     const b = sim(getBaselineIn());
@@ -3047,64 +2939,11 @@ document.addEventListener('DOMContentLoaded', () => {
     updCharts();
 });
 </script>
-<script>
-// Fallback: set data status immediately so it never shows "Loading data…"
-// This runs even when module imports fail (e.g. file:// CORS).
-(function() {
-    var el = document.getElementById('data-status');
-    if (el) el.textContent = 'Using built-in baselines';
-    var sb = document.getElementById('data-status-sidebar');
-    if (sb) sb.textContent = 'Data: Using built-in baselines';
-})();
-</script>
 <script type="module">
 import { StructuralModelEngine } from './structural-model-engine.js';
 import { createBaselineRunPack } from './baseline-run-pack.js';
 import { runPlaygroundModel, getPlaygroundBaselineInputs } from './playground-model-adapter.js';
 import { runStructuralPlaygroundModel, createPlaygroundRunPack, getStructuralBaselineInputs } from './browser-structural-model.js';
-import { loadOpenDOSMData, mergeWithDefaults } from './opendosm-data-loader.js';
-
-// ---- OpenDOSM live data integration ----
-async function integrateOpenDOSMData() {
-    const statusEl = document.getElementById('data-status');
-    const sidebarEl = document.getElementById('data-status-sidebar');
-
-    const setStatus = (msg, color) => {
-        if (statusEl) { statusEl.textContent = msg; statusEl.style.color = color; }
-        if (sidebarEl) { sidebarEl.textContent = `Data: ${msg}`; sidebarEl.style.color = color; }
-    };
-
-    try {
-        const timeout = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Data load timeout')), 8000)
-        );
-        const liveData = await Promise.race([
-            loadOpenDOSMData({
-                historicalQuarters: 4,
-                forecastQuarters: 8,
-                startForecastQuarter: '2026Q2',
-            }),
-            timeout,
-        ]);
-
-        if (liveData.source === 'opendosm') {
-            const meta = liveData.metadata;
-            setStatus(`Live OpenDOSM · GDP:${meta.gdp_quarters}q CPI:${meta.cpi_quarters}q`, '#00cc66');
-            if (typeof window !== 'undefined' && window.MaMaMoStructural) {
-                window.MaMaMoStructural.liveData = liveData;
-            }
-            opendosmData = liveData;
-            initOpenDOSMCharts();
-        } else {
-            setStatus('Using built-in baselines', '#999999');
-        }
-    } catch (err) {
-        setStatus('Using built-in baselines', '#999999');
-    }
-}
-
-// Run immediately — module scripts are deferred, DOM is ready
-integrateOpenDOSMData();
 
 window.MaMaMoStructural = {
     StructuralModelEngine,

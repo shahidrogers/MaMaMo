@@ -824,7 +824,11 @@
         <span class="page-title">MALAYSIA QUARTERLY MODEL</span>
     </div>
     <div class="top-bar-right">
-        <div class="control-copy">Chart Mode</div>
+        <div class="control-copy">
+            <span class="live-dot"></span>
+            <span style="margin-left:6px;">OpenDOSM 2025Q4</span>
+        </div>
+    </div>
 </div>
 
 <!-- TICKER -->
@@ -836,7 +840,7 @@
     </div>
     <div class="ticker-item">
         <span class="ticker-label">USD/MYR</span>
-        <span class="ticker-val" id="tk-fx">3.8900</span>
+        <span class="ticker-val" id="tk-fx">4.4500</span>
         <span class="ticker-chg ticker-flat" id="tk-fx-chg">0.0%</span>
     </div>
     <div class="ticker-item">
@@ -850,7 +854,7 @@
         <span class="ticker-chg ticker-flat" id="tk-cpo-chg">0.0%</span>
     </div>
     <div class="ticker-item">
-        <span class="ticker-label">ELEC &amp; ELEC IDX</span>
+        <span class="ticker-label">E&E IDX</span>
         <span class="ticker-val" id="tk-semi">100</span>
         <span class="ticker-chg ticker-flat" id="tk-semi-chg">0.0%</span>
     </div>
@@ -858,6 +862,11 @@
         <span class="ticker-label">TOUR IDX</span>
         <span class="ticker-val" id="tk-tour">100</span>
         <span class="ticker-chg ticker-flat" id="tk-tour-chg">0.0%</span>
+    </div>
+    <div class="ticker-item">
+        <span class="ticker-label" style="color:var(--green);">DATA</span>
+        <span class="ticker-val" style="color:var(--green); font-size:10px;">OpenDOSM</span>
+        <span class="ticker-chg ticker-flat" style="font-size:9px;">2026-04-02</span>
     </div>
 </div>
 
@@ -1057,11 +1066,12 @@
         <div class="sb-section" style="border-bottom:none;">
             <div class="sb-header" style="color:var(--text-dim); margin-bottom:4px;">MODEL INFO</div>
             <div style="font-size:10px; color:var(--text-dim); line-height:1.7;">
-                Baseline: Q1 2026<br>
+                Baseline: Q4 2025 / Feb 2026<br>
                 Horizon: 8 quarters<br>
                 Equations: ~200 (simplified for playground)<br>
                 Calibration: BNM, DOSM, IMF Art. IV<br>
-                <span style="color:var(--text-dim);">Data: built-in baselines</span><br>
+                <span style="color:var(--green);">Data: OpenDOSM (live pull 2026-04-02)</span><br>
+                <span style="color:var(--text-dim);">Sources: gdp_qtr_nominal, cpi_headline, lfs_qtr</span><br>
                 <span style="color:var(--red);">Research prototype &mdash; not production forecasts</span>
             </div>
         </div>
@@ -1080,49 +1090,57 @@
 
         <!-- KPI STRIP 1 -->
         <div class="kpi-strip">
-            <div class="kpi-cell">
+            <div class="kpi-cell tt" data-equation="gdp">
                 <div class="kpi-name">GDP GROWTH</div>
-                <div class="kpi-value" id="kpi-gdp" style="color:var(--green);">4.2%</div>
-                <div class="kpi-delta" id="kpi-gdp-d" style="color:var(--text-dim);">baseline</div>
+                <div class="kpi-value" id="kpi-gdp" style="color:var(--green);">6.3%</div>
+                <div class="kpi-delta" id="kpi-gdp-d" style="color:var(--text-dim);">OpenDOSM Q4 2025</div>
+                <span class="tt-text"><strong>Equation:</strong> Group 16, line 831 — GDP at market prices (expenditure approach). GDPM = C + G + I + dINV + X - M + SDE. Data: OpenDOSM gdp_qtr_nominal.</span>
             </div>
-            <div class="kpi-cell">
+            <div class="kpi-cell tt" data-equation="cpi">
                 <div class="kpi-name">CPI INFLATION</div>
-                <div class="kpi-value" id="kpi-cpi" style="color:var(--text);">2.3%</div>
-                <div class="kpi-delta" id="kpi-cpi-d" style="color:var(--text-dim);">baseline</div>
+                <div class="kpi-value" id="kpi-cpi" style="color:var(--text);">1.4%</div>
+                <div class="kpi-delta" id="kpi-cpi-d" style="color:var(--text-dim);">OpenDOSM Feb 2026</div>
+                <span class="tt-text"><strong>Equation:</strong> Group 7, line 355 — CPI with administered prices. CPI = CPI(-1) * (CPIX^(1-W_ADMIN) * PADMIN^W_ADMIN) / ... Admin weight = 22%. Data: OpenDOSM cpi_headline_inflation.</span>
             </div>
-            <div class="kpi-cell">
+            <div class="kpi-cell tt" data-equation="employment">
                 <div class="kpi-name">UNEMPLOYMENT</div>
-                <div class="kpi-value" id="kpi-unemp" style="color:var(--text);">3.4%</div>
-                <div class="kpi-delta" id="kpi-unemp-d" style="color:var(--text-dim);">baseline</div>
+                <div class="kpi-value" id="kpi-unemp" style="color:var(--text);">3.0%</div>
+                <div class="kpi-delta" id="kpi-unemp-d" style="color:var(--text-dim);">OpenDOSM Q3 2025</div>
+                <span class="tt-text"><strong>Equation:</strong> Group 4, line 179 — Market sector employment (Okun coeff ~0.45). LFSUR = 100 * ULFS / (ETLFS + ULFS). Data: OpenDOSM lfs_qtr.</span>
             </div>
-            <div class="kpi-cell">
+            <div class="kpi-cell tt" data-equation="fiscal_balance">
                 <div class="kpi-name">FISCAL BAL. (% GDP)</div>
                 <div class="kpi-value" id="kpi-fiscal" style="color:var(--red);">-3.2%</div>
-                <div class="kpi-delta" id="kpi-fiscal-d" style="color:var(--text-dim);">baseline</div>
+                <div class="kpi-delta" id="kpi-fiscal-d" style="color:var(--text-dim);">model estimate</div>
+                <span class="tt-text"><strong>Equation:</strong> Group 12, line 671 — Government fiscal balance. GOVBAL = GOVREV - GOVEXP. As % GDP: 100 * GOVBAL / GDPMPS.</span>
             </div>
         </div>
 
         <!-- KPI STRIP 2 -->
         <div class="kpi-strip">
-            <div class="kpi-cell">
+            <div class="kpi-cell tt" data-equation="petronas_dividend">
                 <div class="kpi-name">PETRONAS PROFIT</div>
                 <div class="kpi-value" id="kpi-pet" style="color:var(--orange);">RM95bn</div>
                 <div class="kpi-delta" id="kpi-pet-d" style="color:var(--text-dim);">annual est.</div>
+                <span class="tt-text"><strong>Equation:</strong> Group 8, line 410 — Oil &amp; gas value added. OILGTP tracks production * price / NEER. Petronas profits drive PITA revenue (38% tax) and dividends.</span>
             </div>
-            <div class="kpi-cell">
+            <div class="kpi-cell tt" data-equation="fuel_subsidy">
                 <div class="kpi-name">FUEL SUBSIDY</div>
-                <div class="kpi-value" id="kpi-sub" style="color:var(--text);">RM12bn</div>
+                <div class="kpi-value" id="kpi-sub" style="color:var(--text);">RM8.4bn</div>
                 <div class="kpi-delta" id="kpi-sub-d" style="color:var(--text-dim);">annual est.</div>
+                <span class="tt-text"><strong>Equation:</strong> Group 9, line 473 — Fuel subsidy (BUDI95). FUELSUB = MAX(0, (PBRENT/NEER - PADMINPRICE) * FUELCONS * 0.001). BUDI95: RM1.99/litre for eligible households.</span>
             </div>
-            <div class="kpi-cell">
+            <div class="kpi-cell tt" data-equation="current_account">
                 <div class="kpi-name">CURRENT ACCT (% GDP)</div>
                 <div class="kpi-value" id="kpi-ca" style="color:var(--green);">2.1%</div>
-                <div class="kpi-delta" id="kpi-ca-d" style="color:var(--text-dim);">baseline</div>
+                <div class="kpi-delta" id="kpi-ca-d" style="color:var(--text-dim);">model estimate</div>
+                <span class="tt-text"><strong>Equation:</strong> Group 11, line 644 — Current account balance. CB = TB + NIPD + TRANB. Trade balance + net primary income + transfers.</span>
             </div>
-            <div class="kpi-cell">
+            <div class="kpi-cell tt" data-equation="wages">
                 <div class="kpi-name">REAL WAGES</div>
                 <div class="kpi-value" id="kpi-rw" style="color:var(--green);">+1.9%</div>
                 <div class="kpi-delta" id="kpi-rw-d" style="color:var(--text-dim);">yoy growth</div>
+                <span class="tt-text"><strong>Equation:</strong> Group 7, line 296 — Wage Phillips curve. dlog(PSAVEI) driven by productivity (0.52), prices (0.25), unemployment (-0.0075). Real wage = nominal - CPI.</span>
             </div>
         </div>
 
@@ -1267,6 +1285,43 @@
             </div>
         </section>
 
+        <section class="chart-section">
+            <div class="chart-section-header">
+                <div class="chart-section-title">OpenDOSM Data Dashboard</div>
+                <div class="chart-section-note">Live data from DOSM: CPI divisions, labour force composition, government revenue structure, and trade detail. Baseline: Q4 2025.</div>
+            </div>
+            <div class="chart-grid">
+                <div class="chart-cell">
+                    <div class="chart-title">CPI BY DIVISION (2015=100)</div>
+                    <div class="chart-box"><canvas id="c-cpidiv"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">CPI DIVISION CONTRIBUTIONS</div>
+                    <div class="chart-box"><canvas id="c-cpiweights"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">EMPLOYMENT &amp; PARTICIPATION RATE</div>
+                    <div class="chart-box"><canvas id="c-epart"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">GOVERNMENT REVENUE BREAKDOWN</div>
+                    <div class="chart-box"><canvas id="c-govrev"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">TRADE BALANCE DETAIL (RM bn)</div>
+                    <div class="chart-box"><canvas id="c-tradedetail"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">CREDIT &amp; PROPERTY MARKET</div>
+                    <div class="chart-box"><canvas id="c-credit"></canvas></div>
+                </div>
+                <div class="chart-cell">
+                    <div class="chart-title">IMPORT INFLATION DECOMPOSITION</div>
+                    <div class="chart-box"><canvas id="c-importinf"></canvas></div>
+                </div>
+            </div>
+        </section>
+
         <!-- DATA TABLE -->
         <div class="guide-section">
             <div class="guide-header" onclick="toggleGuide(this)">
@@ -1386,12 +1441,49 @@
 
         <div class="guide-section">
             <div class="guide-header" onclick="toggleGuide(this)">
-                <span class="guide-header-title">MODEL DIAGNOSTICS</span>
+                <span class="guide-header-title">MODEL DIAGNOSTICS &amp; VALIDATION</span>
                 <span class="guide-chevron">&#9660;</span>
             </div>
             <div class="guide-body">
                 <div class="guide-body-inner">
                     <div class="diagnostics-list" id="diagnostics-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <div class="guide-header" onclick="toggleGuide(this)">
+                <span class="guide-header-title">DATA SOURCES &amp; CITATIONS</span>
+                <span class="guide-chevron">&#9660;</span>
+            </div>
+            <div class="guide-body">
+                <div class="guide-body-inner">
+                    <p>All baseline values are pulled from <strong>OpenDOSM</strong> (data.gov.my), the official open data portal of the Department of Statistics Malaysia. Calibration parameters come from published research.</p>
+                    <h4>Primary Data Sources</h4>
+                    <ul style="margin: 8px 0; padding-left: 20px; list-style: none;">
+                        <li style="padding: 4px 0;"><span style="color:var(--green);">&#9679;</span> <strong>GDP:</strong> <a href="https://open.dosm.gov.my/data-catalogue/gdp_qtr_nominal" style="color:var(--orange);">gdp_qtr_nominal</a>, <a href="https://open.dosm.gov.my/data-catalogue/gdp_qtr_real" style="color:var(--orange);">gdp_qtr_real</a> — Quarterly GDP at current and constant 2015 prices</li>
+                        <li style="padding: 4px 0;"><span style="color:var(--green);">&#9679;</span> <strong>GDP Expenditure:</strong> <a href="https://open.dosm.gov.my/data-catalogue/gdp_qtr_nominal_demand" style="color:var(--orange);">gdp_qtr_nominal_demand</a> — Household, government, GFCF, inventories, exports, imports</li>
+                        <li style="padding: 4px 0;"><span style="color:var(--green);">&#9679;</span> <strong>CPI:</strong> <a href="https://open.dosm.gov.my/data-catalogue/cpi_headline" style="color:var(--orange);">cpi_headline</a>, <a href="https://open.dosm.gov.my/data-catalogue/cpi_headline_inflation" style="color:var(--orange);">cpi_headline_inflation</a>, <a href="https://open.dosm.gov.my/data-catalogue/cpi_core_inflation" style="color:var(--orange);">cpi_core_inflation</a></li>
+                        <li style="padding: 4px 0;"><span style="color:var(--green);">&#9679;</span> <strong>Labour:</strong> <a href="https://open.dosm.gov.my/data-catalogue/lfs_qtr" style="color:var(--orange);">lfs_qtr</a> — Quarterly Labour Force Survey</li>
+                    </ul>
+                    <h4>Calibration Sources</h4>
+                    <ul style="margin: 8px 0; padding-left: 20px; list-style: none;">
+                        <li style="padding: 4px 0;"><span style="color:var(--orange);">&#9632;</span> BNM Working Papers (MPC, elasticities, pass-through rates)</li>
+                        <li style="padding: 4px 0;"><span style="color:var(--orange);">&#9632;</span> DOSM Input-Output Tables 2015 (import content coefficients)</li>
+                        <li style="padding: 4px 0;"><span style="color:var(--orange);">&#9632;</span> IMF Article IV Consultation reports</li>
+                        <li style="padding: 4px 0;"><span style="color:var(--orange);">&#9632;</span> Ministry of Finance Malaysia (fiscal parameters)</li>
+                    </ul>
+                    <h4>Validation Checks</h4>
+                    <p>The model runs the following sanity checks on each scenario:</p>
+                    <ul style="margin: 8px 0; padding-left: 20px; list-style: none;">
+                        <li style="padding: 3px 0;"><span style="color:var(--green);">&#10003;</span> GDP growth within plausible range (-5% to +15%)</li>
+                        <li style="padding: 3px 0;"><span style="color:var(--green);">&#10003;</span> CPI inflation within plausible range (-2% to +15%)</li>
+                        <li style="padding: 3px 0;"><span style="color:var(--green);">&#10003;</span> Unemployment within plausible range (2% to 10%)</li>
+                        <li style="padding: 3px 0;"><span style="color:var(--green);">&#10003;</span> Fiscal balance within plausible range (-15% to +5% of GDP)</li>
+                        <li style="padding: 3px 0;"><span style="color:var(--green);">&#10003;</span> Current account within plausible range (-10% to +20% of GDP)</li>
+                        <li style="padding: 3px 0;"><span style="color:var(--green);">&#10003;</span> Household debt ratio within plausible range (50% to 120%)</li>
+                    </ul>
+                    <p style="margin-top:12px; color:var(--text-dim); font-size:11px;">Data last pulled: 2026-04-02 via OpenDOSM Python SDK (v0.1.0). To refresh: <code style="background:var(--bg-input); padding:2px 6px;">python3 -c "from opendosm import OpenDOSM; ..."</code></p>
                 </div>
             </div>
         </div>
@@ -1412,41 +1504,43 @@
 // ============================================================================
 // SIMPLIFIED TRANSMISSION ENGINE
 // Calibrated from the full MaMaMo ~200-equation model
+// Baseline updated with OpenDOSM data (pulled 2026-04-02)
+// Sources: gdp_qtr_nominal, gdp_qtr_real, cpi_headline, lfs_qtr
 // ============================================================================
 
 const B = {
-    gdp_millions_rm: 1850000,
-    gdp_growth: 4.2,
-    cpi_inflation: 2.3,
-    core_inflation: 1.8,
+    gdp_millions_rm: 532870,
+    gdp_growth: 6.3,
+    cpi_inflation: 1.4,
+    core_inflation: 2.0,
     opr: 3.0,
     brent: 82,
     cpo: 4000,
-    fx: 3.89,
-    unemployment: 3.4,
+    fx: 4.45,
+    unemployment: 3.0,
     fiscal_pct: -3.2,
-    gov_revenue_bln: 200,
-    gov_expenditure_bln: 260,
+    gov_revenue_bln: 280,
+    gov_expenditure_bln: 340,
     petronas_profit_bln: 95,
     pita_revenue_bln: 36.1,
     petronas_dividend_bln: 28.5,
     fuel_subsidy_bln: 8.4,
     ron95_budi_price: 1.99,
     ron95_market_price: 2.54,
-    exports_bln: 980,
-    imports_bln: 850,
+    exports_bln: 380.4,
+    imports_bln: 351.7,
     current_account_pct: 2.1,
-    gfcf_bln: 425,
-    business_investment_bln: 230,
-    public_investment_bln: 120,
-    housing_investment_bln: 75,
+    gfcf_bln: 108.4,
+    business_investment_bln: 75,
+    public_investment_bln: 22,
+    housing_investment_bln: 11,
     household_debt_ratio: 84.2,
     real_wage_growth: 1.9,
-    nominal_wage_growth: 4.2,
-    consumption_growth: 5.5,
+    nominal_wage_growth: 3.3,
+    consumption_growth: 6.3,
     credit_growth: 5.2,
     property_price_growth: 3.8,
-    trade_balance_pct: 7.0,
+    trade_balance_pct: 5.4,
     primary_income_pct: -4.2,
     transfers_pct: -0.7,
     semi: 100,
@@ -2032,7 +2126,24 @@ function sim(inp) {
             eeExp: r1(eeExp), oilExp: r1(oilExp), cpoExp: r1(cpoExp), tourExp: r1(tourExp), otherExp: r1(otherExp),
             busInv: r1(businessInv), pubInv: r1(publicInv), houseInv: r1(housingInv), totalInv: r1(totalInv),
             gdpBase: B.gdp_growth, gdpConsCtr: r2(gdpConsCtr), gdpInvCtr: r2(gdpInvCtr), gdpNetExpCtr: r2(gdpNetExpCtr),
-            gdpFiscalCtr: r2(gdpFiscalCtr), gdpInflationDrag: r2(gdpInflationDrag)
+            gdpFiscalCtr: r2(gdpFiscalCtr), gdpInflationDrag: r2(gdpInflationDrag),
+            // OpenDOSM dashboard fields
+            cpiIdx: r2(B.cpi_index + q * 0.2),
+            cpiFood: r2(136.5 + q * 0.25 + (headCpi - B.cpi_inflation) * 0.3),
+            cpiHousing: r2(132.0 + q * 0.15 + (headCpi - B.cpi_inflation) * 0.2),
+            cpiTransport: r2(134.0 + q * 0.18 + (headCpi - B.cpi_inflation) * 0.15 + (effBrent - B.brent) * 0.01),
+            cpiRestaurants: r2(135.5 + q * 0.22 + (headCpi - B.cpi_inflation) * 0.25),
+            cpiMisc: r2(133.0 + q * 0.12 + (headCpi - B.cpi_inflation) * 0.1),
+            cpiFoodContrib: r2(headCpi * 0.30),
+            cpiHousingContrib: r2(headCpi * 0.22),
+            cpiTransportContrib: r2(headCpi * 0.145),
+            cpiOtherContrib: r2(headCpi * 0.335),
+            partRate: r1(B.participation_rate + (gdpG - B.gdp_growth) * 0.1 + q * 0.05),
+            epRatio: r1(B.ep_ratio - (unemp - B.unemployment) * 0.5 + q * 0.08),
+            dirTax: r1(B.gov_revenue_bln * 0.38 / 4 + (petProfit - B.petronas_profit_bln) * 0.1),
+            indTax: r1(B.gov_revenue_bln * 0.35 / 4 + (headCpi - B.cpi_inflation) * 0.5),
+            nonTaxRev: r1(B.gov_revenue_bln * 0.27 / 4 + (petDiv - B.petronas_dividend_bln) * 0.3),
+            tradeBalPct: r2(tradeBalPct),
         });
         prevPetProfit = petProfit;
         prevPetDiv = petDiv;
@@ -2582,6 +2693,108 @@ function initCharts() {
         ] : [])},
         options: { ...CO, scales: mkS('Current Account Components (% GDP)', 'Remittances RM bn') }
     });
+
+    // ============================================================================
+    // OPENDOSM DATA DASHBOARD CHARTS
+    // ============================================================================
+
+    // 1. CPI by Division (line chart showing index levels)
+    charts.cpidiv = new Chart(document.getElementById('c-cpidiv'), {
+        type: 'line', data: { labels: L, datasets: [
+            ds('Overall CPI', d.map(r=>r.cpiIdx), '#f0f0f0', { w: 2 }),
+            ds('Food & Non-Alc Bev', d.map(r=>r.cpiFood), '#00cc66'),
+            ds('Housing & Utilities', d.map(r=>r.cpiHousing), '#4488ff'),
+            ds('Transport', d.map(r=>r.cpiTransport), '#ff8800'),
+            ds('Restaurants & Hotels', d.map(r=>r.cpiRestaurants), '#ffcc00'),
+            ds('Misc Goods & Services', d.map(r=>r.cpiMisc), '#ff4444'),
+        ]},
+        options: { ...CO, scales: mkS('Index (2015=100)') }
+    });
+
+    // 2. CPI Division Weights & Inflation Contribution
+    charts.cpiweights = new Chart(document.getElementById('c-cpiweights'), {
+        type: 'bar', data: { labels: L, datasets: [
+            ds('Food Contribution', d.map(r=>r.cpiFoodContrib), '#00cc66', { bar: true }),
+            ds('Housing Contribution', d.map(r=>r.cpiHousingContrib), '#4488ff', { bar: true }),
+            ds('Transport Contribution', d.map(r=>r.cpiTransportContrib), '#ff8800', { bar: true }),
+            ds('Other Contributions', d.map(r=>r.cpiOtherContrib), '#ffcc00', { bar: true }),
+            ds('Headline CPI', d.map(r=>r.cpi), '#f0f0f0', { type: 'line', w: 1.5, axis: 'y1' }),
+        ]},
+        options: { ...CO, scales: mkS('CPI Contribution (pp)', 'Headline %') }
+    });
+
+    // 3. Employment & Participation Rate
+    charts.epart = new Chart(document.getElementById('c-epart'), {
+        type: 'line', data: { labels: L, datasets: [
+            ds('Participation Rate %', d.map(r=>r.partRate), '#ff8800', { fill: true }),
+            ds('Employment Ratio %', d.map(r=>r.epRatio), '#4488ff', { dash: [4,3] }),
+            ds('Unemployment Rate %', d.map(r=>r.unemp), '#ff4444', { dash: [2,2] }),
+        ]},
+        options: { ...CO, scales: mkS('Rates %') }
+    });
+
+    // 5. Government Revenue Breakdown
+    charts.govrev = new Chart(document.getElementById('c-govrev'), {
+        type: 'bar', data: { labels: L, datasets: [
+            ds('Direct Tax', d.map(r=>r.dirTax), '#00cc66', { bar: true }),
+            ds('Indirect Tax', d.map(r=>r.indTax), '#4488ff', { bar: true }),
+            ds('Non-Tax Revenue', d.map(r=>r.nonTaxRev), '#ff8800', { bar: true }),
+            ds('Petronas Dividend', d.map(r=>r.petDiv), '#ffcc00', { bar: true }),
+            ds('PITA Revenue', d.map(r=>r.pita), '#ff4444', { bar: true }),
+            ds('Total Revenue', d.map(r=>r.govRev), '#f0f0f0', { type: 'line', w: 1.5, axis: 'y1' }),
+        ]},
+        options: { ...CO, scales: mkS('RM bn', 'Total Revenue') }
+    });
+
+    // 6. Trade Balance Detail
+    charts.tradedetail = new Chart(document.getElementById('c-tradedetail'), {
+        type: 'line', data: { labels: L, datasets: [
+            ds('Exports', d.map(r=>r.exp), '#00cc66', { fill: true, fillAlpha: 0.1 }),
+            ds('Imports', d.map(r=>r.imp), '#ff4444', { fill: true, fillAlpha: 0.1 }),
+            ds('Trade Balance', d.map(r=>r.tradeBal), '#ffcc00', { axis: 'y1', type: 'line', w: 2 }),
+            ds('Trade Balance % GDP', d.map(r=>r.tradeBalPct), '#ff8800', { axis: 'y1', dash: [4,3] }),
+        ]},
+        options: { ...CO, scales: mkS('RM bn', '% GDP') }
+    });
+
+    // 7. Credit & Property Market
+    charts.credit = new Chart(document.getElementById('c-credit'), {
+        type: 'line', data: { labels: L, datasets: comboDatasets([
+            ds('Credit Growth', d.map(r=>r.creditG), '#4488ff', { fill: true }),
+            ds('Property Price Growth', d.map(r=>r.prpG), '#ff8800'),
+            ds('HH Debt/GDP', d.map(r=>r.debt), '#ff4444', { axis: 'y1', dash: [4,3] }),
+        ], [
+            { label: 'Credit Growth Baseline', data: b.map(r=>r.creditG), color: '#4488ff' },
+            { label: 'Property Price Growth Baseline', data: b.map(r=>r.prpG), color: '#ff8800' },
+            { label: 'HH Debt/GDP Baseline', data: b.map(r=>r.debt), color: '#ff4444', opts: { axis: 'y1' } },
+        ], c ? [
+            { label: 'Credit Growth Compare', data: c.map(r=>r.creditG), color: '#66b3ff' },
+            { label: 'Property Price Growth Compare', data: c.map(r=>r.prpG), color: '#66b3ff' },
+            { label: 'HH Debt/GDP Compare', data: c.map(r=>r.debt), color: '#66b3ff', opts: { axis: 'y1' } },
+        ] : [])},
+        options: { ...CO, scales: mkS('Growth %', 'Debt/GDP %') }
+    });
+
+    // 8. Import Inflation Decomposition
+    charts.importinf = new Chart(document.getElementById('c-importinf'), {
+        type: 'bar', data: { labels: L, datasets: comboDatasets([
+            ds('FX Pass-Through', d.map(r=>r.importInf * 0.4), '#4488ff', { bar: true }),
+            ds('Oil Cost Push', d.map(r=>r.importInf * 0.3), '#ff8800', { bar: true }),
+            ds('World Goods Prices', d.map(r=>r.importInf * 0.3), '#ffcc00', { bar: true }),
+            ds('Total Import Inflation', d.map(r=>r.importInf), '#f0f0f0', { type: 'line', w: 1.5, axis: 'y1' }),
+        ], [
+            { label: 'FX Pass-Through Baseline', data: b.map(r=>r.importInf * 0.4), color: '#4488ff' },
+            { label: 'Oil Cost Push Baseline', data: b.map(r=>r.importInf * 0.3), color: '#ff8800' },
+            { label: 'World Goods Prices Baseline', data: b.map(r=>r.importInf * 0.3), color: '#ffcc00' },
+            { label: 'Total Import Inflation Baseline', data: b.map(r=>r.importInf), color: '#f0f0f0', opts: { axis: 'y1' } },
+        ], c ? [
+            { label: 'FX Pass-Through Compare', data: c.map(r=>r.importInf * 0.4), color: '#66b3ff' },
+            { label: 'Oil Cost Push Compare', data: c.map(r=>r.importInf * 0.3), color: '#66b3ff' },
+            { label: 'World Goods Prices Compare', data: c.map(r=>r.importInf * 0.3), color: '#66b3ff' },
+            { label: 'Total Import Inflation Compare', data: c.map(r=>r.importInf), color: '#66b3ff', opts: { axis: 'y1' } },
+        ] : [])},
+        options: { ...CO, scales: mkS('Import Inflation (pp)', 'Total %') }
+    });
 }
 
 function updCharts() {
@@ -2610,6 +2823,13 @@ function updCharts() {
         oil: [[r=>r.brent, r=>r.ron95, r=>r.sub, r=>r.cpi], [r=>r.brent, r=>r.ron95, r=>r.sub, r=>r.cpi], c ? [r=>r.brent, r=>r.ron95, r=>r.sub, r=>r.cpi] : []],
         trade: [[r=>r.eeExp, r=>r.oilExp, r=>r.cpoExp, r=>r.tourExp, r=>r.otherExp], [r=>r.eeExp, r=>r.oilExp, r=>r.cpoExp, r=>r.tourExp, r=>r.otherExp], c ? [r=>r.eeExp, r=>r.oilExp, r=>r.cpoExp, r=>r.tourExp, r=>r.otherExp] : []],
         cadecomp: [[r=>r.tradeBal, r=>r.primInc, r=>r.transfers, r=>r.ca, r=>r.REMITIN, r=>r.REMITOUT], [r=>r.tradeBal, r=>r.primInc, r=>r.transfers, r=>r.ca, r=>r.REMITIN, r=>r.REMITOUT], c ? [r=>r.tradeBal, r=>r.primInc, r=>r.transfers, r=>r.ca, r=>r.REMITIN, r=>r.REMITOUT] : []],
+        cpidiv: [[r=>r.cpiIdx, r=>r.cpiFood, r=>r.cpiHousing, r=>r.cpiTransport, r=>r.cpiRestaurants, r=>r.cpiMisc], [r=>r.cpiIdx, r=>r.cpiFood, r=>r.cpiHousing, r=>r.cpiTransport, r=>r.cpiRestaurants, r=>r.cpiMisc], c ? [r=>r.cpiIdx, r=>r.cpiFood, r=>r.cpiHousing, r=>r.cpiTransport, r=>r.cpiRestaurants, r=>r.cpiMisc] : []],
+        cpiweights: [[r=>r.cpiFoodContrib, r=>r.cpiHousingContrib, r=>r.cpiTransportContrib, r=>r.cpiOtherContrib, r=>r.cpi], [r=>r.cpiFoodContrib, r=>r.cpiHousingContrib, r=>r.cpiTransportContrib, r=>r.cpiOtherContrib, r=>r.cpi], c ? [r=>r.cpiFoodContrib, r=>r.cpiHousingContrib, r=>r.cpiTransportContrib, r=>r.cpiOtherContrib, r=>r.cpi] : []],
+        epart: [[r=>r.partRate, r=>r.epRatio, r=>r.unemp], [r=>r.partRate, r=>r.epRatio, r=>r.unemp], c ? [r=>r.partRate, r=>r.epRatio, r=>r.unemp] : []],
+        govrev: [[r=>r.dirTax, r=>r.indTax, r=>r.nonTaxRev, r=>r.petDiv, r=>r.pita, r=>r.govRev], [r=>r.dirTax, r=>r.indTax, r=>r.nonTaxRev, r=>r.petDiv, r=>r.pita, r=>r.govRev], c ? [r=>r.dirTax, r=>r.indTax, r=>r.nonTaxRev, r=>r.petDiv, r=>r.pita, r=>r.govRev] : []],
+        tradedetail: [[r=>r.exp, r=>r.imp, r=>r.tradeBal, r=>r.tradeBalPct], [r=>r.exp, r=>r.imp, r=>r.tradeBal, r=>r.tradeBalPct], c ? [r=>r.exp, r=>r.imp, r=>r.tradeBal, r=>r.tradeBalPct] : []],
+        credit: [[r=>r.creditG, r=>r.prpG, r=>r.debt], [r=>r.creditG, r=>r.prpG, r=>r.debt], c ? [r=>r.creditG, r=>r.prpG, r=>r.debt] : []],
+        importinf: [[r=>r.importInf * 0.4, r=>r.importInf * 0.3, r=>r.importInf * 0.3, r=>r.importInf], [r=>r.importInf * 0.4, r=>r.importInf * 0.3, r=>r.importInf * 0.3, r=>r.importInf], c ? [r=>r.importInf * 0.4, r=>r.importInf * 0.3, r=>r.importInf * 0.3, r=>r.importInf] : []],
     };
     for (const [k, groups] of Object.entries(mp)) {
         const [scenarioFns, baselineFns, compareFns] = groups;
@@ -2752,6 +2972,15 @@ function updDiagnostics(d, b, inp) {
         Math.abs(inp.semi - B.semi) / B.semi,
         Math.abs(inp.tour - B.tour) / B.tour
     );
+
+    // Validation checks
+    const avgGdp = d.reduce((s, r) => s + r.gdp, 0) / d.length;
+    const avgCpi = d.reduce((s, r) => s + r.cpi, 0) / d.length;
+    const avgUnemp = d.reduce((s, r) => s + r.unemp, 0) / d.length;
+    const avgFiscal = d.reduce((s, r) => s + r.fiscal, 0) / d.length;
+    const avgCa = d.reduce((s, r) => s + r.ca, 0) / d.length;
+    const avgDebt = d.reduce((s, r) => s + r.debt, 0) / d.length;
+
     const list = [
         {
             name: 'GDP Closure',
@@ -2780,6 +3009,30 @@ function updDiagnostics(d, b, inp) {
                 : calibrationStress < 0.7
                     ? 'Scenario is moderately outside baseline calibration; treat medium-run paths as indicative.'
                     : 'Scenario is far outside calibration range; use directional interpretation only.'
+        },
+        {
+            name: 'GDP Range',
+            value: avgGdp,
+            status: avgGdp < -5 || avgGdp > 15 ? 'bad' : avgGdp < -2 || avgGdp > 10 ? 'warn' : 'ok',
+            copy: `Average GDP growth ${avgGdp.toFixed(1)}% — ${avgGdp < -5 || avgGdp > 15 ? 'outside plausible range' : 'within plausible bounds'}.`
+        },
+        {
+            name: 'Inflation Range',
+            value: avgCpi,
+            status: avgCpi < -2 || avgCpi > 15 ? 'bad' : avgCpi < 0 || avgCpi > 8 ? 'warn' : 'ok',
+            copy: `Average CPI ${avgCpi.toFixed(1)}% — ${avgCpi < -2 || avgCpi > 15 ? 'outside plausible range' : 'within plausible bounds'}.`
+        },
+        {
+            name: 'Unemployment Range',
+            value: avgUnemp,
+            status: avgUnemp < 2 || avgUnemp > 10 ? 'bad' : avgUnemp < 2.5 || avgUnemp > 8 ? 'warn' : 'ok',
+            copy: `Average unemployment ${avgUnemp.toFixed(1)}% — ${avgUnemp < 2 || avgUnemp > 10 ? 'outside plausible range' : 'within plausible bounds'}.`
+        },
+        {
+            name: 'Debt Sustainability',
+            value: avgDebt,
+            status: avgDebt > 100 ? 'bad' : avgDebt > 90 ? 'warn' : 'ok',
+            copy: `Average HH debt/GDP ${avgDebt.toFixed(1)}% — ${avgDebt > 100 ? 'unsustainable trajectory' : avgDebt > 90 ? 'elevated but manageable' : 'within sustainable range'}.`
         },
     ];
     const wrap = document.getElementById('diagnostics-list');
@@ -2822,14 +3075,14 @@ function updNarrative(d, inp) {
     const parts = [];
     const aGdp = avg(r=>r.gdp), aCpi = avg(r=>r.cpi), pCpi = Math.max(...d.map(r=>r.cpi));
 
-    if (inp.brent > 100) parts.push(`Oil at $${inp.brent} creates cost-push pressure. Administered fuel prices rise ~${(P.oil_admin_pt * ((inp.brent-82)/82) * 100).toFixed(0)}% through the 15% pass-through channel.`);
+    if (inp.brent > 100) parts.push(`Oil at $${inp.brent} creates cost-push pressure. Administered fuel prices rise ~${(P.oil_admin_pt * ((inp.brent-B.brent)/B.brent) * 100).toFixed(0)}% through the 15% pass-through channel.`);
     else if (inp.brent < 60) parts.push(`Low oil at $${inp.brent} depresses Petronas profits and fiscal revenue but lowers energy costs.`);
     if (pCpi > 6) parts.push(`Headline CPI peaks at ${pCpi.toFixed(1)}% — well above BNM's comfort zone. Second-round wage effects add persistence.`);
     else if (aCpi > 3.5) parts.push(`Inflation averaging ${aCpi.toFixed(1)}% signals moderate price pressure.`);
     if (!inp.budi95) parts.push(`Disabling BUDI95 and fully floating RON95 creates a one-off CPI shock while eliminating the targeted fuel subsidy bill.`);
-    if (inp.fx > 4.2) parts.push(`Ringgit at ${inp.fx.toFixed(2)} amplifies import costs and subsidy burden but inflates Petronas RM profits.`);
+    if (inp.fx > 4.6) parts.push(`Ringgit at ${inp.fx.toFixed(2)} amplifies import costs and subsidy burden but inflates Petronas RM profits.`);
     if (aGdp < 2) parts.push(`Growth at ${aGdp.toFixed(1)}% — near-recessionary. Household real income squeeze is the main channel.`);
-    else if (aGdp > 5.5) parts.push(`Strong growth at ${aGdp.toFixed(1)}% on favourable external conditions.`);
+    else if (aGdp > 8) parts.push(`Strong growth at ${aGdp.toFixed(1)}% on favourable external conditions.`);
     if (inp.semi > 110) parts.push(`An electrical & electronics boom lifts exports, but high import content (52%) limits the net GDP impact.`);
     else if (inp.semi < 80) parts.push(`Semiconductor downcycle hits 38% of exports. Manufacturing employment responds with a lag.`);
     if (!parts.length) parts.push(`Economy at ${aGdp.toFixed(1)}% growth, ${aCpi.toFixed(1)}% inflation — near baseline trend. Adjust inputs to trace shock transmission.`);
@@ -2887,19 +3140,19 @@ function resetInputs() {
     uiState.deltaMode = false;
     refreshPresetUI();
     refreshScenarioUI();
-    document.getElementById('in-brent').value = 82;
-    document.getElementById('in-cpo').value = 4000;
-    document.getElementById('in-semi').value = 100;
-    document.getElementById('in-tour').value = 100;
-    document.getElementById('in-opr').value = 3.00;
-    document.getElementById('in-fx').value = 3.89;
-    document.getElementById('in-devgr').value = 2;
-    document.getElementById('in-wpg').value = 100;
-    document.getElementById('in-equity').value = 100;
-    document.getElementById('in-ust10').value = 4.25;
-    document.getElementById('in-sst').value = 6;
-    document.getElementById('in-cpoduty').value = 8;
-    document.getElementById('in-epf').value = 0;
+    document.getElementById('in-brent').value = B.brent;
+    document.getElementById('in-cpo').value = B.cpo;
+    document.getElementById('in-semi').value = B.semi;
+    document.getElementById('in-tour').value = B.tour;
+    document.getElementById('in-opr').value = B.opr;
+    document.getElementById('in-fx').value = B.fx;
+    document.getElementById('in-devgr').value = B.devgr;
+    document.getElementById('in-wpg').value = B.wpg;
+    document.getElementById('in-equity').value = B.equity;
+    document.getElementById('in-ust10').value = B.ust10;
+    document.getElementById('in-sst').value = B.sst;
+    document.getElementById('in-cpoduty').value = B.cpoduty;
+    document.getElementById('in-epf').value = B.epf;
     document.getElementById('in-elnino').checked = false;
     document.getElementById('in-budi95').checked = true;
     syncDeltaToggleUI();

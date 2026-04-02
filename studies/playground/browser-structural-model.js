@@ -1,70 +1,10 @@
 import { StructuralModelEngine } from './structural-model-engine.js';
 import { createBaselineRunPack } from './baseline-run-pack.js';
+import { BASELINE, CALIBRATION } from './baseline-constants.js';
 
-const B = {
-    gdp_millions_rm: 1850000,
-    gdp_growth: 4.2,
-    cpi_inflation: 2.3,
-    core_inflation: 1.8,
-    opr: 3.0,
-    brent: 82,
-    cpo: 4000,
-    fx: 3.89,
-    unemployment: 3.4,
-    fiscal_pct: -3.2,
-    gov_revenue_bln: 200,
-    gov_expenditure_bln: 260,
-    petronas_profit_bln: 95,
-    pita_revenue_bln: 36.1,
-    petronas_dividend_bln: 28.5,
-    fuel_subsidy_bln: 8.4,
-    ron95_budi_price: 1.99,
-    ron95_market_price: 2.54,
-    exports_bln: 980,
-    imports_bln: 850,
-    current_account_pct: 2.1,
-    business_investment_bln: 230,
-    public_investment_bln: 120,
-    housing_investment_bln: 75,
-    household_debt_ratio: 84.2,
-    real_wage_growth: 1.9,
-    nominal_wage_growth: 4.2,
-    consumption_growth: 5.5,
-    credit_growth: 5.2,
-    property_price_growth: 3.8,
-    trade_balance_pct: 7.0,
-    primary_income_pct: -4.2,
-    transfers_pct: -0.7,
-    semi: 100,
-    tour: 100,
-    devgr: 2.0,
-    wpg: 100,
-    equity: 100,
-    ust10: 4.25,
-    sst: 6,
-    cpoduty: 8,
-    epf: 0,
-};
-
-const P = {
-    oil_admin_pt: 0.15,
-    w_admin: 0.22,
-    import_pt: 0.40,
-    mpc: 0.55,
-    okun: 0.45,
-    reer_exp_elast: -0.25,
-    ee_elast: 1.05,
-    tour_elast: 0.85,
-    pet_tax: 0.38,
-    ee_share: 0.38,
-    oil_share: 0.08,
-    cpo_share: 0.05,
-    fuel_litres_q: 3.5,
-    budi95_coverage: 0.92,
-    opr_cons: -0.0072,
-    opr_inv: -0.0015,
-    wage_price_pt: 0.52,
-};
+// Re-export constants for use in the model
+const B = BASELINE;
+const P = CALIBRATION;
 
 function r1(v) {
     return Math.round(v * 10) / 10;

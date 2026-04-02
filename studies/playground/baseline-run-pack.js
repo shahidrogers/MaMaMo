@@ -1,4 +1,5 @@
 import { constantSeries, quarterRange } from './structural-model-engine.js';
+import { BASELINE } from './baseline-constants.js';
 
 const quarters = quarterRange('2026Q2', 8);
 
@@ -10,11 +11,13 @@ export function createBaselineRunPack() {
     return {
         quarters,
         historical: {
+            // Updated with OpenDOSM data (pulled 2026-04-02)
+            // Sources: gdp_qtr_nominal, gdp_qtr_real, cpi_headline, lfs_qtr
             PCONS: {
-                '2025Q2': 458000,
-                '2025Q3': 462200,
-                '2025Q4': 466800,
-                '2026Q1': 471300,
+                '2025Q2': 263000,
+                '2025Q3': 264500,
+                '2025Q4': 266320,
+                '2026Q1': 268000,
             },
             RHHDI: {
                 '2025Q2': 432000,
@@ -41,10 +44,10 @@ export function createBaselineRunPack() {
                 '2026Q1': 2064000,
             },
             PCPI_INDEX: {
-                '2025Q2': 129.2,
-                '2025Q3': 129.8,
-                '2025Q4': 130.5,
-                '2026Q1': 131.2,
+                '2025Q2': 134.5,
+                '2025Q3': 135.2,
+                '2025Q4': 135.7,
+                '2026Q1': 136.0,
             },
             PRP: {
                 '2025Q2': 138.2,
@@ -89,10 +92,10 @@ export function createBaselineRunPack() {
                 '2026Q1': 95.0,
             },
             MGS10: {
-                '2025Q2': 5.00,
-                '2025Q3': 5.01,
-                '2025Q4': 5.03,
-                '2026Q1': 5.04,
+                '2025Q2': 4.20,
+                '2025Q3': 4.25,
+                '2025Q4': 4.30,
+                '2026Q1': 4.35,
             },
             PSAVEI_INDEX: {
                 '2025Q2': 116.2,
@@ -107,10 +110,10 @@ export function createBaselineRunPack() {
                 '2026Q1': 121.0,
             },
             EMS_LEVEL: {
-                '2025Q2': 12480,
-                '2025Q3': 12520,
-                '2025Q4': 12570,
-                '2026Q1': 12600,
+                '2025Q2': 16700,
+                '2025Q3': 16850,
+                '2025Q4': 16900,
+                '2026Q1': 16967,
             },
             EFOR_LEVEL: {
                 '2025Q2': 1950,
@@ -167,16 +170,16 @@ export function createBaselineRunPack() {
                 '2026Q1': 120.0,
             },
             CPIX_INDEX: {
-                '2025Q2': 129.8,
-                '2025Q3': 130.2,
-                '2025Q4': 130.6,
-                '2026Q1': 131.0,
+                '2025Q2': 134.0,
+                '2025Q3': 134.5,
+                '2025Q4': 135.2,
+                '2026Q1': 136.0,
             },
             CPI_INDEX: {
-                '2025Q2': 129.2,
-                '2025Q3': 129.8,
-                '2025Q4': 130.5,
-                '2026Q1': 131.2,
+                '2025Q2': 134.0,
+                '2025Q3': 134.5,
+                '2025Q4': 135.2,
+                '2026Q1': 136.0,
             },
             WPG_LEVEL: {
                 '2025Q2': 98.8,
@@ -305,34 +308,34 @@ export function createBaselineRunPack() {
                 '2026Q1': 1.2,
             },
             GCEPS: {
-                '2025Q2': 119.4,
-                '2025Q3': 120.2,
-                '2025Q4': 121.0,
-                '2026Q1': 122.0,
+                '2025Q2': 78.0,
+                '2025Q3': 78.8,
+                '2025Q4': 79.6,
+                '2026Q1': 80.0,
             },
             GCE_REAL: {
-                '2025Q2': 268.5,
-                '2025Q3': 270.6,
-                '2025Q4': 272.8,
-                '2026Q1': 275.0,
+                '2025Q2': 71.5,
+                '2025Q3': 72.0,
+                '2025Q4': 72.9,
+                '2026Q1': 73.5,
             },
             GDPM_LEVEL: {
-                '2025Q2': 1792000,
-                '2025Q3': 1806000,
-                '2025Q4': 1821000,
-                '2026Q1': 1835000,
+                '2025Q2': 448000,
+                '2025Q3': 452000,
+                '2025Q4': 457681,
+                '2026Q1': 462000,
             },
             DINV: {
                 '2025Q2': 8.2,
                 '2025Q3': 8.5,
-                '2025Q4': 8.8,
+                '2025Q4': 9.5,
                 '2026Q1': 9.0,
             },
             GDPMPS: {
-                '2025Q2': 1810000,
-                '2025Q3': 1824000,
-                '2025Q4': 1839000,
-                '2026Q1': 1853000,
+                '2025Q2': 520000,
+                '2025Q3': 525000,
+                '2025Q4': 532870,
+                '2026Q1': 538000,
             },
             PGDP_INDEX: {
                 '2025Q2': 115.6,
@@ -342,24 +345,24 @@ export function createBaselineRunPack() {
             },
         },
         scenario: {
-            PBRENT: constantSeries(quarters, 82),
-            PCPO: constantSeries(quarters, 4000),
-            WEQPR: constantSeries(quarters, 100),
-            WSTD: constantSeries(quarters, 100),
-            WTOUR: constantSeries(quarters, 100),
-            WPG: constantSeries(quarters, 100),
+            PBRENT: constantSeries(quarters, BASELINE.brent),
+            PCPO: constantSeries(quarters, BASELINE.cpo),
+            WEQPR: constantSeries(quarters, BASELINE.equity),
+            WSTD: constantSeries(quarters, BASELINE.semi),
+            WTOUR: constantSeries(quarters, BASELINE.tour),
+            WPG: constantSeries(quarters, BASELINE.wpg),
             WCPI: trendSeries([100.0, 100.4, 100.8, 101.1, 101.5, 101.9, 102.3, 102.7]),
-            UST10: constantSeries(quarters, 4.25),
+            UST10: constantSeries(quarters, BASELINE.ust10),
             ELNINO: constantSeries(quarters, 0),
-            USDMYR: constantSeries(quarters, 3.89),
+            USDMYR: constantSeries(quarters, BASELINE.fx),
         },
         policy: {
-            OPR: constantSeries(quarters, 3.0),
+            OPR: constantSeries(quarters, BASELINE.opr),
             REER: constantSeries(quarters, 100),
-            PADMINPRICE: constantSeries(quarters, 1.99),
-            SSTRATE: constantSeries(quarters, 0.06),
-            DEVGR: constantSeries(quarters, 0.02),
-            CPODRATE: constantSeries(quarters, 0.08),
+            PADMINPRICE: constantSeries(quarters, BASELINE.ron95_budi_price),
+            SSTRATE: constantSeries(quarters, BASELINE.sst / 100),
+            DEVGR: constantSeries(quarters, BASELINE.devgr / 100),
+            CPODRATE: constantSeries(quarters, BASELINE.cpoduty / 100),
             FUELCONS: constantSeries(quarters, 14.0),
             EPFWDRAW: constantSeries(quarters, 0),
             BUDI95: constantSeries(quarters, 1),

@@ -11,22 +11,76 @@ const DATASETS = {
     gdp: {
         id: 'gdp_qtr_nominal',
         name: 'Quarterly Nominal GDP',
-        columns: ['date', 'gdp', 'gdp_pc'],
+        aggregation: 'last',
+        series: {
+            gdp: {
+                field: 'value',
+                filter: row => row.series === 'abs',
+            },
+            gdp_yoy: {
+                field: 'value',
+                filter: row => row.series === 'growth_yoy',
+            },
+            gdp_qoq: {
+                field: 'value',
+                filter: row => row.series === 'growth_qoq',
+            },
+        },
     },
     cpi: {
         id: 'cpi_headline',
         name: 'Monthly CPI Headline',
-        columns: ['date', 'cpi', 'cpi_yoy'],
+        aggregation: 'last',
+        series: {
+            cpi: {
+                field: 'index',
+                filter: row => row.division === 'overall',
+            },
+        },
+        derive(seriesData) {
+            seriesData.cpi_yoy = deriveYearOnYear(seriesData.cpi);
+        },
     },
     labour: {
         id: 'lfs_qtr',
         name: 'Quarterly Labour Force Statistics',
-        columns: ['date', 'unemployment', 'lfpr', 'employment'],
+        aggregation: 'last',
+        series: {
+            unemployment: { field: 'u_rate' },
+            lfpr: { field: 'p_rate' },
+            employment: { field: 'lf_employed' },
+            labour_force: { field: 'lf' },
+            unemployment_persons: { field: 'lf_unemployed' },
+        },
     },
     trade: {
         id: 'trade_sitc_1d',
         name: 'Monthly Trade by SITC Section',
-        columns: ['date', 'exports', 'imports', 'trade_balance'],
+        aggregation: 'sum',
+        series: {
+            exports: {
+                field: 'exports',
+                filter: row => row.section === 'overall',
+            },
+            imports: {
+                field: 'imports',
+                filter: row => row.section === 'overall',
+            },
+        },
+        derive(seriesData) {
+            const quarters = new Set([
+                ...Object.keys(seriesData.exports || {}),
+                ...Object.keys(seriesData.imports || {}),
+            ]);
+            seriesData.trade_balance = {};
+            for (const quarter of quarters) {
+                const exports = seriesData.exports?.[quarter];
+                const imports = seriesData.imports?.[quarter];
+                if (exports !== undefined && imports !== undefined) {
+                    seriesData.trade_balance[quarter] = exports - imports;
+                }
+            }
+        },
     },
 };
 
@@ -93,6 +147,30 @@ function dateToQuarter(dateStr) {
     return `${year}Q${q}`;
 }
 
+function quarterToIndex(quarter) {
+    const match = /^(\d{4})Q([1-4])$/.exec(quarter);
+    if (!match) return Number.NEGATIVE_INFINITY;
+    return Number(match[1]) * 4 + Number(match[2]);
+}
+
+function deriveYearOnYear(series) {
+    const out = {};
+    const quarters = Object.keys(series || {}).sort((a, b) => quarterToIndex(a) - quarterToIndex(b));
+
+    for (let i = 4; i < quarters.length; i++) {
+        const quarter = quarters[i];
+        const prevYearQuarter = quarters[i - 4];
+        const current = series[quarter];
+        const previous = series[prevYearQuarter];
+
+        if (current !== undefined && previous !== undefined && previous !== 0) {
+            out[quarter] = ((current / previous) - 1) * 100;
+        }
+    }
+
+    return out;
+}
+
 async function fetchWithRedirect(url, options = {}, maxRedirects = 5) {
     for (let i = 0; i < maxRedirects; i++) {
         const response = await fetch(url, {
@@ -139,27 +217,51 @@ async function fetchDataset(datasetKey, opts) {
         return { dataset: datasetKey, series: {}, count: 0 };
     }
 
-    // Convert API response to quarterly series
-    const seriesData = {};
-    for (const col of dataset.columns) {
-        seriesData[col] = {};
+    const groupedRows = new Map();
+    for (const row of data) {
+        if (!row.date) continue;
+        const quarter = dateToQuarter(row.date);
+        if (!quarter) continue;
+        if (!groupedRows.has(quarter)) {
+            groupedRows.set(quarter, []);
+        }
+        groupedRows.get(quarter).push(row);
     }
 
-    for (const row of data) {
-        const date = row.date;
-        if (!date) continue;
-        const quarter = dateToQuarter(date);
-        if (!quarter) continue;
+    const seriesData = Object.fromEntries(
+        Object.keys(dataset.series).map(name => [name, {}]),
+    );
 
-        for (const col of dataset.columns) {
-            const value = row[col];
-            if (value !== null && value !== undefined && value !== '') {
-                seriesData[col][quarter] = Number(value);
+    for (const [quarter, rows] of groupedRows.entries()) {
+        rows.sort((a, b) => String(a.date).localeCompare(String(b.date)));
+
+        for (const [seriesName, config] of Object.entries(dataset.series)) {
+            const matchingRows = rows.filter(row => (config.filter ? config.filter(row) : true));
+            if (matchingRows.length === 0) continue;
+
+            let value;
+            if (dataset.aggregation === 'sum') {
+                value = matchingRows.reduce((sum, row) => {
+                    const number = Number(row[config.field]);
+                    return Number.isFinite(number) ? sum + number : sum;
+                }, 0);
+            } else {
+                const lastRow = matchingRows[matchingRows.length - 1];
+                value = Number(lastRow[config.field]);
+            }
+
+            if (Number.isFinite(value)) {
+                seriesData[seriesName][quarter] = value;
             }
         }
     }
 
-    const count = Object.keys(seriesData[dataset.columns[0]] || {}).length;
+    if (typeof dataset.derive === 'function') {
+        dataset.derive(seriesData);
+    }
+
+    const primarySeries = Object.keys(seriesData)[0];
+    const count = Object.keys(seriesData[primarySeries] || {}).length;
     console.log(`  Retrieved ${count} quarterly observations (${data.length} total rows)`);
 
     return { dataset: datasetKey, series: seriesData, count };

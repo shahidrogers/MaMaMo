@@ -9,6 +9,8 @@
     "mamamo-fetch": "./bin/fetch-opendosm.mjs"
   },
   "scripts": {
+    "test": "node --test",
+    "lint": "npx eslint .",
     "run": "node bin/run-model.mjs",
     "build-inputs": "node bin/build-inputs.mjs",
     "fetch-data": "node bin/fetch-opendosm.mjs",

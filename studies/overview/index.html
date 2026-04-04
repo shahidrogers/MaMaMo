@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaMaMo — Malaysia Macro Model</title>
+    <meta name="description" content="An open structural quarterly macroeconomic model prototype for Malaysia. Transparent, publicly inspectable, and built for serious research.">
+    <meta name="robots" content="index,follow">
+    <meta name="author" content="Shahid Rogers">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="canonical" href="https://shahidrogers.github.io/MaMaMo/studies/overview/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="MaMaMo">
+    <meta property="og:title" content="MaMaMo — Malaysia Macro Model">
+    <meta property="og:description" content="An open structural quarterly macroeconomic model prototype for Malaysia.">
+    <meta property="og:url" content="https://shahidrogers.github.io/MaMaMo/studies/overview/">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0a0a0a;
+            --bg-panel: #111111;
+            --bg-card: #141414;
+            --border: #222222;
+            --border-accent: #333333;
+            --text: #e8e8e8;
+            --text-secondary: #999999;
+            --text-dim: #666666;
+            --orange: #ff8800;
+            --orange-dim: rgba(255,136,0,0.12);
+            --red: #ff4444;
+            --red-dim: rgba(255,68,68,0.1);
+            --green: #00cc66;
+            --green-dim: rgba(0,204,102,0.1);
+            --blue: #4488ff;
+            --blue-dim: rgba(68,136,255,0.1);
+            --yellow: #ffcc00;
+            --yellow-dim: rgba(255,204,0,0.1);
+            --mono: 'IBM Plex Mono', 'Consolas', 'Monaco', monospace;
+            --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            font-family: var(--mono);
+            background: var(--bg);
+            color: var(--text);
+            font-size: 13px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::selection { background: rgba(255,136,0,0.3); }
+
+        a { color: var(--orange); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* ---- NAV ---- */
+        .nav {
+            background: #000;
+            border-bottom: 1px solid var(--border);
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-logo { color: var(--orange); font-weight: 700; font-size: 14px; letter-spacing: 0.08em; }
+        .nav-links { display: flex; gap: 16px; }
+        .nav-links a { color: var(--text-dim); font-size: 11px; }
+        .nav-links a:hover { color: var(--orange); text-decoration: none; }
+
+        /* ---- HERO ---- */
+        .hero {
+            padding: 64px 16px 48px;
+            text-align: center;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: var(--orange-dim);
+            color: var(--orange);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            margin-bottom: 24px;
+        }
+        .hero h1 {
+            font-family: var(--sans);
+            font-size: 36px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+        .hero p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            max-width: 560px;
+            margin: 0 auto 32px;
+        }
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: var(--orange);
+            color: #000;
+            border: 1px solid var(--orange);
+        }
+        .btn-primary:hover { background: var(--orange-bright, #ffaa33); text-decoration: none; }
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border-accent);
+        }
+        .btn-secondary:hover { border-color: var(--text-dim); text-decoration: none; }
+
+        /* ---- SECTIONS ---- */
+        .section {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 48px 16px;
+        }
+        .section-label {
+            font-size: 10px;
+            color: var(--orange);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .section h2 {
+            font-family: var(--sans);
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            letter-spacing: -0.01em;
+        }
+        .section p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        /* ---- CARDS GRID ---- */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 24px;
+            transition: border-color 0.15s;
+        }
+        .card:hover { border-color: var(--border-accent); }
+        .card-icon {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+        .card h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .card p {
+            font-size: 12px;
+            color: var(--text-dim);
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        /* ---- STATUS TABLE ---- */
+        .status-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 24px;
+            font-size: 12px;
+        }
+        .status-table th {
+            text-align: left;
+            color: var(--text-dim);
+            font-weight: 500;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .status-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 2px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .status-strong { background: var(--green-dim); color: var(--green); }
+        .status-provisional { background: var(--yellow-dim); color: var(--yellow); }
+        .status-progress { background: var(--blue-dim); color: var(--blue); }
+        .status-not-yet { background: var(--red-dim); color: var(--red); }
+
+        /* ---- ASSUMPTIONS ---- */
+        .assumptions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .assumption {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--orange);
+            padding: 16px;
+        }
+        .assumption h4 {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .assumption p {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-bottom: 0;
+        }
+
+        /* ---- LINKS ---- */
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .link-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 16px;
+            display: block;
+            transition: border-color 0.15s;
+            text-decoration: none;
+        }
+        .link-card:hover { border-color: var(--orange); text-decoration: none; }
+        .link-card h4 {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        .link-card p {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-bottom: 0;
+        }
+
+        /* ---- FOOTER ---- */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 24px 16px;
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 28px; }
+            .hero { padding: 48px 16px 32px; }
+            .section { padding: 32px 16px; }
+            .hero-actions { flex-direction: column; align-items: center; }
+            .btn { width: 100%; max-width: 280px; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+    <span class="nav-logo">MAMAMO</span>
+    <div class="nav-links">
+        <a href="../playground/">Playground</a>
+        <a href="../validation/">Validation</a>
+        <a href="../../">GitHub</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+    <div class="hero-badge">v0.4.0 · Research Prototype</div>
+    <h1>Malaysia Macro Model</h1>
+    <p>An open structural quarterly macroeconomic model for Malaysia. ~200 equations across 17 blocks, transparent and publicly inspectable. Built for research, policy analysis, and learning.</p>
+    <div class="hero-actions">
+        <a href="../playground/" class="btn btn-primary">Try the Playground →</a>
+        <a href="../../README.md" class="btn btn-secondary">Read the Docs</a>
+        <a href="../validation/" class="btn btn-secondary">View Validation</a>
+    </div>
+</header>
+
+<!-- WHAT IT DOES -->
+<section class="section">
+    <div class="section-label">What It Does</div>
+    <h2>Trace How Shocks Flow Through Malaysia's Economy</h2>
+    <p>MaMaMo adapts the UK OBR/HM Treasury model architecture for Malaysian institutions. It models how oil prices, exchange rates, monetary policy, and global conditions transmit through consumption, investment, trade, fiscal, and household channels.</p>
+    <p>Run scenarios like "$200 oil on a US-Iran war" or "OPR hike to 4%" and see the full quarterly projection across GDP, inflation, unemployment, fiscal balance, Petronas profits, fuel subsidies, and more.</p>
+
+    <div class="cards">
+        <div class="card">
+            <div class="card-icon">🛢️</div>
+            <h3>Oil & Commodities</h3>
+            <p>Brent crude pass-through to administered prices, Petronas profits, PITA revenue, and fuel subsidies. CPO production with El Niño sensitivity.</p>
+        </div>
+        <div class="card">
+            <div class="card-icon">🏦</div>
+            <h3>Monetary Policy</h3>
+            <p>OPR transmission to BLR, deposits, MGS yields, credit growth, and household debt dynamics. Managed float exchange rate regime.</p>
+        </div>
+        <div class="card">
+            <div class="card-icon">📊</div>
+            <h3>Fiscal Detail</h3>
+            <p>Government revenue (income tax, corporate tax, SST, Petronas dividends), expenditure (emoluments, debt service, subsidies, BSH transfers), and debt dynamics.</p>
+        </div>
+        <div class="card">
+            <div class="card-icon">👷</div>
+            <h3>Labour Market</h3>
+            <p>Employment, wages, unemployment, participation rate, and ~2M foreign workers in plantations, construction, and manufacturing.</p>
+        </div>
+        <div class="card">
+            <div class="card-icon">🌐</div>
+            <h3>Trade & BOP</h3>
+            <p>E&E exports driven by semiconductor cycle, tourism, commodities. Import content from IO tables. Current account, FDI, and portfolio flows.</p>
+        </div>
+        <div class="card">
+            <div class="card-icon">🏠</div>
+            <h3>Household Balance Sheet</h3>
+            <p>Disposable income, EPF wealth, deposits, equities, housing loans, hire purchase. Debt-to-GDP at ~84%.</p>
+        </div>
+    </div>
+</section>
+
+<!-- KEY ASSUMPTIONS -->
+<section class="section">
+    <div class="section-label">Key Assumptions</div>
+    <h2>How the Model Works</h2>
+
+    <div class="assumptions">
+        <div class="assumption">
+            <h4>Error-Correction Framework</h4>
+            <p>Long-run equilibrium relationships with short-run adjustment dynamics. Variables converge to equilibrium over time.</p>
+        </div>
+        <div class="assumption">
+            <h4>Small Open Economy</h4>
+            <p>Malaysia is a price-taker in commodity and capital markets. External variables (Brent, semiconductors, US rates) are exogenous.</p>
+        </div>
+        <div class="assumption">
+            <h4>Managed Float</h4>
+            <p>REER is exogenous; NEER determined by relative prices. BNM manages the ringgit within a band.</p>
+        </div>
+        <div class="assumption">
+            <h4>Calibrated Coefficients</h4>
+            <p>Parameters from BNM working papers, IMF reports, and DOSM IO tables — not yet fully estimated from raw data.</p>
+        </div>
+    </div>
+</section>
+
+<!-- CURRENT STATUS -->
+<section class="section">
+    <div class="section-label">Current Status</div>
+    <h2>Where the Model Stands Today</h2>
+    <p>This is a research prototype, not a validated production forecasting system. Here's an honest assessment:</p>
+
+    <table class="status-table">
+        <thead>
+            <tr>
+                <th>Area</th>
+                <th>Status</th>
+                <th>Detail</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Structure</td>
+                <td><span class="status-badge status-strong">Strong</span></td>
+                <td>17-block Malaysia-specific model architecture with ~200 equations</td>
+            </tr>
+            <tr>
+                <td>Documentation</td>
+                <td><span class="status-badge status-strong">Strong</span></td>
+                <td>Model file, glossary, and input specs are explicit and inspectable</td>
+            </tr>
+            <tr>
+                <td>Calibration</td>
+                <td><span class="status-badge status-provisional">Provisional</span></td>
+                <td>Informed calibrations from published sources, not final econometric estimates</td>
+            </tr>
+            <tr>
+                <td>Data Pipeline</td>
+                <td><span class="status-badge status-progress">In Progress</span></td>
+                <td>OpenDOSM fetcher and input pack builder in place; auto-ingest pending</td>
+            </tr>
+            <tr>
+                <td>Scenario Readiness</td>
+                <td><span class="status-badge status-strong">Usable</span></td>
+                <td>Structured what-if exercises work well, especially for oil, policy, and trade shocks</td>
+            </tr>
+            <tr>
+                <td>Production Readiness</td>
+                <td><span class="status-badge status-not-yet">Not Yet</span></td>
+                <td>Too many external wedges and loosely governed inputs for official use</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- QUICK LINKS -->
+<section class="section">
+    <div class="section-label">Explore</div>
+    <h2>Quick Links</h2>
+
+    <div class="links-grid">
+        <a href="../playground/" class="link-card">
+            <h4>Scenario Playground</h4>
+            <p>Interactive sandbox with live sliders for oil, OPR, FX, and more</p>
+        </a>
+        <a href="../validation/" class="link-card">
+            <h4>Model Validation</h4>
+            <p>Back-testing against OpenDOSM data with accuracy metrics</p>
+        </a>
+        <a href="../simulations/oil-200-iran-war/" class="link-card">
+            <h4>$200 Oil Simulation</h4>
+            <p>Full quarterly projection of a US-Iran war scenario</p>
+        </a>
+        <a href="../../docs/research-prototype-summary.md" class="link-card">
+            <h4>Research Summary</h4>
+            <p>One-page overview of the model and its capabilities</p>
+        </a>
+        <a href="../../docs/model-architecture.md" class="link-card">
+            <h4>Model Architecture</h4>
+            <p>Clean diagram of the 17-block structure</p>
+        </a>
+        <a href="../../docs/how-to-interpret-this-model.md" class="link-card">
+            <h4>How to Interpret</h4>
+            <p>Reading guide and limitations of model outputs</p>
+        </a>
+        <a href="../../model/malaysia-quarterly-model.md" class="link-card">
+            <h4>Full Model Equations</h4>
+            <p>~200 equations in EViews-compatible syntax</p>
+        </a>
+        <a href="../../" class="link-card">
+            <h4>GitHub Repository</h4>
+            <p>Source code, issues, and contribution guide</p>
+        </a>
+    </div>
+</section>
+
+<!-- CLI -->
+<section class="section">
+    <div class="section-label">Command Line</div>
+    <h2>Run from Terminal</h2>
+    <p>Requires Node.js 18+. No dependencies to install.</p>
+    <div style="background: var(--bg-card); border: 1px solid var(--border); padding: 16px; margin-top: 16px; font-size: 12px; overflow-x: auto;">
+        <div style="color: var(--text-dim); margin-bottom: 8px;"># Baseline scenario</div>
+        <div style="margin-bottom: 12px;">node bin/run-model.mjs</div>
+        <div style="color: var(--text-dim); margin-bottom: 8px;"># Oil shock: Brent at $150, weaker ringgit</div>
+        <div style="margin-bottom: 12px;">node bin/run-model.mjs --brent 150 --fx 4.20</div>
+        <div style="color: var(--text-dim); margin-bottom: 8px;"># Fetch latest OpenDOSM data</div>
+        <div style="margin-bottom: 12px;">node bin/fetch-opendosm.mjs</div>
+        <div style="color: var(--text-dim); margin-bottom: 8px;"># Run tests</div>
+        <div>npm test</div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <p>MaMaMo v0.4.0 · MIT License · Built by <a href="mailto:shahidrogers+mamamo@gmail.com">Shahid Rogers</a></p>
+    <p style="margin-top: 4px;">Not for official forecasting, policy sign-off, or investment advice.</p>
+</footer>
+
+</body>
+</html>

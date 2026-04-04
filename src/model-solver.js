@@ -74,12 +74,44 @@ function lagSafe(lagFn, name, periods, fallback) {
     catch { return fallback; }
 }
 
+/**
+ * Create a run pack from raw data objects (e.g. loaded from JSON files).
+ * Quarters are inferred from the first series in the scenario layer.
+ *
+ * @param {Object} historical - Historical data (series → quarter → value)
+ * @param {Object} scenario - Scenario/exogenous inputs (series → quarter → value)
+ * @param {Object} policy - Policy variables (series → quarter → value)
+ * @param {Object} demographic - Demographic projections (series → quarter → value)
+ * @param {Object} calibration - Calibration parameters (series → quarter → value)
+ * @param {Object} preprocess - Preprocessed data (series → quarter → value)
+ * @returns {Object} A valid run pack ready for model execution
+ * @throws {Error} If no quarters can be inferred from scenario data
+ */
 export function createRunPackFromFiles(historical, scenario, policy, demographic, calibration, preprocess) {
     const quarters = Object.keys(scenario[Object.keys(scenario)[0]] || {});
     if (quarters.length === 0) throw new Error('No quarters found in scenario data');
     return { quarters, historical, scenario, policy, demographic, calibration, preprocess };
 }
 
+/**
+ * Run the full 17-block MaMaMo structural model for all quarters in the run pack.
+ *
+ * The model computes quarterly projections for ~200 variables including GDP growth,
+ * CPI inflation, unemployment, fiscal balance, Petronas profits, fuel subsidies,
+ * trade balance, household debt, and more.
+ *
+ * @param {Object} runPack - Validated run pack with all data layers
+ * @param {Object} [options={}] - Engine options (reserved for future use)
+ * @returns {Array<Object>} Array of quarterly result objects, each containing
+ *   the quarter string and all computed macroeconomic variables
+ *
+ * @example
+ * import { runModel } from './src/model-solver.js';
+ * import { createBaselineRunPack } from './studies/playground/baseline-run-pack.js';
+ *
+ * const results = runModel(createBaselineRunPack());
+ * console.log(results[0].gdp); // GDP growth for first quarter
+ */
 export function runModel(runPack, options = {}) {
     const engine = new StructuralModelEngine(runPack, options);
 

@@ -117,6 +117,28 @@
         }
         @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
 
+        /* ---- EXPORT BUTTONS ---- */
+        .export-btn {
+            background: rgba(255,136,0,0.1);
+            border: 1px solid rgba(255,136,0,0.25);
+            color: var(--orange);
+            font-family: var(--mono);
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            padding: 3px 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .export-btn:hover {
+            background: rgba(255,136,0,0.2);
+            border-color: var(--orange);
+        }
+        .export-btn:active {
+            background: rgba(255,136,0,0.3);
+        }
+
         /* ---- TICKER ---- */
         .ticker {
             background: #050505;
@@ -828,6 +850,9 @@
             <span class="live-dot"></span>
             <span style="margin-left:6px;">OpenDOSM 2025Q4</span>
         </div>
+        <button class="export-btn" id="btn-export-csv" title="Download results as CSV">CSV</button>
+        <button class="export-btn" id="btn-export-png" title="Export chart as PNG">PNG</button>
+        <button class="export-btn" id="btn-share-url" title="Copy shareable URL">Share</button>
     </div>
 </div>
 
@@ -3090,6 +3115,116 @@ function updNarrative(d, inp) {
 }
 
 // ============================================================================
+// EXPORT & SHARE
+// ============================================================================
+
+function exportCSV() {
+    const currentInp = getIn();
+    const d = sim(currentInp);
+    const b = sim(getBaselineIn());
+
+    const headers = ['Quarter', 'GDP Growth', 'CPI', 'Core Inflation', 'Unemployment', 'Fiscal % GDP', 'Petronas Profit', 'Fuel Subsidy', 'Exports', 'Imports', 'CA % GDP', 'Nominal Wage Growth', 'Real Wage Growth', 'Baseline GDP', 'Baseline CPI', 'Delta GDP', 'Delta CPI'];
+    const rows = d.map((r, i) => {
+        const base = b[i];
+        return [
+            r.q, r.gdp, r.cpi, r.core, r.unemp, r.fiscal, r.pet, r.sub, r.exp, r.imp, r.ca, r.nomW, r.realW,
+            base.gdp, base.cpi,
+            (r.gdp - base.gdp).toFixed(2),
+            (r.cpi - base.cpi).toFixed(2),
+        ];
+    });
+
+    const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mamamo-scenario-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function exportPNG() {
+    const chart = charts.gdp;
+    if (!chart) return;
+    const url = chart.toBase64Image();
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mamamo-gdp-chart-${new Date().toISOString().slice(0,10)}.png`;
+    a.click();
+}
+
+function buildShareURL() {
+    const inp = getIn();
+    const params = new URLSearchParams();
+    params.set('brent', inp.brent);
+    params.set('cpo', inp.cpo);
+    params.set('semi', inp.semi);
+    params.set('tour', inp.tour);
+    params.set('opr', inp.opr);
+    params.set('fx', inp.fx);
+    params.set('devgr', inp.devgr);
+    params.set('wpg', inp.wpg);
+    params.set('equity', inp.equity);
+    params.set('ust10', inp.ust10);
+    params.set('sst', inp.sst);
+    params.set('cpoduty', inp.cpoduty);
+    params.set('epf', inp.epf);
+    if (inp.elnino) params.set('elnino', '1');
+    if (!inp.budi95) params.set('budi95', '0');
+    return `${window.location.pathname}?${params.toString()}`;
+}
+
+function loadFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.has('brent') && !params.has('opr')) return false;
+
+    const setSlider = (id, value) => {
+        const el = document.getElementById(id);
+        if (el && value !== null) el.value = value;
+    };
+
+    setSlider('in-brent', params.get('brent'));
+    setSlider('in-cpo', params.get('cpo'));
+    setSlider('in-semi', params.get('semi'));
+    setSlider('in-tour', params.get('tour'));
+    setSlider('in-opr', params.get('opr'));
+    setSlider('in-fx', params.get('fx'));
+    setSlider('in-devgr', params.get('devgr'));
+    setSlider('in-wpg', params.get('wpg'));
+    setSlider('in-equity', params.get('equity'));
+    setSlider('in-ust10', params.get('ust10'));
+    setSlider('in-sst', params.get('sst'));
+    setSlider('in-cpoduty', params.get('cpoduty'));
+    setSlider('in-epf', params.get('epf'));
+
+    if (params.has('elnino')) document.getElementById('in-elnino').checked = params.get('elnino') === '1';
+    if (params.has('budi95')) document.getElementById('in-budi95').checked = params.get('budi95') !== '0';
+
+    return true;
+}
+
+function copyShareURL() {
+    const url = buildShareURL();
+    navigator.clipboard.writeText(url).then(() => {
+        const btn = document.getElementById('btn-share-url');
+        const original = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = original; }, 1500);
+    }).catch(() => {
+        prompt('Copy this URL:', url);
+    });
+}
+
+function syncUIFromSliders() {
+    for (const [k, v] of Object.entries(valMap)) {
+        const el = document.getElementById(v);
+        const slider = document.getElementById(k);
+        if (el && slider) el.textContent = fmtMap[k](slider.value);
+    }
+}
+
+// ============================================================================
 // INPUT HANDLERS
 // ============================================================================
 
@@ -3189,7 +3324,16 @@ document.addEventListener('DOMContentLoaded', () => {
     refreshPresetUI();
     refreshScenarioUI();
     initCharts();
+
+    if (loadFromURL()) {
+        syncUIFromSliders();
+    }
+
     updCharts();
+
+    document.getElementById('btn-export-csv').addEventListener('click', exportCSV);
+    document.getElementById('btn-export-png').addEventListener('click', exportPNG);
+    document.getElementById('btn-share-url').addEventListener('click', copyShareURL);
 });
 </script>
 <script type="module">

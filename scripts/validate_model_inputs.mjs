@@ -110,10 +110,23 @@ const seriesList = schema.series ?? [];
 const requiredSeries = seriesList.filter((item) => item.required !== false);
 const allowedSeries = new Map(seriesList.map((item) => [item.name, item]));
 
+function loadDataset(name, filePath) {
+  if (!fs.existsSync(filePath)) {
+    console.log(`${name} file not found at ${path.relative(cwd, filePath)}, skipping.`);
+    return null;
+  }
+  return { name, path: filePath, rows: parseCsv(filePath) };
+}
+
 const datasets = [
-  { name: "historical", path: historicalPath, rows: parseCsv(historicalPath) },
-  { name: "scenario", path: scenarioPath, rows: parseCsv(scenarioPath) },
-];
+  loadDataset("historical", historicalPath),
+  loadDataset("scenario", scenarioPath),
+].filter(Boolean);
+
+if (datasets.length === 0) {
+  console.log("No CSV input files found to validate.");
+  process.exit(0);
+}
 
 for (const dataset of datasets) {
   const seen = new Set();

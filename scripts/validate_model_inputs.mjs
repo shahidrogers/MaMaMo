@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import fs from "node:fs";
-import path from "node:path";
+import fs from 'node:fs';
+import path from 'node:path';
 
 const cwd = process.cwd();
 const args = process.argv.slice(2);
@@ -14,30 +14,30 @@ function getArg(flag, fallback = null) {
 
 const schemaPath = path.resolve(
   cwd,
-  getArg("--schema", "docs/model_input_schema.json"),
+  getArg('--schema', 'docs/model_input_schema.json'),
 );
 const historicalPath = path.resolve(
   cwd,
-  getArg("--historical", "historical_inputs.csv"),
+  getArg('--historical', 'historical_inputs.csv'),
 );
 const scenarioPath = path.resolve(
   cwd,
-  getArg("--scenario", "scenario_inputs.csv"),
+  getArg('--scenario', 'scenario_inputs.csv'),
 );
 
 function readJson(filePath) {
-  return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
 
 function parseCsv(filePath) {
-  const text = fs.readFileSync(filePath, "utf8").trim();
+  const text = fs.readFileSync(filePath, 'utf8').trim();
   if (!text) {
     throw new Error(`Empty CSV: ${filePath}`);
   }
 
   const lines = text.split(/\r?\n/);
   const headers = splitCsvLine(lines[0]);
-  const requiredHeaders = ["quarter", "series", "value"];
+  const requiredHeaders = ['quarter', 'series', 'value'];
 
   for (const header of requiredHeaders) {
     if (!headers.includes(header)) {
@@ -51,7 +51,7 @@ function parseCsv(filePath) {
   for (let i = 1; i < lines.length; i += 1) {
     if (!lines[i].trim()) continue;
     const values = splitCsvLine(lines[i]);
-    const row = Object.fromEntries(headers.map((h, index) => [h, values[index] ?? ""]));
+    const row = Object.fromEntries(headers.map((h, index) => [h, values[index] ?? '']));
     rows.push({
       line: i + 1,
       quarter: row.quarter.trim(),
@@ -66,7 +66,7 @@ function parseCsv(filePath) {
 
 function splitCsvLine(line) {
   const values = [];
-  let current = "";
+  let current = '';
   let inQuotes = false;
 
   for (let i = 0; i < line.length; i += 1) {
@@ -80,9 +80,9 @@ function splitCsvLine(line) {
       } else {
         inQuotes = !inQuotes;
       }
-    } else if (char === "," && !inQuotes) {
+    } else if (char === ',' && !inQuotes) {
       values.push(current);
-      current = "";
+      current = '';
     } else {
       current += char;
     }
@@ -119,12 +119,12 @@ function loadDataset(name, filePath) {
 }
 
 const datasets = [
-  loadDataset("historical", historicalPath),
-  loadDataset("scenario", scenarioPath),
+  loadDataset('historical', historicalPath),
+  loadDataset('scenario', scenarioPath),
 ].filter(Boolean);
 
 if (datasets.length === 0) {
-  console.log("No CSV input files found to validate.");
+  console.log('No CSV input files found to validate.');
   process.exit(0);
 }
 
@@ -156,12 +156,12 @@ for (const dataset of datasets) {
     seriesByQuarter.set(row.quarter, bucket);
 
     const meta = allowedSeries.get(row.series);
-    if (meta.unit?.includes("share") && (row.value < 0 || row.value > 1)) {
+    if (meta.unit?.includes('share') && (row.value < 0 || row.value > 1)) {
       warn(
         `${dataset.name} row ${row.line} has share-valued series "${row.series}" outside [0,1]: ${row.value}`,
       );
     }
-    if (meta.unit === "indicator" && ![0, 1].includes(row.value)) {
+    if (meta.unit === 'indicator' && ![0, 1].includes(row.value)) {
       warn(
         `${dataset.name} row ${row.line} has indicator series "${row.series}" with non-binary value ${row.value}`,
       );
@@ -182,7 +182,7 @@ for (const dataset of datasets) {
 
     if (missing.length > 0) {
       fail(
-        `${dataset.name} quarter ${quarter} is missing ${missing.length} required series: ${missing.join(", ")}`,
+        `${dataset.name} quarter ${quarter} is missing ${missing.length} required series: ${missing.join(', ')}`,
       );
     }
   }
@@ -197,8 +197,8 @@ for (const dataset of datasets) {
 }
 
 function isNextQuarter(previous, current) {
-  const [prevYear, prevQuarter] = previous.split("Q").map(Number);
-  const [currYear, currQuarter] = current.split("Q").map(Number);
+  const [prevYear, prevQuarter] = previous.split('Q').map(Number);
+  const [currYear, currQuarter] = current.split('Q').map(Number);
   const nextYear = prevQuarter === 4 ? prevYear + 1 : prevYear;
   const nextQuarter = prevQuarter === 4 ? 1 : prevQuarter + 1;
   return currYear === nextYear && currQuarter === nextQuarter;

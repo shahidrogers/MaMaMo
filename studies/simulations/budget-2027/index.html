@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Budget 2027 Scorer</title>
+<meta name="description" content="Score Malaysia's Budget 2027 measures live with the MaMaMo model: deficit, growth, inflation and debt against the government's target, plus an oil-price stress test.">
+<meta name="author" content="Shahid Rogers">
+<link rel="canonical" href="https://shahidrogers.github.io/MaMaMo/studies/simulations/budget-2027/">
+<meta property="og:title" content="Budget 2027 Scorer | MaMaMo">
+<meta property="og:description" content="Plug in the Budget 2027 measures and see what they do to Malaysia's deficit, growth, inflation and debt.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<style>
+/* Layout: a budget-day scorecard. Verdict strip on top, measures panel on the
+   left (sticky on desktop), evidence on the right: what each measure costs,
+   the oil stress test, the fiscal table, then the quarterly paths. */
+:root {
+    --bg: #f4f6f8;
+    --surface: #ffffff;
+    --surface-2: #eceff3;
+    --ink: #101820;
+    --ink-2: #4a5663;
+    --ink-3: #6f7b88;
+    --rule: #d9dee5;
+    --accent: #b9530f;
+    --accent-soft: #fbe9dc;
+    --series-1: #2a78d6;
+    --series-2: #eb6834;
+    --series-base: #8a95a1;
+    --good: #12805c;
+    --good-soft: #dff3ea;
+    --bad: #b42318;
+    --bad-soft: #fde7e4;
+    --display: 'Rubik', 'Segoe UI', system-ui, sans-serif;
+    --body: 'Rubik', 'Segoe UI', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bg: #07090c;
+        --surface: #0e1318;
+        --surface-2: #151c23;
+        --ink: #e3e8ee;
+        --ink-2: #a6b1bd;
+        --ink-3: #7d8996;
+        --rule: #232d37;
+        --accent: #f08a38;
+        --accent-soft: #2a1a0e;
+        --series-1: #3987e5;
+        --series-2: #d95926;
+        --series-base: #6d7884;
+        --good: #5cc98f;
+        --good-soft: #0f2a1e;
+        --bad: #ff7a66;
+        --bad-soft: #33130f;
+        color-scheme: dark;
+    }
+}
+:root[data-theme="dark"] {
+    --bg: #07090c;
+    --surface: #0e1318;
+    --surface-2: #151c23;
+    --ink: #e3e8ee;
+    --ink-2: #a6b1bd;
+    --ink-3: #7d8996;
+    --rule: #232d37;
+    --accent: #f08a38;
+    --accent-soft: #2a1a0e;
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-base: #6d7884;
+    --good: #5cc98f;
+    --good-soft: #0f2a1e;
+    --bad: #ff7a66;
+    --bad-soft: #33130f;
+    color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.55 var(--body);
+    -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1240px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 64px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+p { margin: 0; }
+.mono, .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.label {
+    font: 500 11px/1.3 var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Masthead */
+.masthead { display: grid; gap: 14px; padding-bottom: 22px; border-bottom: 1px solid var(--rule); }
+.eyebrow { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.eyebrow .home { font: 600 12px/1 var(--mono); color: var(--ink); text-decoration: none; letter-spacing: 0.06em; }
+h1 { font-size: clamp(30px, 4.4vw, 46px); font-weight: 700; letter-spacing: -0.015em; line-height: 1.05; }
+h1 .ms { color: var(--accent); font-weight: 500; }
+.deck { max-width: 68ch; color: var(--ink-2); font-size: 16px; }
+.facts { display: flex; flex-wrap: wrap; gap: 6px 18px; font: 12px/1.4 var(--mono); color: var(--ink-3); }
+.facts b { color: var(--ink-2); font-weight: 500; }
+.chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    font: 500 11px/1 var(--mono); letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 5px 8px; border-radius: 4px; border: 1px solid var(--rule); color: var(--ink-2);
+}
+.chip.live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+/* Verdict strip */
+.verdict { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; margin-top: 22px; }
+.tile { background: var(--surface); padding: 16px 18px 18px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.tile .big { font: 600 34px/1 var(--mono); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.tile .sub { font-size: 13px; color: var(--ink-2); }
+.delta { font: 500 12px/1.2 var(--mono); color: var(--ink-3); }
+.pill { justify-self: start; font: 600 11px/1 var(--mono); letter-spacing: 0.04em; text-transform: uppercase; padding: 5px 8px; border-radius: 3px; }
+.pill.ok { background: var(--good-soft); color: var(--good); }
+.pill.miss { background: var(--bad-soft); color: var(--bad); }
+.pill.ok::before { content: '✓ '; }
+.pill.miss::before { content: '✕ '; }
+.summary-line { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; justify-content: space-between; }
+.summary-line p { max-width: 80ch; font-size: 15px; color: var(--ink); min-width: 0; flex: 1 1 420px; }
+button {
+    font: 500 13px/1 var(--body); color: var(--ink); background: var(--surface);
+    border: 1px solid var(--rule); border-radius: 5px; padding: 9px 12px; cursor: pointer;
+}
+button:hover { border-color: var(--ink-3); }
+button.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* Main grid */
+.grid { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 28px; margin-top: 28px; align-items: start; }
+.panel { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); max-height: calc(100vh - 24px); overflow: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; }
+.panel-head { padding: 14px 16px 12px; border-bottom: 1px solid var(--rule); display: grid; gap: 10px; }
+.presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.presets button { font-size: 12px; padding: 7px 9px; }
+.presets button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); }
+.preset-note { font-size: 12px; color: var(--ink-3); min-height: 1.4em; }
+fieldset { border: 0; margin: 0; padding: 12px 16px 14px; border-bottom: 1px solid var(--rule); display: grid; gap: 12px; }
+fieldset:last-of-type { border-bottom: 0; }
+legend { padding: 0; margin-bottom: 2px; }
+.field { display: grid; grid-template-columns: minmax(0, 1fr) 92px; gap: 4px 10px; align-items: center; }
+.field label { font-size: 13px; color: var(--ink); }
+.field .hint { grid-column: 1 / -1; font-size: 11.5px; color: var(--ink-3); line-height: 1.35; }
+.field input[type="number"] {
+    width: 100%; font: 500 14px/1 var(--mono); font-variant-numeric: tabular-nums; text-align: right;
+    padding: 7px 8px; color: var(--ink); background: var(--surface-2); border: 1px solid var(--rule); border-radius: 4px;
+}
+.field input[type="number"].changed { border-color: var(--accent); background: var(--accent-soft); }
+.toggle { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.toggle input { width: 16px; height: 16px; accent-color: var(--accent); }
+
+/* Evidence column */
+.evidence { display: grid; grid-template-columns: minmax(0, 1fr); gap: 36px; min-width: 0; }
+.evidence > section { min-width: 0; }
+section h2 { font-size: 21px; font-weight: 600; letter-spacing: -0.01em; }
+.section-head { display: grid; gap: 6px; margin-bottom: 14px; }
+.section-head p { color: var(--ink-2); max-width: 72ch; font-size: 14px; }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 16px; min-width: 0; }
+.chart-box { position: relative; height: 300px; }
+.chart-box.short { height: 240px; }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; white-space: normal; }
+thead th { font: 500 11px/1.3 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); vertical-align: bottom; }
+td.num, th.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+tr.total td { font-weight: 600; border-top: 1px solid var(--ink-3); }
+tr.sub td:first-child { padding-left: 22px; color: var(--ink-2); }
+td.pos { color: var(--good); }
+td.neg { color: var(--bad); }
+.empty { color: var(--ink-3); font-size: 13.5px; padding: 6px 0; }
+.official-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 18px; margin-top: 10px; }
+.official-grid .field { grid-template-columns: minmax(0, 1fr) 88px; }
+.method { display: grid; gap: 12px; font-size: 14px; color: var(--ink-2); max-width: 78ch; }
+.method ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.toast { font: 12px/1 var(--mono); color: var(--good); min-height: 1em; }
+.err { background: var(--bad-soft); color: var(--bad); padding: 12px 14px; border-radius: 6px; font-size: 14px; margin-top: 18px; }
+
+@media (max-width: 980px) {
+    .grid { grid-template-columns: minmax(0, 1fr); }
+    .panel { position: static; max-height: none; }
+    .verdict { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+    .wrap { padding-inline: 16px; }
+    .two, .official-grid { grid-template-columns: minmax(0, 1fr); }
+    .tile .big { font-size: 28px; }
+}
+@media (max-width: 420px) {
+    .verdict { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="wrap" id="app" data-src="../../../src/">
+    <header class="masthead">
+        <div class="eyebrow">
+            <a class="home" href="../../../">MAMAMO</a>
+            <span class="label">Malaysia Macro Model · Study</span>
+            <span class="chip live">Model runs live in your browser</span>
+        </div>
+        <h1>Budget 2027 Scorer <span class="ms">· Belanjawan 2027</span></h1>
+        <p class="deck">Enter the measures as they are announced and see what they do to the 2027 deficit, growth, prices and debt. Each figure is compared with a no-new-measures baseline and with the government's own target.</p>
+        <div class="facts">
+            <span>Tabled <b>Fri 9 Oct 2026, 3:30pm</b></span>
+            <span>Baseline vintage <b>7 Oct 2026</b></span>
+            <span>Brent <b>~US$96</b> · USD/MYR <b>4.09</b> · OPR <b>2.75%</b></span>
+            <span>Act 850: deficit <b>≤ 3% of GDP by 2028</b></span>
+        </div>
+    </header>
+
+    <div class="verdict" aria-live="polite">
+        <div class="tile">
+            <span class="label">2027 deficit, % of GDP</span>
+            <span class="big" id="v-deficit">–</span>
+            <span class="delta" id="v-deficit-d"></span>
+            <span class="pill" id="v-deficit-pill"></span>
+        </div>
+        <div class="tile">
+            <span class="label">2027 real GDP growth</span>
+            <span class="big" id="v-gdp">–</span>
+            <span class="delta" id="v-gdp-d"></span>
+        </div>
+        <div class="tile">
+            <span class="label">2027 CPI inflation</span>
+            <span class="big" id="v-cpi">–</span>
+            <span class="delta" id="v-cpi-d"></span>
+        </div>
+        <div class="tile">
+            <span class="label">2028 deficit · Act 850 path</span>
+            <span class="big" id="v-2028">–</span>
+            <span class="delta" id="v-debt"></span>
+            <span class="pill" id="v-act-pill"></span>
+        </div>
+    </div>
+    <div class="summary-line">
+        <p id="summary">Loading the model…</p>
+        <div style="display:grid; gap:6px; justify-items:end;">
+            <button class="primary" id="copy-summary" type="button">Copy summary</button>
+            <span class="toast" id="copy-toast"></span>
+        </div>
+    </div>
+    <div id="load-error" class="err" hidden></div>
+
+    <div class="grid">
+        <aside class="panel" aria-label="Budget measures">
+            <div class="panel-head">
+                <span class="label">Start from</span>
+                <div class="presets" id="presets"></div>
+                <p class="preset-note" id="preset-note"></p>
+            </div>
+            <form id="measures" autocomplete="off"></form>
+        </aside>
+
+        <div class="evidence">
+            <section>
+                <div class="section-head">
+                    <h2>What each measure costs</h2>
+                    <p>Each measure is run on its own through the model, so the net cost includes feedback. Higher growth brings in more tax; higher prices change the subsidy bill. RM bn in 2027. A negative cost is a saving.</p>
+                </div>
+                <div class="card">
+                    <div class="chart-box short"><canvas id="c-measures" aria-label="Net fiscal cost of each measure"></canvas></div>
+                    <div class="table-scroll" style="margin-top:14px;">
+                        <table id="t-measures">
+                            <thead><tr><th>Measure</th><th class="num">Headline<br>RM bn</th><th class="num">Net cost<br>RM bn</th><th class="num">Deficit<br>pp GDP</th><th class="num">GDP level<br>%</th><th class="num">CPI<br>pp</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-head">
+                    <h2>Oil stress test</h2>
+                    <p>The 2027 deficit, with these measures, at different average Brent prices. Crude on its own barely matters: extra petroleum tax and royalties roughly cancel the bigger BUDI95 bill. The refining margin is what moves the deficit, because it raises the pump price and the subsidy without adding any revenue. That is why US$100 oil has not helped the 2026 budget.</p>
+                </div>
+                <div class="card">
+                    <div class="chart-box"><canvas id="c-oil" aria-label="2027 deficit against Brent price"></canvas></div>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-head">
+                    <h2>Federal government accounts</h2>
+                    <p>RM bn by calendar year. Baseline means no new measures; the 2027 and 2028 columns include the measures on the left. Enter the government's figures below the table on budget day to compare.</p>
+                </div>
+                <div class="card">
+                    <div class="table-scroll">
+                        <table id="t-fiscal">
+                            <thead><tr><th></th><th class="num">2026<br>est.</th><th class="num">2027<br>baseline</th><th class="num">2027<br>with measures</th><th class="num">2027<br>government</th><th class="num">2028<br>with measures</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top:18px; display:grid; gap:4px;">
+                        <span class="label">Government figures for 2027</span>
+                        <p style="font-size:13px; color:var(--ink-3);">Pre-filled with what previews expect. Replace them with the Budget 2027 speech and Fiscal Outlook figures.</p>
+                    </div>
+                    <form class="official-grid" id="official" autocomplete="off"></form>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-head">
+                    <h2>Quarterly paths</h2>
+                    <p>Year-on-year growth and inflation by quarter. The grey dashed line is the baseline; Q1–Q2 2026 are published DOSM figures.</p>
+                </div>
+                <div class="two">
+                    <div class="card"><span class="label">Real GDP growth, % y/y</span><div class="chart-box short"><canvas id="c-gdp" aria-label="Quarterly GDP growth"></canvas></div></div>
+                    <div class="card"><span class="label">CPI inflation, % y/y</span><div class="chart-box short"><canvas id="c-cpi" aria-label="Quarterly CPI inflation"></canvas></div></div>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-head"><h2>How to read this</h2></div>
+                <div class="method">
+                    <p>MaMaMo starts from a baseline of published data to Q2 2026, Budget 2026 and current market prices, then works out how far a set of measures moves the economy from it. Measures start in Q1 2027 and are per year relative to a no-new-policy 2027 (operating spending +4.5%, development spending RM84bn, Petronas dividend RM25bn).</p>
+                    <ul>
+                        <li><b>Fuel.</b> The unsubsidised RON95 price is set by Brent plus the refining margin, converted at the exchange rate (RM4.52/litre in early October). BUDI95 holders pay RM1.99 within their quota, so the gap is the subsidy bill.</li>
+                        <li><b>Petroleum revenue.</b> Income tax lags oil prices by about two quarters and is more sensitive than the oil price itself, because upstream profits move more than prices. Royalties move with oil. The dividend is set by the budget.</li>
+                        <li><b>Multipliers.</b> RM1 of extra government consumption adds about RM1 to GDP. Cash aid adds about 0.6 and development spending about 0.5, because much of it leaks into imports.</li>
+                        <li><b>Limits.</b> Coefficients are calibrated, not estimated. The no-new-measures baseline is MaMaMo's, not the Treasury's. On MaMaMo's oil path it gives a 2027 deficit near 3.0%, below the 3.3–3.6% that forecasters expect, mainly because it books more petroleum revenue. Treat the changes more seriously than the levels.</li>
+                    </ul>
+                    <p>Model code, data sources and parameters: <a href="https://github.com/shahidrogers/MaMaMo" target="_blank" rel="noopener">github.com/shahidrogers/MaMaMo</a>. Research prototype, not an official forecast.</p>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+const app = document.getElementById('app');
+const SRC = new URL(app.dataset.src, location.href).href;
+let M;
+try {
+    const [solver, pack, data] = await Promise.all([
+        import(SRC + 'model-solver.js'),
+        import(SRC + 'run-pack.js'),
+        import(SRC + 'baseline-data.js'),
+    ]);
+    M = { ...solver, ...pack, data };
+} catch (err) {
+    const box = document.getElementById('load-error');
+    box.hidden = false;
+    box.textContent = 'The model could not load. Serve the repository over HTTP (for example, npx serve .) rather than opening the file directly.';
+    document.getElementById('summary').textContent = '';
+    throw err;
+}
+
+const YEAR = 2027;
+const FROM = '2027Q1';
+const Q2027 = ['2027Q1', '2027Q2', '2027Q3', '2027Q4'];
+const BASE_DIV = M.data.FISCAL_PLAN[2027].petronasDividend;
+
+// Measures panel. `toOverrides` turns a field value into model inputs.
+const MEASURES = [
+    { group: 'Spending', items: [
+        { id: 'cash', label: 'Cash aid (STR, SARA)', unit: 'RM bn', def: 0, step: 0.5, hint: 'Extra per year on top of 2026 levels',
+            to: v => ({ CASHAID: v }) },
+        { id: 'opex', label: 'Civil service pay and operations', unit: 'RM bn', def: 0, step: 0.5, hint: 'Extra emoluments, supplies and services',
+            to: v => ({ GOVCONS: v }) },
+        { id: 'dev', label: 'Development expenditure', unit: 'RM bn', def: 0, step: 0.5, hint: 'Extra vs baseline RM84bn',
+            to: v => ({ DEVEXP: v }) },
+    ] },
+    { group: 'Revenue', items: [
+        { id: 'relief', label: 'Income tax relief', unit: 'RM bn', def: 0, step: 0.25, hint: 'Revenue given up through personal reliefs',
+            to: v => ({ HHTAX: -v }) },
+        { id: 'sst', label: 'Service tax rate', unit: '%', def: 8, step: 1, hint: 'Currently 8%; each point is ~RM2.5bn a year',
+            to: v => ({ SSTRATE: v }) },
+        { id: 'newtax', label: 'Other new taxes', unit: 'RM bn', def: 0, step: 0.5, hint: 'Excise, capital gains, e-invoicing compliance etc.',
+            to: v => ({ INDTAX: v }) },
+        { id: 'corp', label: 'Corporate tax change', unit: 'RM bn', def: 0, step: 0.5, hint: 'Positive raises revenue, negative is incentives',
+            to: v => ({ CORPTAX: v }) },
+        { id: 'div', label: 'Petronas dividend 2027', unit: 'RM bn', def: BASE_DIV, step: 1, hint: 'Baseline RM25bn (CIMB); 2026 was RM20bn',
+            to: v => ({ PETDIV: Object.fromEntries(Q2027.map(q => [q, v])) }) },
+    ] },
+    { group: 'Fuel subsidy', items: [
+        { id: 'budiPrice', label: 'BUDI95 price', unit: 'RM/litre', def: 1.99, step: 0.05, hint: 'Subsidised RON95 for eligible citizens',
+            to: v => ({ BUDI95PRICE: v }) },
+        { id: 'quota', label: 'BUDI95 monthly quota', unit: 'litres', def: 300, step: 50, hint: 'Restored to 300 litres on 1 Sep 2026',
+            to: v => ({ BUDI95QUOTA: v }) },
+        { id: 'budiOn', label: 'Keep BUDI95', type: 'toggle', def: true, hint: 'Untick to float RON95 for everyone',
+            to: v => (v ? {} : { BUDI95: 0 }) },
+    ] },
+    { group: 'One-offs and prices', items: [
+        { id: 'epf', label: 'EPF special withdrawal', unit: 'RM bn', def: 0, step: 1, hint: 'Paid out in Q1 2027',
+            to: v => ({ EPFWDRAW: { [FROM]: v } }) },
+        { id: 'admin', label: 'Administered price rises', unit: 'CPI %', def: 0, step: 0.1, hint: 'Direct CPI effect of electricity, water or similar tariff changes',
+            to: v => ({ CPIADJ: v }) },
+    ] },
+];
+const ITEMS = MEASURES.flatMap(g => g.items);
+const DEFAULTS = Object.fromEntries(ITEMS.map(i => [i.id, i.def]));
+
+const PRESETS = [
+    { id: 'none', name: 'No new measures', note: 'MaMaMo baseline: Budget 2026 policies carried into 2027.', values: {} },
+    { id: 'consensus', name: 'Preview consensus', note: 'Illustrative. Previews expect more cash aid, income tax relief and targeted investment support, with no GST. Amounts are MaMaMo assumptions.',
+        values: { cash: 3, opex: 2, dev: 2, relief: 1 } },
+    { id: 'tight', name: 'Consolidation', note: 'Illustrative tightening: BUDI95 at RM2.30 with a 200-litre quota, service tax at 10%, modest cash aid.',
+        values: { cash: 2, budiPrice: 2.3, quota: 200, sst: 10 } },
+    { id: 'giveaway', name: 'Pre-election push', note: 'Illustrative expansion: large cash aid, pay rise, tax relief and an RM10bn EPF withdrawal.',
+        values: { cash: 8, opex: 5, dev: 3, relief: 2, epf: 10 } },
+];
+
+const OFFICIAL = [
+    { id: 'target', label: 'Deficit target, % GDP', def: 3.4, step: 0.1, hint: 'Expected 3.4% (previews)' },
+    { id: 'rev', label: 'Revenue, RM bn', def: null, step: 0.1, hint: 'Speech figure' },
+    { id: 'oe', label: 'Operating spending, RM bn', def: null, step: 0.1, hint: 'Speech figure' },
+    { id: 'de', label: 'Development spending, RM bn', def: null, step: 0.1, hint: 'Speech figure' },
+    { id: 'oil', label: 'Oil price assumption, US$', def: null, step: 1, hint: 'Fiscal Outlook' },
+    { id: 'growth', label: 'GDP growth forecast, %', def: null, step: 0.1, hint: 'Economic Outlook' },
+];
+
+const STORE_KEY = 'mamamo-budget-2027-v1';
+let state = { measures: { ...DEFAULTS }, official: Object.fromEntries(OFFICIAL.map(o => [o.id, o.def])), preset: 'none' };
+try {
+    const saved = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+    if (saved?.measures) state = { ...state, ...saved, measures: { ...DEFAULTS, ...saved.measures } };
+} catch { /* storage unavailable: use defaults */ }
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch { /* ignore */ } }
+
+// ---------- Form rendering ----------
+const form = document.getElementById('measures');
+form.innerHTML = MEASURES.map(g => `
+    <fieldset><legend class="label">${g.group}</legend>
+    ${g.items.map(i => i.type === 'toggle'
+        ? `<div class="field"><label class="toggle" for="m-${i.id}"><input type="checkbox" id="m-${i.id}" data-id="${i.id}"> ${i.label}</label><span></span><span class="hint">${i.hint}</span></div>`
+        : `<div class="field"><label for="m-${i.id}">${i.label} <span class="mono" style="color:var(--ink-3);font-size:11px;">${i.unit}</span></label>
+           <input type="number" id="m-${i.id}" data-id="${i.id}" step="${i.step}" inputmode="decimal">
+           <span class="hint">${i.hint}</span></div>`).join('')}
+    </fieldset>`).join('');
+
+const official = document.getElementById('official');
+official.innerHTML = OFFICIAL.map(o => `
+    <div class="field"><label for="o-${o.id}">${o.label}</label>
+    <input type="number" id="o-${o.id}" data-id="${o.id}" step="${o.step}" inputmode="decimal" placeholder="–">
+    <span class="hint">${o.hint}</span></div>`).join('');
+
+const presetBox = document.getElementById('presets');
+presetBox.innerHTML = PRESETS.map(p => `<button type="button" data-preset="${p.id}" aria-pressed="false">${p.name}</button>`).join('');
+
+function syncForm() {
+    for (const i of ITEMS) {
+        const el = document.getElementById(`m-${i.id}`);
+        if (i.type === 'toggle') el.checked = state.measures[i.id];
+        else {
+            el.value = state.measures[i.id];
+            el.classList.toggle('changed', Number(state.measures[i.id]) !== i.def);
+        }
+    }
+    for (const o of OFFICIAL) document.getElementById(`o-${o.id}`).value = state.official[o.id] ?? '';
+    for (const b of presetBox.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.preset === state.preset));
+    const p = PRESETS.find(x => x.id === state.preset);
+    document.getElementById('preset-note').textContent = p ? p.note : 'Custom measures.';
+}
+
+presetBox.addEventListener('click', e => {
+    const id = e.target.closest('button')?.dataset.preset;
+    if (!id) return;
+    const p = PRESETS.find(x => x.id === id);
+    state.measures = { ...DEFAULTS, ...p.values };
+    state.preset = id;
+    syncForm(); save(); schedule();
+});
+form.addEventListener('input', e => {
+    const id = e.target.dataset.id;
+    if (!id) return;
+    const item = ITEMS.find(i => i.id === id);
+    if (item.type === 'toggle') state.measures[id] = e.target.checked;
+    else {
+        const v = parseFloat(e.target.value);
+        if (Number.isNaN(v)) return;
+        state.measures[id] = v;
+        e.target.classList.toggle('changed', v !== item.def);
+    }
+    state.preset = null;
+    syncForm(); save(); schedule();
+});
+official.addEventListener('input', e => {
+    const id = e.target.dataset.id;
+    const v = parseFloat(e.target.value);
+    state.official[id] = Number.isNaN(v) ? null : v;
+    save(); schedule();
+});
+
+// ---------- Model runs ----------
+function overridesFor(measures) {
+    const o = {};
+    for (const i of ITEMS) {
+        const v = measures[i.id];
+        if (v === i.def) continue;
+        Object.assign(o, i.to(v));
+    }
+    return o;
+}
+function run(overrides) {
+    const pack = M.applyOverrides(M.createBaselineRunPack(), overrides, { fromQuarter: FROM });
+    const quarters = M.runModel(pack);
+    const years = M.summariseYears(quarters, pack);
+    return { quarters, years, y: yr => years.find(r => r.year === yr) };
+}
+
+const BASE = run({});
+let timer;
+function schedule() { clearTimeout(timer); timer = setTimeout(render, 60); }
+
+// ---------- Formatting ----------
+const f1 = v => (v == null || Number.isNaN(v)) ? '–' : v.toFixed(1);
+const f2 = v => (v == null || Number.isNaN(v)) ? '–' : v.toFixed(2);
+const sgn = (v, d = 1) => (v > 0 ? '+' : v < 0 ? '−' : '±') + Math.abs(v).toFixed(d);
+const deficitOf = y => -y.balancePct;
+
+// ---------- Charts ----------
+const charts = {};
+function tok(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function baseOptions(extra = {}) {
+    const ink2 = tok('--ink-2'), ink3 = tok('--ink-3'), rule = tok('--rule');
+    return {
+        responsive: true, maintainAspectRatio: false, animation: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+            legend: { position: 'top', align: 'start', labels: { color: ink2, boxWidth: 14, boxHeight: 2, font: { family: 'IBM Plex Mono', size: 11 } } },
+            tooltip: { backgroundColor: tok('--surface'), titleColor: tok('--ink'), bodyColor: ink2, borderColor: rule, borderWidth: 1, titleFont: { family: 'IBM Plex Mono' }, bodyFont: { family: 'IBM Plex Mono' }, padding: 10 },
+        },
+        scales: {
+            x: { grid: { display: false }, border: { color: rule }, ticks: { color: ink3, font: { family: 'IBM Plex Mono', size: 11 } } },
+            y: { grid: { color: rule }, border: { display: false }, ticks: { color: ink3, font: { family: 'IBM Plex Mono', size: 11 } } },
+        },
+        ...extra,
+    };
+}
+function upsert(id, config) {
+    if (charts[id]) { charts[id].destroy(); }
+    charts[id] = new Chart(document.getElementById(id), config);
+}
+
+// ---------- Render ----------
+function render() {
+    const overrides = overridesFor(state.measures);
+    const S = run(overrides);
+    const s27 = S.y(2027), b27 = BASE.y(2027), s28 = S.y(2028), b28 = BASE.y(2028), s26 = S.y(2026);
+    const target = state.official.target;
+
+    // Verdict
+    const def27 = deficitOf(s27);
+    document.getElementById('v-deficit').textContent = f1(def27) + '%';
+    document.getElementById('v-deficit-d').textContent = `${sgn(def27 - deficitOf(b27), 2)}pp vs no new measures`;
+    const pill = document.getElementById('v-deficit-pill');
+    if (target != null) {
+        const ok = def27 <= target + 1e-9;
+        pill.className = 'pill ' + (ok ? 'ok' : 'miss');
+        pill.textContent = ok ? `Meets ${f1(target)}% target` : `Misses ${f1(target)}% target by ${f2(def27 - target)}pp`;
+        pill.hidden = false;
+    } else pill.hidden = true;
+
+    document.getElementById('v-gdp').textContent = f1(s27.gdpGrowth) + '%';
+    document.getElementById('v-gdp-d').textContent = `${sgn(s27.gdpGrowth - b27.gdpGrowth, 2)}pp vs no new measures` + (state.official.growth != null ? ` · govt ${f1(state.official.growth)}%` : '');
+    document.getElementById('v-cpi').textContent = f1(s27.cpi) + '%';
+    document.getElementById('v-cpi-d').textContent = `${sgn(s27.cpi - b27.cpi, 2)}pp vs no new measures`;
+    const def28 = deficitOf(s28);
+    document.getElementById('v-2028').textContent = f1(def28) + '%';
+    document.getElementById('v-debt').textContent = `Debt ${f1(s28.debtPct)}% of GDP end-2028 (${sgn(s28.debtPct - b28.debtPct, 1)}pp)`;
+    const act = document.getElementById('v-act-pill');
+    // Act 850 sets a 3% deficit ceiling by 2028; the 60% debt ceiling is medium-term
+    const deficitOk = def28 <= 3 + 1e-9;
+    act.className = 'pill ' + (deficitOk ? 'ok' : 'miss');
+    act.textContent = deficitOk ? 'Within 3% by 2028' : `Above 3% in 2028 by ${f2(def28 - 3)}pp`;
+
+    // Summary sentence
+    const targetText = target != null
+        ? (def27 <= target ? `, inside the ${f1(target)}% target` : `, ${f2(def27 - target)}pp above the ${f1(target)}% target`)
+        : '';
+    const summary = `With these measures MaMaMo puts Malaysia's 2027 federal deficit at ${f1(def27)}% of GDP${targetText} `
+        + `(${sgn(def27 - deficitOf(b27), 2)}pp vs no new measures). Growth ${f1(s27.gdpGrowth)}% (${sgn(s27.gdpGrowth - b27.gdpGrowth, 2)}pp), `
+        + `inflation ${f1(s27.cpi)}% (${sgn(s27.cpi - b27.cpi, 2)}pp), fuel subsidies RM${Math.round(s27.fuelSubsidy)}bn, `
+        + `debt ${f1(s28.debtPct)}% of GDP by end-2028.`;
+    document.getElementById('summary').textContent = summary;
+    document.getElementById('copy-summary').dataset.text = summary + ' — MaMaMo Budget 2027 Scorer';
+
+    renderMeasures(b27);
+    renderOil(overrides, target);
+    renderFiscal(s26, b27, s27, s28);
+    renderPaths(S);
+}
+
+function renderMeasures(b27) {
+    const rows = [];
+    for (const i of ITEMS) {
+        const v = state.measures[i.id];
+        if (v === i.def) continue;
+        const r = run(i.to(v)).y(2027);
+        const net = -(r.balance - b27.balance);
+        let headline = null;
+        if (['cash', 'opex', 'dev', 'relief'].includes(i.id)) headline = v;
+        if (['newtax', 'corp'].includes(i.id)) headline = -v;
+        if (i.id === 'div') headline = -(v - i.def);
+        if (i.id === 'sst') headline = -(v - i.def) * M.PARAMS.SST_PER_PP;
+        const name = i.type === 'toggle' ? 'Float RON95 (end BUDI95)'
+            : `${i.label}: ${i.unit === 'RM bn' && i.def === 0 ? (v > 0 ? '+' : '') + v + ' bn' : v + (i.unit === '%' || i.unit === 'CPI %' ? '%' : i.unit === 'RM/litre' ? ' RM/l' : i.unit === 'litres' ? ' L' : ' bn')}`;
+        rows.push({ name, short: i.type === 'toggle' ? 'End BUDI95' : i.label, headline, net,
+            pp: -(r.balancePct - b27.balancePct), gdp: r.gdpLevelDev, cpi: r.cpi - b27.cpi });
+    }
+    const tbody = document.querySelector('#t-measures tbody');
+    if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="empty">No measures yet. Pick a starting point or change a field on the left.</td></tr>`;
+    } else {
+        const cls = v => v > 0.005 ? 'neg' : v < -0.005 ? 'pos' : '';
+        tbody.innerHTML = rows.map(r => `<tr><td>${r.name}</td>
+            <td class="num">${r.headline == null ? '–' : sgn(r.headline)}</td>
+            <td class="num ${cls(r.net)}">${sgn(r.net)}</td>
+            <td class="num ${cls(r.pp)}">${sgn(r.pp, 2)}</td>
+            <td class="num">${sgn(r.gdp, 2)}</td>
+            <td class="num">${sgn(r.cpi, 2)}</td></tr>`).join('')
+            + `<tr class="total"><td>All measures (run together)</td><td></td>
+               <td class="num">${sgn(rows.reduce((s, r) => s + r.net, 0))}</td><td colspan="3" style="text-align:left;color:var(--ink-3);font-weight:400;font-size:12px;">Sum of single runs; the joint run is in the verdict above</td></tr>`;
+    }
+    upsert('c-measures', {
+        type: 'bar',
+        data: {
+            labels: rows.length ? rows.map(r => r.short) : ['No measures'],
+            datasets: [{
+                label: 'Net 2027 cost, RM bn',
+                data: rows.length ? rows.map(r => +r.net.toFixed(2)) : [0],
+                backgroundColor: rows.map(r => r.net >= 0 ? tok('--series-2') : tok('--series-1')),
+                borderRadius: 4, borderSkipped: 'start', barThickness: 18,
+            }],
+        },
+        options: baseOptions({
+            indexAxis: 'y',
+            plugins: { ...baseOptions().plugins, legend: { display: false },
+                tooltip: { ...baseOptions().plugins.tooltip, callbacks: { label: c => `${c.raw >= 0 ? 'Costs' : 'Saves'} RM${Math.abs(c.raw).toFixed(1)}bn in 2027` } } },
+            scales: {
+                x: { ...baseOptions().scales.y, title: { display: true, text: '← saves   RM bn, 2027   costs →', color: tok('--ink-3'), font: { family: 'IBM Plex Mono', size: 11 } } },
+                y: { ...baseOptions().scales.x },
+            },
+        }),
+    });
+}
+
+function renderOil(overrides, target) {
+    const prices = [50, 60, 70, 80, 90, 100, 110, 120, 130];
+    const wide = Object.fromEntries(Q2027.map(q => [q, 55]));
+    const line = (extra) => prices.map(p => {
+        const r = run({ ...overrides, PBRENT: Object.fromEntries(Q2027.map(q => [q, p])), ...extra }).y(2027);
+        return +deficitOf(r).toFixed(2);
+    });
+    const normal = line({});
+    const stuck = line({ CRACK: wide });
+    const baseAvg = Q2027.reduce((s, q) => s + M.data.EXOGENOUS_PATH[q].brent, 0) / 4;
+    const datasets = [
+        { label: 'Margins normalise (US$45→22)', data: normal, borderColor: tok('--series-1'), backgroundColor: tok('--series-1'), borderWidth: 2, pointRadius: 3, pointHoverRadius: 6, tension: 0.2 },
+        { label: 'Margins stay at US$55', data: stuck, borderColor: tok('--series-2'), backgroundColor: tok('--series-2'), borderWidth: 2, pointRadius: 3, pointHoverRadius: 6, tension: 0.2 },
+    ];
+    if (target != null) datasets.push({ label: `Target ${f1(target)}%`, data: prices.map(() => target), borderColor: tok('--ink-3'), borderDash: [5, 4], borderWidth: 1.5, pointRadius: 0, pointHoverRadius: 0 });
+    const opts = baseOptions();
+    opts.scales.x.title = { display: true, text: `Average Brent in 2027, US$/bbl  (MaMaMo path ≈ ${Math.round(baseAvg)}${state.official.oil != null ? `, budget assumes ${state.official.oil}` : ''})`, color: tok('--ink-3'), font: { family: 'IBM Plex Mono', size: 11 } };
+    opts.scales.y.title = { display: true, text: 'Deficit, % of GDP', color: tok('--ink-3'), font: { family: 'IBM Plex Mono', size: 11 } };
+    opts.plugins.tooltip.callbacks = { title: c => `Brent US$${c[0].label}`, label: c => `${c.dataset.label}: ${c.raw.toFixed(2)}%` };
+    upsert('c-oil', { type: 'line', data: { labels: prices, datasets }, options: opts });
+}
+
+function renderFiscal(s26, b27, s27, s28) {
+    const o = state.official;
+    const govRev = o.rev, govExp = (o.oe != null && o.de != null) ? o.oe + o.de : null;
+    const rows = [
+        ['Revenue', r => r.revenue, govRev, 'total'],
+        ['Petroleum-related', r => r.petroleumRevenue, null, 'sub'],
+        ['Other revenue', r => r.nonPetroleumRevenue, null, 'sub'],
+        ['Expenditure', r => r.expenditure, govExp, 'total'],
+        ['Fuel subsidies', r => r.fuelSubsidy, null, 'sub'],
+        ['Other operating', r => r.otherOperating, o.oe, 'sub'],
+        ['Development', r => r.development, o.de, 'sub'],
+        ['Balance', r => r.balance, (govRev != null && govExp != null) ? govRev - govExp : null, 'total'],
+        ['Balance, % of GDP', r => r.balancePct, o.target != null ? -o.target : null, 'pct'],
+        ['Debt, % of GDP (end-year)', r => r.debtPct, null, 'pct'],
+        ['Nominal GDP', r => r.nominalGdp, null, ''],
+    ];
+    const cell = (v, pct) => `<td class="num">${v == null ? '–' : pct ? f2(v) : f1(v)}</td>`;
+    document.querySelector('#t-fiscal tbody').innerHTML = rows.map(([name, fn, gov, kind]) =>
+        `<tr class="${kind === 'sub' ? 'sub' : kind === 'total' ? '' : ''}"><td>${name}</td>
+        ${cell(fn(s26), kind === 'pct')}${cell(fn(b27), kind === 'pct')}${cell(fn(s27), kind === 'pct')}${cell(gov, kind === 'pct')}${cell(fn(s28), kind === 'pct')}</tr>`).join('');
+}
+
+function renderPaths(S) {
+    const labels = S.quarters.map(r => r.q);
+    const mk = (key) => {
+        const opts = baseOptions();
+        opts.plugins.tooltip.callbacks = { label: c => `${c.dataset.label}: ${c.raw.toFixed(2)}%` };
+        return {
+            type: 'line',
+            data: { labels, datasets: [
+                { label: 'With measures', data: S.quarters.map(r => r[key]), borderColor: tok('--series-1'), backgroundColor: tok('--series-1'), borderWidth: 2, pointRadius: 2.5, pointHoverRadius: 6, tension: 0.25 },
+                { label: 'Baseline', data: BASE.quarters.map(r => r[key]), borderColor: tok('--series-base'), backgroundColor: tok('--series-base'), borderDash: [5, 4], borderWidth: 1.5, pointRadius: 0, pointHoverRadius: 4, tension: 0.25 },
+            ] },
+            options: opts,
+        };
+    };
+    upsert('c-gdp', mk('gdp'));
+    upsert('c-cpi', mk('cpi'));
+}
+
+document.getElementById('copy-summary').addEventListener('click', async e => {
+    const text = e.currentTarget.dataset.text || document.getElementById('summary').textContent;
+    const toast = document.getElementById('copy-toast');
+    try {
+        await navigator.clipboard.writeText(text);
+        toast.textContent = 'Copied';
+    } catch {
+        const range = document.createRange();
+        range.selectNodeContents(document.getElementById('summary'));
+        const sel = getSelection(); sel.removeAllRanges(); sel.addRange(range);
+        toast.textContent = 'Selected. Press Ctrl/Cmd+C to copy';
+    }
+    setTimeout(() => { toast.textContent = ''; }, 2500);
+});
+
+// Re-theme charts when the viewer's theme changes
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', render);
+new MutationObserver(render).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+syncForm();
+render();
+</script>
+</body>
+</html>

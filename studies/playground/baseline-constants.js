@@ -15,6 +15,11 @@
  * - Exports: RM380,362M (Q4 2025)
  * - Imports: RM351,670M (Q4 2025)
  * 
+ * Note: the model's baseline (paths, fiscal plan, data vintage) lives in
+ * src/baseline-data.js. Values here are display constants and slider
+ * defaults for the playground; keep opr/brent/cpo/fx/sst in line with the
+ * first forecast quarter there.
+ *
  * Model calibration sources:
  * - BNM Working Papers (MPC, elasticities, pass-through rates)
  * - DOSM National Accounts (2015 base year)
@@ -67,11 +72,12 @@ export const BASELINE = Object.freeze({
     lf_outside: 7183,                  // Thousands outside labour force
 
     // Prices and rates (model calibration, not directly from DOSM)
-    opr: 3.0,                          // BNM Overnight Policy Rate %
-    brent: 82,                         // Brent crude USD/bbl (external)
-    cpo: 4000,                         // CPO price RM/tonne (external)
-    fx: 4.45,                          // USD/MYR (updated from 3.89 to reflect 2026 levels)
-    mgs10: 4.35,                       // 10-year MGS yield % (calibrated)
+    // Slider defaults = first forecast quarter (2026Q3) of src/baseline-data.js
+    opr: 2.75,                         // BNM Overnight Policy Rate % (unchanged since Jul 2025)
+    brent: 96,                         // Brent crude USD/bbl, 2026Q3 average
+    cpo: 4200,                         // CPO price RM/tonne
+    fx: 4.08,                          // USD/MYR, 2026Q3 average
+    mgs10: 3.55,                       // 10-year MGS yield %
 
     // Fiscal (model calibration based on MOF data)
     fiscal_pct: -3.2,                  // Fiscal balance % GDP
@@ -119,7 +125,7 @@ export const BASELINE = Object.freeze({
 
     // Policy parameters
     devgr: 2.0,                        // Development expenditure growth %
-    sst: 6,                            // SST rate %
+    sst: 8,                            // Service tax rate % (8% since Mar 2024)
     cpoduty: 8,                        // CPO export duty %
     epf: 0,                            // EPF withdrawal RM bn
 });

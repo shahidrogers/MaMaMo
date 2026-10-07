@@ -891,7 +891,7 @@
     <div class="ticker-item">
         <span class="ticker-label" style="color:var(--green);">DATA</span>
         <span class="ticker-val" style="color:var(--green); font-size:10px;">OpenDOSM</span>
-        <span class="ticker-chg ticker-flat" style="font-size:9px;">2026-04-02</span>
+        <span class="ticker-chg ticker-flat" style="font-size:9px;">2026-10-07</span>
     </div>
 </div>
 
@@ -911,14 +911,14 @@
                 <label class="input-label tt">BRENT CRUDE<span class="tt-text">Primary oil shock. Feeds energy costs, administered fuel prices, Petronas profits, and import inflation. Baseline: $82/bbl.</span></label>
                 <span class="input-val" id="val-brent">$82</span>
             </div>
-            <input type="range" id="in-brent" min="40" max="250" value="82" step="1">
+            <input type="range" id="in-brent" min="40" max="250" value="96" step="1">
             <div class="range-bounds"><span>$40</span><span>$250</span></div>
 
             <div class="input-row">
                 <label class="input-label tt">CPO PRICE<span class="tt-text">Palm oil RM/tonne. Drives commodity exports, export duties, and plantation GVA. Baseline: RM4,000.</span></label>
                 <span class="input-val" id="val-cpo">RM4,000</span>
             </div>
-            <input type="range" id="in-cpo" min="2000" max="7000" value="4000" step="100">
+            <input type="range" id="in-cpo" min="2000" max="7000" value="4200" step="100">
             <div class="range-bounds"><span>RM2,000</span><span>RM7,000</span></div>
 
             <div class="input-row">
@@ -967,14 +967,14 @@
                 <label class="input-label tt">OPR<span class="tt-text">Overnight Policy Rate. BNM's primary instrument. Pass-through: 20-30bps per 25bps move. Mortgage = OPR + 175bps. Baseline: 3.00%.</span></label>
                 <span class="input-val" id="val-opr">3.00%</span>
             </div>
-            <input type="range" id="in-opr" min="1.50" max="5.00" value="3.00" step="0.25">
+            <input type="range" id="in-opr" min="1.50" max="5.00" value="2.75" step="0.25">
             <div class="range-bounds"><span>1.50%</span><span>5.00%</span></div>
 
             <div class="input-row">
                 <label class="input-label tt">USD/MYR<span class="tt-text">Exchange rate. Weaker ringgit raises import costs and fuel subsidy burden but inflates Petronas RM profits. Baseline: 3.89.</span></label>
                 <span class="input-val" id="val-fx">3.89</span>
             </div>
-            <input type="range" id="in-fx" min="3.20" max="5.50" value="3.89" step="0.01">
+            <input type="range" id="in-fx" min="3.20" max="5.50" value="4.08" step="0.01">
             <div class="range-bounds"><span>3.20</span><span>5.50</span></div>
         </div>
 
@@ -995,7 +995,7 @@
                 <label class="input-label tt">SST RATE<span class="tt-text">Effective Sales &amp; Service Tax rate. Higher SST raises consumer prices and government revenue. Baseline: 6%.</span></label>
                 <span class="input-val" id="val-sst">6%</span>
             </div>
-            <input type="range" id="in-sst" min="0" max="12" value="6" step="1">
+            <input type="range" id="in-sst" min="0" max="12" value="8" step="1">
             <div class="range-bounds"><span>0%</span><span>12%</span></div>
 
             <div class="input-row">
@@ -1091,12 +1091,12 @@
         <div class="sb-section" style="border-bottom:none;">
             <div class="sb-header" style="color:var(--text-dim); margin-bottom:4px;">MODEL INFO</div>
             <div style="font-size:10px; color:var(--text-dim); line-height:1.7;">
-                Baseline: Q4 2025 / Feb 2026<br>
-                Horizon: 8 quarters<br>
-                Equations: ~200 (simplified for playground)<br>
-                Calibration: BNM, DOSM, IMF Art. IV<br>
-                <span style="color:var(--green);">Data: OpenDOSM (live pull 2026-04-02)</span><br>
-                <span style="color:var(--text-dim);">Sources: gdp_qtr_nominal, cpi_headline, lfs_qtr</span><br>
+                Baseline vintage: 7 Oct 2026 (GDP to 2026Q2, CPI to Aug 2026)<br>
+                Horizon: 8 quarters, Q3 2026 &ndash; Q2 2028<br>
+                Model: shared MaMaMo solver (src/model-solver.js)<br>
+                Calibration: BNM, DOSM, MOF Budget 2026<br>
+                <span style="color:var(--green);">Data: OpenDOSM (pulled 2026-10-07)</span><br>
+                <span style="color:var(--text-dim);">Sources: gdp_qtr_real/nominal_demand, cpi_headline, cpi_core, lfs_month</span><br>
                 <span style="color:var(--red);">Research prototype &mdash; not production forecasts</span>
             </div>
         </div>
@@ -1144,7 +1144,7 @@
         <!-- KPI STRIP 2 -->
         <div class="kpi-strip">
             <div class="kpi-cell tt" data-equation="petronas_dividend">
-                <div class="kpi-name">PETRONAS PROFIT</div>
+                <div class="kpi-name">PETROLEUM REVENUE</div>
                 <div class="kpi-value" id="kpi-pet" style="color:var(--orange);">RM95bn</div>
                 <div class="kpi-delta" id="kpi-pet-d" style="color:var(--text-dim);">annual est.</div>
                 <span class="tt-text"><strong>Equation:</strong> Group 8, line 410 — Oil &amp; gas value added. OILGTP tracks production * price / NEER. Petronas profits drive PITA revenue (38% tax) and dividends.</span>
@@ -1313,7 +1313,7 @@
         <section class="chart-section">
             <div class="chart-section-header">
                 <div class="chart-section-title">OpenDOSM Data Dashboard</div>
-                <div class="chart-section-note">Live data from DOSM: CPI divisions, labour force composition, government revenue structure, and trade detail. Baseline: Q4 2025.</div>
+                <div class="chart-section-note">CPI divisions, labour force, revenue structure and trade detail. Starting levels from OpenDOSM (2026Q2); splits use fixed shares of model totals.</div>
             </div>
             <div class="chart-grid">
                 <div class="chart-cell">
@@ -1414,7 +1414,7 @@
                     <div class="channel-grid">
                         <div class="channel-card">
                             <h5>OIL &rarr; INFLATION</h5>
-                            <p>Brent feeds administered fuel prices (15% pass-through to PADMIN), import costs, and utility prices. Administered items are ~22% of the CPI basket. Second-round effects via wages add persistence.</p>
+                            <p>Brent plus the refining margin sets the unsubsidised RON95 price. Under BUDI95 most households pay RM1.99, so oil mainly hits the fiscal subsidy bill; the unsubsidised share, diesel and logistics costs pass through to CPI. Second-round effects via wages add persistence.</p>
                         </div>
                         <div class="channel-card">
                             <h5>OIL &rarr; FISCAL</h5>
@@ -1508,7 +1508,7 @@
                         <li style="padding: 3px 0;"><span style="color:var(--green);">&#10003;</span> Current account within plausible range (-10% to +20% of GDP)</li>
                         <li style="padding: 3px 0;"><span style="color:var(--green);">&#10003;</span> Household debt ratio within plausible range (50% to 120%)</li>
                     </ul>
-                    <p style="margin-top:12px; color:var(--text-dim); font-size:11px;">Data last pulled: 2026-04-02 via OpenDOSM Python SDK (v0.1.0). To refresh: <code style="background:var(--bg-input); padding:2px 6px;">python3 -c "from opendosm import OpenDOSM; ..."</code></p>
+                    <p style="margin-top:12px; color:var(--text-dim); font-size:11px;">Data last pulled: 2026-10-07 from the OpenDOSM API. To refresh: <code style="background:var(--bg-input); padding:2px 6px;">node bin/fetch-opendosm.mjs</code>, then update src/baseline-data.js</p>
                 </div>
             </div>
         </div>
@@ -1529,29 +1529,29 @@
 // ============================================================================
 // SIMPLIFIED TRANSMISSION ENGINE
 // Calibrated from the full MaMaMo ~200-equation model
-// Baseline updated with OpenDOSM data (pulled 2026-04-02)
+// Display baseline (model baseline lives in src/baseline-data.js, vintage 2026-10-07)
 // Sources: gdp_qtr_nominal, gdp_qtr_real, cpi_headline, lfs_qtr
 // ============================================================================
 
 const B = {
     gdp_millions_rm: 532870,
-    gdp_growth: 6.3,
-    cpi_inflation: 1.4,
-    core_inflation: 2.0,
-    opr: 3.0,
-    brent: 82,
-    cpo: 4000,
-    fx: 4.45,
+    gdp_growth: 4.9,
+    cpi_inflation: 1.8,
+    core_inflation: 1.7,
+    opr: 2.75,
+    brent: 96,
+    cpo: 4200,
+    fx: 4.08,
     unemployment: 3.0,
-    fiscal_pct: -3.2,
-    gov_revenue_bln: 280,
-    gov_expenditure_bln: 340,
+    fiscal_pct: -4.0,
+    gov_revenue_bln: 360.5,
+    gov_expenditure_bln: 449.2,
     petronas_profit_bln: 95,
     pita_revenue_bln: 36.1,
-    petronas_dividend_bln: 28.5,
-    fuel_subsidy_bln: 8.4,
+    petronas_dividend_bln: 20,
+    fuel_subsidy_bln: 45,
     ron95_budi_price: 1.99,
-    ron95_market_price: 2.54,
+    ron95_market_price: 4.45,
     exports_bln: 380.4,
     imports_bln: 351.7,
     current_account_pct: 2.1,
@@ -1574,7 +1574,7 @@ const B = {
     wpg: 100,
     equity: 100,
     ust10: 4.25,
-    sst: 6,
+    sst: 8,
     cpoduty: 8,
     epf: 0,
 };
@@ -1602,7 +1602,7 @@ const P = {
     wage_price_pt: 0.52,
 };
 
-const QS = ['Q2 2026','Q3 2026','Q4 2026','Q1 2027','Q2 2027','Q3 2027','Q4 2027','Q1 2028'];
+const QS = ['Q3 2026','Q4 2026','Q1 2027','Q2 2027','Q3 2027','Q4 2027','Q1 2028','Q2 2028'];
 
 function getIn() {
     return {
@@ -1865,315 +1865,13 @@ function getCompareScenarioInput() {
     return scenarioState.slots[scenarioState.compareSlot]?.inputs || null;
 }
 
-function lerp(start, end, t) {
-    return start + (end - start) * t;
-}
-
-function baselineQuarter(q) {
-    const t = q / (QS.length - 1);
-    const nominalWageGrowth = lerp(B.nominal_wage_growth, 4.35, t);
-    const cpiInflation = lerp(B.cpi_inflation, 2.35, t);
-    const baselineOpr = lerp(B.opr, B.opr, t);
-    const baselineUst10 = lerp(B.ust10, B.ust10, t);
-    const baselineMgs10 = 0.85 * baselineOpr + 0.15 * baselineUst10 + 1.85;
-
-    return {
-        gdp_growth: lerp(B.gdp_growth, 4.15, t),
-        cpi_inflation: cpiInflation,
-        core_inflation: lerp(B.core_inflation, 1.95, t),
-        unemployment: lerp(B.unemployment, 3.45, t),
-        fiscal_pct: lerp(B.fiscal_pct, -3.1, t),
-        gov_revenue_bln: lerp(B.gov_revenue_bln, 204, t),
-        gov_expenditure_bln: lerp(B.gov_expenditure_bln, 261.5, t),
-        petronas_profit_bln: lerp(B.petronas_profit_bln, 95, t),
-        pita_revenue_bln: lerp(B.pita_revenue_bln, 36.1, t),
-        petronas_dividend_bln: lerp(B.petronas_dividend_bln, 28.5, t),
-        fuel_subsidy_bln: lerp(B.fuel_subsidy_bln, 8.4, t),
-        exports_bln: lerp(B.exports_bln, 1000, t),
-        imports_bln: lerp(B.imports_bln, 872, t),
-        current_account_pct: lerp(B.current_account_pct, 2.0, t),
-        household_debt_ratio: lerp(B.household_debt_ratio, 84.5, t),
-        real_wage_growth: nominalWageGrowth - cpiInflation,
-        nominal_wage_growth: nominalWageGrowth,
-        consumption_growth: lerp(B.consumption_growth, 5.3, t),
-        credit_growth: lerp(B.credit_growth, 4.9, t),
-        property_price_growth: lerp(B.property_price_growth, 4.1, t),
-        trade_balance_pct: lerp(B.trade_balance_pct, 6.65, t),
-        primary_income_pct: lerp(B.primary_income_pct, -4.0, t),
-        transfers_pct: lerp(B.transfers_pct, -0.65, t),
-        business_investment_bln: lerp(B.business_investment_bln, 236, t),
-        public_investment_bln: lerp(B.public_investment_bln, 122, t),
-        housing_investment_bln: lerp(B.housing_investment_bln, 77, t),
-        ron95_market_price: lerp(B.ron95_market_price, 2.54, t),
-        mgs10: baselineMgs10,
-        rmort: baselineOpr + 1.75,
-    };
-}
-
+// The model lives in src/model-solver.js and is loaded by the module script
+// at the end of this page (via browser-structural-model.js).
 function sim(inp) {
     if (window.MaMaMoStructural?.runStructuralPlaygroundModel) {
         return window.MaMaMoStructural.runStructuralPlaygroundModel(inp);
     }
-    if (window.MaMaMoStructural?.runPlaygroundModel) {
-        return window.MaMaMoStructural.runPlaygroundModel(inp);
-    }
-    const oilShk = (inp.brent - B.brent) / B.brent;
-    const cpoShk = (inp.cpo - B.cpo) / B.cpo;
-    const fxShk = (inp.fx - B.fx) / B.fx;
-    const oprD = inp.opr - B.opr;
-    const semiShk = (inp.semi - B.semi) / B.semi;
-    const tourShk = (inp.tour - B.tour) / B.tour;
-    const devD = inp.devgr - B.devgr;
-    const wpgShk = (inp.wpg - B.wpg) / B.wpg;
-    const eqShk = (inp.equity - B.equity) / B.equity;
-    const ust10D = inp.ust10 - B.ust10;
-    const sstD = inp.sst - B.sst;
-    const cpoDutyD = inp.cpoduty - B.cpoduty;
-    const epfBln = inp.epf;
-    const elM = inp.elnino ? 1 : 0;
-    const out = [];
-    let prevPetProfit = B.petronas_profit_bln;
-    let prevPetDiv = B.petronas_dividend_bln;
-
-    for (let q = 0; q < 8; q++) {
-        const T = baselineQuarter(q);
-        const decay = Math.pow(0.88, q);
-        const persist = 1 - 0.08 * q;
-        const build = Math.min(1, 0.3 + 0.1 * q);
-
-        const effOilShk = oilShk > 0 ? oilShk * decay : oilShk * persist;
-        const effBrent = B.brent * (1 + effOilShk);
-
-        // Simplified reduced-form version of the model's MGS10 equation:
-        // d(MGS10) ~= 0.72*d(OPR) + 0.12*d(UST10), anchored to the baseline path.
-        const mgs10 = T.mgs10 + 0.72 * oprD + 0.12 * ust10D;
-
-        const budi95On = inp.budi95 !== false;
-        const baseConsumerRon95 = B.ron95_budi_price * P.budi95_coverage + T.ron95_market_price * (1 - P.budi95_coverage);
-        const gdpDenom = B.gdp_millions_rm / 1000;
-        const baseSubLitre = Math.max(0, T.ron95_market_price - B.ron95_budi_price);
-
-        // Import inflation: fx + oil + world goods prices
-        const importInf = P.import_pt * (fxShk + 0.3 * effOilShk + 0.5 * wpgShk) * 100;
-
-        // SST effect on prices: ~0.3pp per 1pp SST change (partial pass-through)
-        const sstInf = sstD * 0.3;
-
-        // Core inflation
-        const coreInf = T.core_inflation + importInf * 0.3 * build + (oprD < 0 ? -oprD * 0.4 : -oprD * 0.2) + semiShk * 0.3 + sstInf * build + wpgShk * 2 * build;
-
-        const ron95Mkt = T.ron95_market_price + (effBrent - B.brent) * inp.fx / B.fx * 0.012;
-        const ron95Pump = budi95On ? B.ron95_budi_price : ron95Mkt;
-        const ron95Consumer = budi95On ? (B.ron95_budi_price * P.budi95_coverage + ron95Mkt * (1 - P.budi95_coverage)) : ron95Mkt;
-        const fuelPriceShockPct = ((ron95Consumer / baseConsumerRon95) - 1) * 100;
-        // Administered inflation is damped under BUDI95 because most eligible household fuel use remains at RM1.99.
-        const adminInf = P.oil_admin_pt * fuelPriceShockPct;
-        const subShock = !budi95On ? Math.max(0, fuelPriceShockPct) * (q === 0 ? 0.08 : q === 1 ? 0.03 : 0.01 * Math.pow(0.5, q - 2)) : 0;
-        const headCpi = T.cpi_inflation
-            + (coreInf - T.core_inflation)
-            + P.w_admin * adminInf
-            + subShock
-            + elM * 0.8 * (q < 4 ? 1 : 0.5);
-
-        // Petronas & fiscal
-        const effCpo = B.cpo * (1 + cpoShk + elM * 0.15);
-        const brentRM = effBrent * inp.fx;
-        const baseBrentRM = B.brent * B.fx;
-        const petProfit = T.petronas_profit_bln * (brentRM / baseBrentRM);
-        const pitaRev = petProfit * P.pet_tax;
-        const petDiv = q === 0
-            ? T.petronas_dividend_bln * (0.5 + 0.5 * (petProfit / prevPetProfit))
-            : prevPetDiv * (0.5 + 0.5 * (petProfit / prevPetProfit));
-
-        const subsidisedLitresQ = budi95On ? P.fuel_litres_q * P.budi95_coverage : 0;
-        const subLitre = budi95On ? Math.max(0, ron95Mkt - B.ron95_budi_price) : 0;
-        const annSub = budi95On
-            ? T.fuel_subsidy_bln + (subLitre - baseSubLitre) * subsidisedLitresQ * 4
-            : 0;
-
-        // CPO export duty revenue (duty rate applied to CPO export value)
-        const cpoDutyRev = (inp.cpoduty / 100) * effCpo * 0.000045;
-        const baseCpoDutyRev = (B.cpoduty / 100) * B.cpo * 0.000045;
-
-        // SST revenue effect: ~RM2bn per 1pp change
-        const sstRevDelta = sstD * 2.0 / 4;
-
-        const govRev = T.gov_revenue_bln / 4
-            + (pitaRev - T.pita_revenue_bln) / 4
-            + (petDiv - T.petronas_dividend_bln) / 4
-            + (cpoDutyRev - baseCpoDutyRev)
-            + sstRevDelta
-            + devD * 0.1;
-
-        const govExp = T.gov_expenditure_bln / 4
-            + (annSub - T.fuel_subsidy_bln) / 4
-            + devD * 0.5
-            + headCpi * 0.15
-            + (0.7 * (mgs10 - T.mgs10) + 0.3 * oprD) * 0.3; // debt service follows the weighted borrowing-rate rule
-
-        const fiscalPct = T.fiscal_pct
-            + ((govRev - T.gov_revenue_bln / 4) - (govExp - T.gov_expenditure_bln / 4)) * 4 / gdpDenom * 100;
-
-        // External sector
-        const eeExpG = P.ee_elast * semiShk + P.reer_exp_elast * fxShk * 0.5;
-        const oilExpG = effOilShk * 0.6 + fxShk * 0.4;
-        // CPO export duty penalises export volumes slightly
-        const cpoExpG = cpoShk + elM * 0.03 - cpoDutyD * 0.005;
-        const tourExpG = P.tour_elast * tourShk;
-        const otherExpG = semiShk * 0.3 + fxShk * P.reer_exp_elast * -0.5 + wpgShk * 0.15;
-        const totExpG = P.ee_share * eeExpG + P.oil_share * oilExpG + P.cpo_share * cpoExpG + 0.06 * tourExpG + 0.43 * otherExpG;
-        const eeExp = T.exports_bln * P.ee_share * (1 + eeExpG);
-        const oilExp = T.exports_bln * P.oil_share * (1 + oilExpG);
-        const cpoExp = T.exports_bln * P.cpo_share * (1 + cpoExpG);
-        const tourExp = T.exports_bln * 0.06 * (1 + tourExpG);
-        const otherExp = T.exports_bln * 0.43 * (1 + otherExpG);
-        const exports = T.exports_bln * (1 + totExpG);
-
-        // Household block: reduced-form version of the full model's disposable-income, credit, and wealth channels.
-        const rmort = inp.opr + 1.75;
-        const prelimNomWG = T.nominal_wage_growth
-            + P.wage_price_pt * (headCpi - T.cpi_inflation) * 0.2
-            + semiShk * 0.35
-            + tourShk * 0.15
-            - Math.max(0, oprD) * 0.1;
-        const propertyPriceG = T.property_price_growth
-            + 0.9 * (prelimNomWG - T.nominal_wage_growth)
-            - 0.35 * (rmort - T.rmort)
-            - 0.2 * (headCpi - T.cpi_inflation);
-        const creditG = T.credit_growth
-            + 0.45 * (propertyPriceG - T.property_price_growth)
-            + 0.35 * (prelimNomWG - T.nominal_wage_growth)
-            - 0.9 * oprD
-            - 0.25 * (headCpi - T.cpi_inflation)
-            + (epfBln > 0 ? 0.08 * epfBln : 0);
-        const realDispIncomeG = (prelimNomWG - headCpi)
-            + 0.18 * (creditG - T.credit_growth);
-        const epfBoost = epfBln > 0 ? (epfBln / (B.gdp_millions_rm / 1000)) * 100 * P.mpc * (q < 4 ? 0.6 : 0.2) : 0;
-        const consG0 = T.consumption_growth
-            + 0.55 * (realDispIncomeG - T.real_wage_growth)
-            + 0.084 * (creditG - T.credit_growth)
-            + eqShk * 0.6
-            + oprD * P.opr_cons * 200
-            - Math.max(0, headCpi - T.cpi_inflation) * 0.25
-            + epfBoost
-            - sstD * 0.3;
-
-        // Investment: UST10 feeds MGS10 which affects long-end borrowing
-        const invBaseline = T.gdp_growth * 1.2;
-        const invG = invBaseline
-            + oprD * P.opr_inv * 300
-            + devD * 0.8
-            + semiShk * 15
-            - Math.max(0, headCpi - 5) * 0.5
-            - ust10D * 0.3 // higher global rates tighten financial conditions
-            + eqShk * 3; // equity market confidence
-
-        const consImpG = 0.15 * (consG0 - T.consumption_growth) / 10;
-        const invImpG = 0.22 * (invG - invBaseline) / 10;
-        const exportImpG =
-            0.60 * P.ee_share * eeExpG +
-            0.45 * 0.43 * otherExpG +
-            0.08 * 0.06 * tourExpG +
-            0.52 * (P.oil_share * oilExpG + P.cpo_share * cpoExpG);
-        const impG = consImpG + invImpG + exportImpG + fxShk * 0.10 + wpgShk * 0.15;
-        const imports = T.imports_bln * (1 + impG);
-
-        const gdpConsCtr0 = 0.55 * (consG0 - T.consumption_growth) / 10;
-        const gdpInvCtr = 0.23 * (invG - invBaseline) / 10;
-        const gdpNetExpCtr = 0.13 * (totExpG - impG * 0.9) * 5;
-        const gdpFiscalCtr = devD * 0.15;
-        const gdpInflationDrag = -Math.max(0, headCpi - 8) * 0.15;
-        const gdpG0 = T.gdp_growth
-            + gdpConsCtr0
-            + gdpInvCtr
-            + gdpNetExpCtr
-            + gdpFiscalCtr
-            + gdpInflationDrag;
-
-        const unempD0 = -P.okun * (gdpG0 - T.gdp_growth) / 100 * 5;
-        const unemp0 = Math.max(2.5, Math.min(6.0, T.unemployment + unempD0));
-        const consG = consG0 - 0.35 * (unemp0 - T.unemployment);
-        const gdpConsCtr = 0.55 * (consG - T.consumption_growth) / 10;
-        const gdpG = T.gdp_growth
-            + gdpConsCtr
-            + gdpInvCtr
-            + gdpNetExpCtr
-            + gdpFiscalCtr
-            + gdpInflationDrag;
-        const unempD = -P.okun * (gdpG - T.gdp_growth) / 100 * 5;
-        const unemp = Math.max(2.5, Math.min(6.0, T.unemployment + unempD));
-        const nomWG = T.nominal_wage_growth
-            + P.wage_price_pt * (headCpi - T.cpi_inflation) * 0.3
-            + (gdpG - T.gdp_growth) * 0.4
-            - 0.08 * (unemp - T.unemployment);
-        const realWG = nomWG - headCpi;
-        const businessInv = T.business_investment_bln * (1 + (invG - invBaseline) / 100);
-        const publicInv = T.public_investment_bln * (1 + devD * 0.04);
-        const housingInv = T.housing_investment_bln * (
-            1
-            + 0.0095 * (consG - T.consumption_growth)
-            - 0.0082 * (propertyPriceG - T.property_price_growth)
-            - 0.03 * (rmort - T.rmort)
-        );
-        const totalInv = businessInv + publicInv + housingInv;
-
-        // Household debt: EPF withdrawal temporarily reduces savings, higher rates increase burden
-        const debtR = T.household_debt_ratio
-            + 0.25 * (creditG - T.credit_growth)
-            + 0.15 * (propertyPriceG - T.property_price_growth)
-            + oprD * 0.5
-            - (gdpG - T.gdp_growth) * 0.3
-            + (epfBln > 0 ? -epfBln * 0.02 : 0);
-
-        const tradeBalPct = T.trade_balance_pct
-            + ((exports - T.exports_bln) - (imports - T.imports_bln)) / gdpDenom * 100;
-        const primaryIncomePct = T.primary_income_pct
-            + eqShk * 0.6
-            - 0.18 * (gdpG - T.gdp_growth)
-            - 0.08 * (mgs10 - T.mgs10)
-            - 0.05 * oprD;
-        const transfersPct = T.transfers_pct
-            + fxShk * 0.4
-            - 0.06 * (nomWG - T.nominal_wage_growth);
-        const caPct = tradeBalPct + primaryIncomePct + transfersPct;
-
-        out.push({
-            q: QS[q], brent: r2(effBrent), gdp: r2(gdpG), cpi: r2(headCpi), core: r2(coreInf),
-            unemp: r2(unemp), fiscal: r2(fiscalPct), govRev: r1(govRev * 4), govExp: r1(govExp * 4),
-            pet: r1(petProfit), pita: r1(pitaRev), petDiv: r1(petDiv), sub: r1(annSub),
-            exp: r1(exports), imp: r1(imports), ca: r2(caPct), consG: r2(consG),
-            nomW: r2(nomWG), realW: r2(realWG), debt: r1(debtR), inv: r2(invG), ron95: r2(ron95Mkt),
-            ron95Pump: r2(ron95Pump), subLitre: r2(subLitre), mgs10: r2(mgs10),
-            rmort: r2(rmort), prpG: r2(propertyPriceG), creditG: r2(creditG),
-            tradeBal: r2(tradeBalPct), primInc: r2(primaryIncomePct), transfers: r2(transfersPct),
-            adminInf: r2(adminInf), importInf: r2(importInf), sstInf: r2(sstInf), cpoDuty: r2(cpoDutyRev * 4),
-            sstRev: r2(sstRevDelta * 4), subCostDelta: r2(annSub - B.fuel_subsidy_bln),
-            eeExp: r1(eeExp), oilExp: r1(oilExp), cpoExp: r1(cpoExp), tourExp: r1(tourExp), otherExp: r1(otherExp),
-            busInv: r1(businessInv), pubInv: r1(publicInv), houseInv: r1(housingInv), totalInv: r1(totalInv),
-            gdpBase: B.gdp_growth, gdpConsCtr: r2(gdpConsCtr), gdpInvCtr: r2(gdpInvCtr), gdpNetExpCtr: r2(gdpNetExpCtr),
-            gdpFiscalCtr: r2(gdpFiscalCtr), gdpInflationDrag: r2(gdpInflationDrag),
-            // OpenDOSM dashboard fields
-            cpiIdx: r2(B.cpi_index + q * 0.2),
-            cpiFood: r2(136.5 + q * 0.25 + (headCpi - B.cpi_inflation) * 0.3),
-            cpiHousing: r2(132.0 + q * 0.15 + (headCpi - B.cpi_inflation) * 0.2),
-            cpiTransport: r2(134.0 + q * 0.18 + (headCpi - B.cpi_inflation) * 0.15 + (effBrent - B.brent) * 0.01),
-            cpiRestaurants: r2(135.5 + q * 0.22 + (headCpi - B.cpi_inflation) * 0.25),
-            cpiMisc: r2(133.0 + q * 0.12 + (headCpi - B.cpi_inflation) * 0.1),
-            cpiFoodContrib: r2(headCpi * 0.30),
-            cpiHousingContrib: r2(headCpi * 0.22),
-            cpiTransportContrib: r2(headCpi * 0.145),
-            cpiOtherContrib: r2(headCpi * 0.335),
-            partRate: r1(B.participation_rate + (gdpG - B.gdp_growth) * 0.1 + q * 0.05),
-            epRatio: r1(B.ep_ratio - (unemp - B.unemployment) * 0.5 + q * 0.08),
-            dirTax: r1(B.gov_revenue_bln * 0.38 / 4 + (petProfit - B.petronas_profit_bln) * 0.1),
-            indTax: r1(B.gov_revenue_bln * 0.35 / 4 + (headCpi - B.cpi_inflation) * 0.5),
-            nonTaxRev: r1(B.gov_revenue_bln * 0.27 / 4 + (petDiv - B.petronas_dividend_bln) * 0.3),
-            tradeBalPct: r2(tradeBalPct),
-        });
-        prevPetProfit = petProfit;
-        prevPetDiv = petDiv;
-    }
-    return out;
+    throw new Error('MaMaMo model did not load. Serve the repository over HTTP (e.g. npx serve .) rather than opening the file directly.');
 }
 
 function r1(v) { return Math.round(v * 10) / 10; }
@@ -2371,15 +2069,15 @@ function initCharts() {
 
     charts.pet = new Chart(document.getElementById('c-pet'), {
         type: 'line', data: { labels: L, datasets: comboDatasets([
-            ds('Petronas Profit', d.map(r=>r.pet), '#ff8800', { fill: true }),
+            ds('Petroleum Revenue', d.map(r=>r.pet), '#ff8800', { fill: true }),
             ds('PITA Revenue', d.map(r=>r.pita), '#4488ff'),
             ds('Fuel Subsidy', d.map(r=>r.sub), '#ff4444', { fill: true, axis: 'y1' }),
         ], [
-            { label: 'Petronas Profit Baseline', data: b.map(r=>r.pet), color: '#ff8800' },
+            { label: 'Petroleum Revenue Baseline', data: b.map(r=>r.pet), color: '#ff8800' },
             { label: 'PITA Revenue Baseline', data: b.map(r=>r.pita), color: '#4488ff' },
             { label: 'Fuel Subsidy Baseline', data: b.map(r=>r.sub), color: '#ff4444', opts: { axis: 'y1' } },
         ], c ? [
-            { label: 'Petronas Profit Compare', data: c.map(r=>r.pet), color: '#66b3ff' },
+            { label: 'Petroleum Revenue Compare', data: c.map(r=>r.pet), color: '#66b3ff' },
             { label: 'PITA Revenue Compare', data: c.map(r=>r.pita), color: '#66b3ff' },
             { label: 'Fuel Subsidy Compare', data: c.map(r=>r.sub), color: '#66b3ff', opts: { axis: 'y1' } },
         ] : [])},
@@ -2858,31 +2556,37 @@ function updCharts() {
     };
     for (const [k, groups] of Object.entries(mp)) {
         const [scenarioFns, baselineFns, compareFns] = groups;
+        // Some charts only define scenario series; skip datasets they don't have.
+        const setData = (idx, data) => {
+            const ds = charts[k].data.datasets[idx];
+            if (ds) ds.data = data;
+        };
         scenarioFns.forEach((fn, i) => {
             const baselineFn = baselineFns.length === scenarioFns.length ? baselineFns[i] : null;
-            charts[k].data.datasets[i].data = maybeDeltaSeries(fn, d, baselineFn, b);
+            setData(i, maybeDeltaSeries(fn, d, baselineFn, b));
         });
         baselineFns.forEach((fn, i) => {
-            charts[k].data.datasets[scenarioFns.length + i].data = uiState.deltaMode && baselineFns.length === scenarioFns.length ? zeroSeries(b) : b.map(fn);
+            setData(scenarioFns.length + i, uiState.deltaMode && baselineFns.length === scenarioFns.length ? zeroSeries(b) : b.map(fn));
         });
         compareFns.forEach((fn, i) => {
             const baselineFn = baselineFns.length === scenarioFns.length ? baselineFns[i] : null;
-            charts[k].data.datasets[scenarioFns.length + baselineFns.length + i].data = maybeDeltaSeries(fn, c, baselineFn, b);
+            setData(scenarioFns.length + baselineFns.length + i, maybeDeltaSeries(fn, c, baselineFn, b));
         });
         charts[k].update('none');
     }
 
-    // KPIs
+    // KPIs: scenario average over the horizon versus the baseline run
     const avg = fn => d.reduce((s, r) => s + fn(r), 0) / d.length;
-    setKPI('kpi-gdp', avg(r=>r.gdp).toFixed(1)+'%', avg(r=>r.gdp) - B.gdp_growth, false);
-    setKPI('kpi-cpi', avg(r=>r.cpi).toFixed(1)+'%', avg(r=>r.cpi) - B.cpi_inflation, true);
-    setKPI('kpi-unemp', avg(r=>r.unemp).toFixed(1)+'%', avg(r=>r.unemp) - B.unemployment, true);
-    setKPI('kpi-fiscal', avg(r=>r.fiscal).toFixed(1)+'%', avg(r=>r.fiscal) - B.fiscal_pct, false);
-    setKPI('kpi-pet', 'RM'+Math.round(avg(r=>r.pet))+'bn', avg(r=>r.pet) - B.petronas_profit_bln, false);
-    setKPI('kpi-sub', 'RM'+Math.round(avg(r=>r.sub))+'bn', avg(r=>r.sub) - B.fuel_subsidy_bln, true);
-    setKPI('kpi-ca', avg(r=>r.ca).toFixed(1)+'%', avg(r=>r.ca) - B.current_account_pct, false);
+    const avgB = fn => b.reduce((s, r) => s + fn(r), 0) / b.length;
+    setKPI('kpi-gdp', avg(r=>r.gdp).toFixed(1)+'%', avg(r=>r.gdp) - avgB(r=>r.gdp), false);
+    setKPI('kpi-cpi', avg(r=>r.cpi).toFixed(1)+'%', avg(r=>r.cpi) - avgB(r=>r.cpi), true);
+    setKPI('kpi-unemp', avg(r=>r.unemp).toFixed(1)+'%', avg(r=>r.unemp) - avgB(r=>r.unemp), true);
+    setKPI('kpi-fiscal', avg(r=>r.fiscal).toFixed(1)+'%', avg(r=>r.fiscal) - avgB(r=>r.fiscal), false);
+    setKPI('kpi-pet', 'RM'+Math.round(avg(r=>r.pet))+'bn', avg(r=>r.pet) - avgB(r=>r.pet), false);
+    setKPI('kpi-sub', 'RM'+Math.round(avg(r=>r.sub))+'bn', avg(r=>r.sub) - avgB(r=>r.sub), true);
+    setKPI('kpi-ca', avg(r=>r.ca).toFixed(1)+'%', avg(r=>r.ca) - avgB(r=>r.ca), false);
     const rw = avg(r=>r.realW);
-    setKPI('kpi-rw', (rw>=0?'+':'')+rw.toFixed(1)+'%', rw - B.real_wage_growth, false);
+    setKPI('kpi-rw', (rw>=0?'+':'')+rw.toFixed(1)+'%', rw - avgB(r=>r.realW), false);
 
     // Ticker
     updTicker(getIn());
@@ -3100,7 +2804,10 @@ function updNarrative(d, inp) {
     const parts = [];
     const aGdp = avg(r=>r.gdp), aCpi = avg(r=>r.cpi), pCpi = Math.max(...d.map(r=>r.cpi));
 
-    if (inp.brent > 100) parts.push(`Oil at $${inp.brent} creates cost-push pressure. Administered fuel prices rise ~${(P.oil_admin_pt * ((inp.brent-B.brent)/B.brent) * 100).toFixed(0)}% through the 15% pass-through channel.`);
+    if (inp.brent > 100) {
+        const subDelta = avg(r=>r.subCostDelta);
+        parts.push(`Oil at $${inp.brent} lifts the unsubsidised RON95 price and adds ~RM${subDelta.toFixed(0)}bn a year to fuel subsidies, while BUDI95 shields most pump prices.`);
+    }
     else if (inp.brent < 60) parts.push(`Low oil at $${inp.brent} depresses Petronas profits and fiscal revenue but lowers energy costs.`);
     if (pCpi > 6) parts.push(`Headline CPI peaks at ${pCpi.toFixed(1)}% — well above BNM's comfort zone. Second-round wage effects add persistence.`);
     else if (aCpi > 3.5) parts.push(`Inflation averaging ${aCpi.toFixed(1)}% signals moderate price pressure.`);
@@ -3123,7 +2830,7 @@ function exportCSV() {
     const d = sim(currentInp);
     const b = sim(getBaselineIn());
 
-    const headers = ['Quarter', 'GDP Growth', 'CPI', 'Core Inflation', 'Unemployment', 'Fiscal % GDP', 'Petronas Profit', 'Fuel Subsidy', 'Exports', 'Imports', 'CA % GDP', 'Nominal Wage Growth', 'Real Wage Growth', 'Baseline GDP', 'Baseline CPI', 'Delta GDP', 'Delta CPI'];
+    const headers = ['Quarter', 'GDP Growth', 'CPI', 'Core Inflation', 'Unemployment', 'Fiscal % GDP', 'Petroleum Revenue', 'Fuel Subsidy', 'Exports', 'Imports', 'CA % GDP', 'Nominal Wage Growth', 'Real Wage Growth', 'Baseline GDP', 'Baseline CPI', 'Delta GDP', 'Delta CPI'];
     const rows = d.map((r, i) => {
         const base = b[i];
         return [

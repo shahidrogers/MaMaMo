@@ -3,12 +3,40 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createBaselineRunPack } from '../studies/playground/baseline-run-pack.js';
-import { runModel } from '../src/model-solver.js';
-import { quarterRange } from '../src/model-engine.js';
+import { runModel, summariseYears } from '../src/model-solver.js';
+import { createBaselineRunPack, applyOverrides } from '../src/run-pack.js';
+import { EXOGENOUS_PATH, FIRST_FORECAST_QUARTER, POLICY, VINTAGE, START_QUARTER } from '../src/baseline-data.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, '..');
+const firstPath = EXOGENOUS_PATH[FIRST_FORECAST_QUARTER];
+
+// CLI flag → [run pack input, parser]. Price and rate flags set a level for
+// every forecast quarter; fiscal levers are RM bn per year versus baseline.
+const FLAGS = {
+    '--brent': ['PBRENT', parseFloat],
+    '--crack': ['CRACK', parseFloat],
+    '--fx': ['USDMYR', parseFloat],
+    '--cpo': ['PCPO', parseFloat],
+    '--opr': ['OPR', parseFloat],
+    '--ust10': ['UST10', parseFloat],
+    '--semi': ['WSTD', parseFloat],
+    '--tour': ['WTOUR', parseFloat],
+    '--wpg': ['WPG', parseFloat],
+    '--equity': ['WEQPR', parseFloat],
+    '--sst': ['SSTRATE', parseFloat],
+    '--cpoduty': ['CPODRATE', parseFloat],
+    '--budi95-price': ['BUDI95PRICE', parseFloat],
+    '--budi95-quota': ['BUDI95QUOTA', parseFloat],
+    '--petdiv': ['PETDIV', parseFloat],
+    '--cash-aid': ['CASHAID', parseFloat],
+    '--gov-cons': ['GOVCONS', parseFloat],
+    '--dev-exp': ['DEVEXP', parseFloat],
+    '--hh-tax': ['HHTAX', parseFloat],
+    '--corp-tax': ['CORPTAX', parseFloat],
+    '--ind-tax': ['INDTAX', parseFloat],
+    '--cpi-adj': ['CPIADJ', parseFloat],
+};
 
 function parseArgs(argv) {
     const args = argv.slice(2);
@@ -16,52 +44,37 @@ function parseArgs(argv) {
         runPack: null,
         output: null,
         startQuarter: null,
-        length: 8,
-        brent: null,
-        cpo: null,
-        opr: null,
-        fx: null,
-        semi: null,
-        tour: null,
-        devgr: null,
-        wpg: null,
-        equity: null,
-        ust10: null,
-        sst: null,
-        cpoduty: null,
+        length: null,
+        annual: false,
+        overrides: {},
         epf: null,
-        elnino: false,
-        budi95: true,
     };
 
     for (let i = 0; i < args.length; i++) {
-        switch (args[i]) {
+        const arg = args[i];
+        if (arg in FLAGS) {
+            const [input, parse] = FLAGS[arg];
+            const value = parse(args[++i]);
+            if (Number.isNaN(value)) throw new Error(`${arg} needs a number`);
+            opts.overrides[input] = value;
+            continue;
+        }
+        switch (arg) {
             case '--run-pack': opts.runPack = args[++i]; break;
             case '--output': case '-o': opts.output = args[++i]; break;
             case '--start': opts.startQuarter = args[++i]; break;
             case '--length': case '-n': opts.length = parseInt(args[++i], 10); break;
-            case '--brent': opts.brent = parseFloat(args[++i]); break;
-            case '--cpo': opts.cpo = parseFloat(args[++i]); break;
-            case '--opr': opts.opr = parseFloat(args[++i]); break;
-            case '--fx': opts.fx = parseFloat(args[++i]); break;
-            case '--semi': opts.semi = parseFloat(args[++i]); break;
-            case '--tour': opts.tour = parseFloat(args[++i]); break;
-            case '--devgr': opts.devgr = parseFloat(args[++i]); break;
-            case '--wpg': opts.wpg = parseFloat(args[++i]); break;
-            case '--equity': opts.equity = parseFloat(args[++i]); break;
-            case '--ust10': opts.ust10 = parseFloat(args[++i]); break;
-            case '--sst': opts.sst = parseFloat(args[++i]); break;
-            case '--cpoduty': opts.cpoduty = parseFloat(args[++i]); break;
+            case '--annual': opts.annual = true; break;
             case '--epf': opts.epf = parseFloat(args[++i]); break;
-            case '--elnino': opts.elnino = true; break;
-            case '--no-budi95': opts.budi95 = false; break;
+            case '--devgr': throw new Error('--devgr was replaced by --dev-exp (RM bn per year versus baseline)');
+            case '--elnino': opts.overrides.ELNINO = 1; break;
+            case '--no-budi95': opts.overrides.BUDI95 = 0; break;
             case '--help': case '-h':
                 printHelp();
                 process.exit(0);
                 break;
             default:
-                console.error(`Unknown option: ${args[i]}`);
-                process.exit(1);
+                throw new Error(`Unknown option: ${arg} (see --help)`);
         }
     }
     return opts;
@@ -70,93 +83,65 @@ function parseArgs(argv) {
 function printHelp() {
     console.log(`
 MaMaMo Model Solver — Run Malaysia macro scenarios from the command line.
+Baseline vintage ${VINTAGE}; forecast starts ${FIRST_FORECAST_QUARTER}. Shocks apply to forecast quarters only.
 
 USAGE:
   node bin/run-model.mjs [options]
 
-OPTIONS:
-  --run-pack <path>    Path to a JSON run pack file (overrides baseline)
+OUTPUT:
+  --annual             Print calendar-year summary instead of quarterly results
   -o, --output <path>  Write results to file instead of stdout
-  --start <YYYYQn>     Start quarter (default: 2026Q2)
-  -n, --length <N>     Number of quarters to simulate (default: 8)
+  --start <YYYYQn>     First quarter to show (simulation always starts ${START_QUARTER})
+  -n, --length <N>     Number of quarters to show from --start (default: through 2028Q4)
+  --run-pack <path>    JSON run pack (must include a baseline layer)
 
-  Scenario inputs:
-  --brent <price>      Brent crude oil price USD/bbl (default: 82)
-  --cpo <price>        CPO price RM/tonne (default: 4000)
-  --semi <index>       World semiconductor demand index (default: 100)
-  --tour <index>       World tourism demand index (default: 100)
-  --wpg <index>        World goods price index (default: 100)
-  --equity <index>     World equity price index (default: 100)
-  --ust10 <rate>       US 10-year Treasury yield % (default: 4.25)
-  --elnino             Enable El Nino shock
+EXTERNAL (defaults are the ${FIRST_FORECAST_QUARTER} baseline; the baseline path varies by quarter):
+  --brent <USD/bbl>    Brent crude (baseline ${firstPath.brent}, easing to 75 by 2028)
+  --crack <USD/bbl>    Gasoline refining margin over Brent (baseline ${firstPath.crack}, easing to 20)
+  --fx <rate>          USD/MYR (baseline ${firstPath.fx})
+  --cpo <RM/tonne>     Crude palm oil price (baseline ${firstPath.cpo})
+  --ust10 <%>          US 10-year Treasury yield (baseline ${firstPath.ust10})
+  --semi <index>       World semiconductor demand (baseline 100)
+  --tour <index>       World tourism demand (baseline 100)
+  --wpg <index>        World goods prices (baseline 100)
+  --equity <index>     World equity prices (baseline 100)
+  --elnino             El Nino from ${FIRST_FORECAST_QUARTER}
 
-  Policy inputs:
-  --opr <rate>         BNM Overnight Policy Rate % (default: 3.0)
-  --fx <rate>          USD/MYR exchange rate (default: 3.89)
-  --devgr <rate>       Development expenditure growth % (default: 2.0)
-  --sst <rate>         SST rate % (default: 6)
-  --cpoduty <rate>     CPO export duty rate % (default: 8)
-  --epf <bln>          EPF withdrawal RM billion (default: 0)
-  --no-budi95          Disable BUDI95 fuel subsidy scheme
+MONETARY AND TAX POLICY:
+  --opr <%>            BNM Overnight Policy Rate (baseline ${firstPath.opr})
+  --sst <%>            Service tax rate (baseline ${POLICY.sstRate})
+  --cpoduty <%>        CPO export duty (baseline ${POLICY.cpoDutyRate})
+  --no-budi95          Remove the BUDI95 RON95 subsidy
+  --budi95-price <RM>  BUDI95 subsidised price (baseline ${POLICY.budi95Price})
+  --budi95-quota <L>   BUDI95 monthly quota in litres (baseline 300)
+  --petdiv <RM bn>     Petronas dividend per year (baseline 2026: 20, 2027: 25, 2028: 25)
+
+FISCAL LEVERS (RM bn per year versus baseline; positive = more spending or more tax):
+  --cash-aid <bn>      Cash transfers to households (STR, SARA)
+  --gov-cons <bn>      Government consumption (salaries, supplies)
+  --dev-exp <bn>       Development expenditure
+  --hh-tax <bn>        Household direct taxes
+  --corp-tax <bn>      Corporate taxes
+  --ind-tax <bn>       Other indirect taxes
+  --cpi-adj <%>        Direct CPI level effect of administered prices
+  --epf <bn>           One-off EPF special withdrawal paid in ${FIRST_FORECAST_QUARTER}
 
 EXAMPLES:
-  # Baseline run
-  node bin/run-model.mjs
-
-  # Oil shock scenario
-  node bin/run-model.mjs --brent 150 --fx 4.20
-
-  # Iran war scenario
-  node bin/run-model.mjs --brent 200 --fx 4.50 --opr 4.0 --elnino
-
-  # Save to file
-  node bin/run-model.mjs --brent 150 -o results/oil-shock.json
+  node bin/run-model.mjs --annual
+  node bin/run-model.mjs --brent 120 --crack 70 --annual
+  node bin/run-model.mjs --no-budi95 --cash-aid 8 --annual
+  node bin/run-model.mjs --semi 85 --start 2027Q1 -n 4
 `);
 }
 
-function applyShocksToRunPack(runPack, opts) {
-    const { quarters, scenario, policy } = runPack;
-
-    const shockMap = {
-        brent: { layer: scenario, key: 'PBRENT' },
-        cpo: { layer: scenario, key: 'PCPO' },
-        semi: { layer: scenario, key: 'WSTD' },
-        tour: { layer: scenario, key: 'WTOUR' },
-        wpg: { layer: scenario, key: 'WPG' },
-        equity: { layer: scenario, key: 'WEQPR' },
-        ust10: { layer: scenario, key: 'UST10' },
-        elnino: { layer: scenario, key: 'ELNINO' },
-        opr: { layer: policy, key: 'OPR' },
-        fx: { layer: scenario, key: 'USDMYR' },
-        devgr: { layer: policy, key: 'DEVGR' },
-        sst: { layer: policy, key: 'SSTRATE' },
-        cpoduty: { layer: policy, key: 'CPODRATE' },
-        epf: { layer: policy, key: 'EPFWDRAW' },
-        budi95: { layer: policy, key: 'BUDI95' },
-    };
-
-    for (const [optName, { layer, key }] of Object.entries(shockMap)) {
-        if (opts[optName] !== undefined && opts[optName] !== null) {
-            let value = opts[optName];
-            if (key === 'DEVGR') value = value / 100;
-            if (key === 'SSTRATE') value = value / 100;
-            if (key === 'CPODRATE') value = value / 100;
-            if (key === 'EPFWDRAW') value = value * 1000;
-            if (key === 'ELNINO') value = value ? 1 : 0;
-            if (key === 'BUDI95') value = value ? 1 : 0;
-            if (key === 'USDMYR') {
-                // Also update REER when FX changes
-                policy.REER = Object.fromEntries(quarters.map(q => [q, 100 * (3.89 / value)]));
-            }
-            layer[key] = Object.fromEntries(quarters.map(q => [q, value]));
-        }
-    }
-
-    return runPack;
-}
-
 function main() {
-    const opts = parseArgs(process.argv);
+    let opts;
+    try {
+        opts = parseArgs(process.argv);
+    } catch (err) {
+        console.error(err.message);
+        process.exit(1);
+    }
 
     let runPack;
     if (opts.runPack) {
@@ -170,22 +155,33 @@ function main() {
         runPack = createBaselineRunPack();
     }
 
-    if (opts.startQuarter) {
-        runPack.quarters = quarterRange(opts.startQuarter, opts.length);
-    }
-
-    runPack = applyShocksToRunPack(runPack, opts);
-
     try {
+        applyOverrides(runPack, opts.overrides);
+        if (opts.epf !== null) applyOverrides(runPack, { EPFWDRAW: { [FIRST_FORECAST_QUARTER]: opts.epf } });
+
         const results = runModel(runPack);
-        const output = JSON.stringify(results, null, 2);
+        let output;
+        if (opts.annual) {
+            output = summariseYears(results, runPack);
+        } else {
+            const start = opts.startQuarter ?? runPack.quarters[0];
+            if (!runPack.quarters.includes(start)) {
+                throw new Error(`--start ${start} is outside the simulated range ${runPack.quarters[0]}-${runPack.quarters.at(-1)}`);
+            }
+            const shown = results.filter(r => r.quarter >= start);
+            output = opts.length ? shown.slice(0, opts.length) : shown;
+            // Drop internal state and quarterly fiscal flows from CLI output
+            output = output.map(r => Object.fromEntries(
+                Object.entries(r).filter(([k]) => !/^[A-Z_]+$/.test(k) && k !== 'fq' && k !== 'fqRef')));
+        }
+        const text = JSON.stringify(output, null, 2);
 
         if (opts.output) {
             const outPath = resolve(rootDir, opts.output);
-            writeFileSync(outPath, output);
+            writeFileSync(outPath, text);
             console.log(`Results written to ${outPath}`);
         } else {
-            console.log(output);
+            console.log(text);
         }
     } catch (err) {
         console.error(`Model run failed: ${err.message}`);

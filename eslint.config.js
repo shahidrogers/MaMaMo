@@ -1,3 +1,7 @@
+const nodeGlobals = Object.fromEntries([
+    'process', 'console', 'fetch', 'URL', 'URLSearchParams', 'AbortSignal',
+].map(name => [name, 'readonly']));
+
 export default [
     {
         files: ['**/*.js', '**/*.mjs'],
@@ -5,6 +9,7 @@ export default [
         languageOptions: {
             ecmaVersion: 2022,
             sourceType: 'module',
+            globals: nodeGlobals,
         },
         rules: {
             'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],

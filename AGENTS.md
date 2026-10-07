@@ -9,8 +9,8 @@ MaMaMo (Malaysia Macro Model) is a structural quarterly macroeconomic model for 
 ### Running the Model
 
 ```bash
-node bin/run-model.mjs                          # Baseline scenario
-node bin/run-model.mjs --brent 150 --fx 4.20    # Custom scenario
+node bin/run-model.mjs --annual                 # Baseline, calendar-year summary
+node bin/run-model.mjs --brent 150 --fx 4.20    # Custom scenario (quarterly JSON)
 node bin/run-model.mjs --help                   # All options
 ```
 
@@ -30,10 +30,10 @@ npx serve .                                     # Serve playground locally
 
 ### Testing
 
-No test framework is configured. Validate changes by:
-1. Running `node scripts/validate_model_inputs.mjs` for input changes
-2. Running `node bin/run-model.mjs` and verifying JSON output is sensible
-3. Opening `studies/playground/index.html` to check interactive UI
+Tests use Node's built-in runner: `npm test`. Validate changes by:
+1. Running `npm test` (baseline reproduces data, identities hold, shock signs and sizes are sane)
+2. Running `node bin/run-model.mjs --annual` and checking the numbers are sensible
+3. Serving the repo (`npx serve .`) and opening `studies/playground/` to check the UI
 
 ### CI
 
@@ -113,8 +113,10 @@ Use the existing rounding functions for model outputs:
 ```
 bin/              — CLI entry points (.mjs)
 src/              — Core library (.js)
-  model-engine.js   — Quarter iteration, state management, lag utilities
-  model-solver.js   — 17-block equation implementations
+  baseline-data.js  — Dated baseline: data history, paths, fiscal plan (update here)
+  run-pack.js       — Baseline run pack builder, applyOverrides(), INPUTS list
+  model-engine.js   — Quarter iteration, input layering, lag utilities
+  model-solver.js   — Baseline-plus-deviation model (PARAMS, runModel, summariseYears)
 model/            — Model documentation (EViews-style equations)
 docs/             — User-facing documentation
 studies/          — Interactive HTML/JSON scenario dashboards
@@ -123,9 +125,11 @@ scripts/          — Utility scripts (validation)
 
 ## Key Patterns
 
-- **Run Pack**: Object with `quarters`, `historical`, `scenario`, `policy`, `demographic`, `calibration`, `preprocess` layers
-- **Engine**: `StructuralModelEngine` iterates quarters, calling a step function with `getInput`, `lag`, `prevQuarter`
-- **Input layering**: scenario → policy → demographic → calibration → preprocess (first match wins)
+- **Run Pack**: Object with `quarters`, `historical`, `scenario`, `policy`, `demographic`, `calibration`, `preprocess`, `baseline` layers plus `meta`
+- **Engine**: `StructuralModelEngine` iterates quarters, calling a step function with `getInput`, `getReference`, `lag`, `prevQuarter`
+- **Input layering**: scenario → policy → demographic → calibration → preprocess → baseline (first match wins); shocks are measured against the `baseline` layer
+- **Units**: flows in RM bn per quarter, fiscal outputs annualised, growth y/y. Never mix RM mn into the solver
+- **One model**: the playground and studies import `src/`; do not add model logic elsewhere
 
 ## Contributing
 

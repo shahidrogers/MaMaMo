@@ -86,7 +86,10 @@ export function validateRunPack(runPack) {
  * input layering, and lag utilities for macroeconomic model execution.
  *
  * Input layering priority (first match wins):
- * scenario → policy → demographic → calibration → preprocess
+ * scenario → policy → demographic → calibration → preprocess → baseline
+ *
+ * The optional `baseline` layer holds the reference scenario. Overrides in the
+ * other layers are measured against it (see `getReference`).
  */
 export class StructuralModelEngine {
     /**
@@ -119,19 +122,32 @@ export class StructuralModelEngine {
     }
 
     /**
-     * Get an input value respecting layer priority (scenario → policy → demographic → calibration → preprocess).
+     * Get an input value respecting layer priority (scenario → policy → demographic → calibration → preprocess → baseline).
      * @param {string} quarter - Quarter string
      * @param {string} seriesName - Series name to look up
      * @returns {*} The value from the highest-priority layer that has it
      * @throws {Error} If the series is not found in any layer
      */
     getInput(quarter, seriesName) {
-        const layerOrder = ['scenario', 'policy', 'demographic', 'calibration', 'preprocess'];
+        const layerOrder = ['scenario', 'policy', 'demographic', 'calibration', 'preprocess', 'baseline'];
         for (const layerName of layerOrder) {
             const layer = this.runPack[layerName] ?? {};
             if (layer[seriesName] && quarter in layer[seriesName]) return layer[seriesName][quarter];
         }
         throw new Error(`Input series "${seriesName}" is not available for ${quarter}`);
+    }
+
+    /**
+     * Get the reference (baseline) value of an input. Falls back to the layered
+     * input when the run pack has no baseline value, so the series is unshocked.
+     * @param {string} quarter - Quarter string
+     * @param {string} seriesName - Series name to look up
+     * @returns {*} The baseline value for the series
+     */
+    getReference(quarter, seriesName) {
+        const series = this.runPack.baseline?.[seriesName];
+        if (series && quarter in series) return series[quarter];
+        return this.getInput(quarter, seriesName);
     }
 
     /**
@@ -180,6 +196,7 @@ export class StructuralModelEngine {
      * @param {function} stepFn - Function called for each quarter. Receives an object with:
      *   - {string} quarter - Current quarter string
      *   - {function} getInput - Get input value with layer priority
+     *   - {function} getReference - Get the baseline value of an input
      *   - {function} getHistorical - Get historical value
      *   - {function} getState - Get current state value
      *   - {function} lag - Get lagged state value
@@ -194,6 +211,7 @@ export class StructuralModelEngine {
             const state = stepFn({
                 quarter,
                 getInput: name => this.getInput(quarter, name),
+                getReference: name => this.getReference(quarter, name),
                 getHistorical: name => this.getHistorical(name, quarter),
                 getState: name => this.getState(quarter, name),
                 lag: (name, periods = 1) => this.lag(quarter, name, periods),

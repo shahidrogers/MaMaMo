@@ -1,6 +1,6 @@
 {
   "name": "mamamo",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Malaysia Macro Model — A structural quarterly macro model prototype for Malaysia",
   "type": "module",
   "bin": {
@@ -15,9 +15,9 @@
     "build-inputs": "node bin/build-inputs.mjs",
     "fetch-data": "node bin/fetch-opendosm.mjs",
     "validate": "node scripts/validate_model_inputs.mjs",
-    "baseline": "node bin/run-model.mjs",
-    "oil-shock": "node bin/run-model.mjs --brent 150 --fx 4.20",
-    "war-scenario": "node bin/run-model.mjs --brent 200 --fx 4.50 --opr 4.0"
+    "baseline": "node bin/run-model.mjs --annual",
+    "oil-shock": "node bin/run-model.mjs --brent 150 --crack 80 --annual",
+    "war-scenario": "node bin/run-model.mjs --brent 200 --crack 90 --fx 4.50 --opr 3.5 --elnino --annual"
   },
   "repository": {
     "type": "git",

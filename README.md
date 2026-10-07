@@ -35,18 +35,23 @@ Open [studies/playground/index.html](studies/playground/index.html) in your brow
 Requires Node.js 18+. No dependencies to install.
 
 ```bash
-# Baseline scenario (8 quarters, outputs JSON to stdout)
-node bin/run-model.mjs
+# Baseline, calendar-year summary (GDP, CPI, deficit, debt, subsidies)
+node bin/run-model.mjs --annual
 
-# Oil shock: Brent at $150, weaker ringgit
-node bin/run-model.mjs --brent 150 --fx 4.20 -o results/oil-shock.json
+# Oil shock: Brent at $150 with wider refining margins
+node bin/run-model.mjs --brent 150 --crack 80 --annual
 
-# Full war scenario: $200 oil, tighter policy
-node bin/run-model.mjs --brent 200 --fx 4.50 --opr 4.0 --elnino
+# Budget-style measures: RM8bn more cash aid, service tax to 10%
+node bin/run-model.mjs --cash-aid 8 --sst 10 --annual
 
-# Custom horizon
-node bin/run-model.mjs --start 2027Q1 -n 12
+# Quarterly output for 2027 only
+node bin/run-model.mjs --semi 85 --start 2027Q1 -n 4
+
+# All options
+node bin/run-model.mjs --help
 ```
+
+The baseline (vintage 7 Oct 2026) starts from OpenDOSM data to 2026Q2, Budget 2026 and current market levels (Brent ~$96, USD/MYR 4.09, OPR 2.75%). It lives in [src/baseline-data.js](src/baseline-data.js). Scenario shocks apply from 2026Q3 and are measured against that baseline.
 
 ### Fetch Real Data from OpenDOSM
 
@@ -64,11 +69,12 @@ node bin/fetch-opendosm.mjs --start 2015-01 --end 2025-12
 ### Build Input Packs
 
 ```bash
-# Build a run pack from raw data + defaults
-node bin/build-inputs.mjs -o data/run-packs/my-scenario.json
+# Write the baseline run pack to JSON
+node bin/build-inputs.mjs -o data/run-packs/baseline.json
 
-# Build with historical CSV overrides
-node bin/build-inputs.mjs --historical historical_inputs.csv --scenario shock_overrides.json
+# Add scenario overrides ({"INPUT": value | {"YYYYQn": value}}) and run it
+node bin/build-inputs.mjs --scenario oil.json -o data/run-packs/oil.json
+node bin/run-model.mjs --run-pack data/run-packs/oil.json --annual
 ```
 
 ### Validate Model Inputs
@@ -93,6 +99,7 @@ npx serve .
 ### Run a Scenario Study
 
 Browse the [studies/](studies/) directory for interactive scenario dashboards:
+- [Budget 2027 Scorer](https://shahidrogers.github.io/MaMaMo/studies/simulations/budget-2027/) — score the budget measures live on budget day
 - [Scenario Playground](https://shahidrogers.github.io/MaMaMo/studies/playground/) — adjust oil prices, OPR, exchange rates with live sliders
 - [$200 Oil — Iran War](https://shahidrogers.github.io/MaMaMo/studies/simulations/oil-200-iran-war/) — full shock simulation
 
@@ -187,7 +194,8 @@ This is the shortest honest description of the project today:
 
 | Area | Status |
 |------|--------|
-| **Structure** | Strong — 17-block Malaysia-specific model architecture is in place |
+| **Structure** | Strong — 17-block Malaysia-specific model architecture is documented (EViews syntax) |
+| **Executable model** | Usable — the JS solver is a compact baseline-plus-deviation model covering demand, prices, labour, external and fiscal channels; it is not a line-by-line port of the 17 blocks |
 | **Documentation** | Strong — model file, glossary, and input docs are explicit |
 | **Calibration** | Provisional — many coefficients are informed calibrations, not final estimates |
 | **Data pipeline** | In progress — OpenDOSM fetcher and input pack builder in place |
@@ -231,20 +239,25 @@ Three command-line tools are available (Node.js 18+ required):
 
 | Tool | What it does |
 |------|-------------|
-| `node bin/run-model.mjs` | Run the 17-block model solver with scenario inputs, output JSON |
+| `node bin/run-model.mjs` | Run scenarios against the baseline, output quarterly or annual JSON |
 | `node bin/fetch-opendosm.mjs` | Fetch quarterly data from Malaysia's OpenDOSM API |
-| `node bin/build-inputs.mjs` | Assemble a run pack from raw data, CSVs, and defaults |
+| `node bin/build-inputs.mjs` | Write the baseline run pack (plus optional scenario overrides) to JSON |
 
 The solver (`src/model-solver.js`) is also importable as a library:
 
 ```javascript
-import { runModel } from './src/model-solver.js';
-import { createBaselineRunPack } from './studies/playground/baseline-run-pack.js';
+import { runModel, summariseYears } from './src/model-solver.js';
+import { createBaselineRunPack, applyOverrides } from './src/run-pack.js';
 
-const runPack = createBaselineRunPack();
-const results = runModel(runPack);
-console.log(results[0]); // First quarter output
+const runPack = applyOverrides(createBaselineRunPack(), {
+    PBRENT: 120,     // Brent from 2026Q3
+    CASHAID: 5,      // RM5bn a year more cash transfers
+});
+const quarters = runModel(runPack);          // quarterly results
+const years = summariseYears(quarters, runPack); // calendar-year totals
 ```
+
+How the solver works: the baseline path (GDP growth, inflation, unemployment, the fiscal plan) is an input. The model computes how far a scenario moves the economy from that path. With no overrides it reproduces the baseline exactly. Internal flows are RM bn per quarter; fiscal outputs are annualised; growth rates are year-on-year. Parameters are listed with sources in `PARAMS` at the top of [src/model-solver.js](src/model-solver.js).
 
 ---
 
@@ -256,9 +269,10 @@ model/
   reference/
     uk-obr-reference.md               # Original UK OBR model (reference)
 src/
-  model-engine.js                     # Core solver engine (reusable library)
-  model-solver.js                     # Full 17-block equation implementations
-  data-pipeline/                      # Data ingestion modules
+  baseline-data.js                    # Dated baseline: OpenDOSM history, paths, fiscal plan
+  run-pack.js                         # Builds the baseline run pack; applyOverrides()
+  model-engine.js                     # Quarter iteration, input layering, lags
+  model-solver.js                     # Baseline-plus-deviation model and annual summary
 bin/
   run-model.mjs                       # CLI: run scenarios, output JSON
   build-inputs.mjs                    # CLI: assemble run packs from data
@@ -278,6 +292,8 @@ studies/
         residential-projects-slip/
           index.html                   # Residential satellite dashboard
           scenario-data.json           # Residential quarterly projections (JSON)
+    budget-2027/
+      index.html                       # Budget 2027 scorer (runs the model live)
 README.md                              # You are here
 ```
 
@@ -285,6 +301,7 @@ README.md                              # You are here
 
 | Scenario | What it models | Link |
 |----------|---------------|------|
+| **Budget 2027 Scorer** | Enter Budget 2027 measures (cash aid, BUDI95, service tax, development spending, Petronas dividend) and see the 2027 deficit, growth, inflation and debt against the government's target, with an oil and refining-margin stress test. Runs the model live. | [Open scorer →](https://shahidrogers.github.io/MaMaMo/studies/simulations/budget-2027/) |
 | **Scenario Playground** | Interactive sandbox. Adjust oil prices, policy rates, exchange rates, and global conditions with live sliders. Watch macro outputs respond in real time through all transmission channels. | [Open playground →](https://shahidrogers.github.io/MaMaMo/studies/playground/) |
 | **$200 Oil — Iran War** | Brent spikes to $200/bbl on a US–Iran ground war. Traces fiscal, trade, household, and Petronas impacts over 8 quarters. | [View simulation →](https://shahidrogers.github.io/MaMaMo/studies/simulations/oil-200-iran-war/) |
 | **When Oil Hits $200, Residential Projects Slip** | Satellite study inside the oil-war scenario. Maps the same macro shock into construction-cost inflation, launch deferrals, project delays, contractor stress, and LAD exposure for Malaysian residential development. | [View simulation →](https://shahidrogers.github.io/MaMaMo/studies/simulations/oil-200-iran-war/satellite/residential-projects-slip/) |
@@ -292,6 +309,8 @@ README.md                              # You are here
 ---
 
 ## Changelog
+
+**v0.5.0** — Model correctness pass. Rewrote the solver as a single baseline-plus-deviation model with consistent units. The old solver mixed annual and quarterly rates and RM millions and billions, which produced revenue of RM3.6 trillion and negative debt in the baseline. It also measured shocks against hard-coded values that disagreed with the run pack: FX 3.89 vs 4.45, which put a hidden 14% depreciation into the baseline. The new baseline is refreshed to OpenDOSM data through 2026Q2, Budget 2026, OPR 2.75%, Brent ~$96 and USD/MYR 4.09. The fuel block separates crude from refining margins, so subsidy costs and petroleum revenue respond differently. The playground, CLI and tests now share one implementation, replacing four copies. Snapshot tests are replaced with property tests. Added the Budget 2027 scorer study.
 
 **v0.4.0** — Executable model engine and data pipeline. Added a standalone Node.js solver (`src/model-solver.js`) implementing all 17 blocks, CLI tools for running scenarios (`bin/run-model.mjs`), fetching OpenDOSM data (`bin/fetch-opendosm.mjs`), and building input packs (`bin/build-inputs.mjs`). The model can now be run from the command line with JSON output.
 
